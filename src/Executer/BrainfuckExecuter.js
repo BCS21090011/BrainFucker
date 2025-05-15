@@ -1,5 +1,17 @@
 import { WrappedInt } from "./WrappedInt";
 import { EnsureInRange, EnsureInt } from "../utils/utils";
+import { CustomValueError } from "../utils/CustomErrors";
+
+class MemPtrOutOfRangeError extends CustomValueError {
+    constructor (msg=undefined, memPtr=null, memSize=null, carryValue=null, identifier=null) {
+        if (memPtr != null) {
+            msg = msg ?? `Memory pointer, ${memPtr}, is out of range.`;
+        }
+
+        super(msg, memPtr, carryValue, identifier);
+        this.MemSize = memSize;
+    }
+}
 
 class BrainfuckExecuter {
     /*
@@ -99,6 +111,12 @@ class BrainfuckExecuter {
                 * Called when code index changes
             * MemPtrOnChangeCallback(oldVal, brainfuckExecuterAfter):
                 * Called when memory pointer changes
+            * MemPtrUnderflowCallback(oldVal, brainfuckExecuterAfter):
+                * Called when memory pointer underflows
+                * Default to throwing error
+            * MemPtrOverflowCallback(oldVal, brainfuckExecuterAfter):
+                * Called when memory pointer overflows
+                * Default to throwing error
             * CodeEndedCallback(brainfuckExecuter):
                 * Called when code execution ended, which means reached the end of code
             
