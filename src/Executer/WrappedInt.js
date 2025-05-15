@@ -1,6 +1,33 @@
 import { EnsureInt, EnsureMinMax } from "../utils/utils"
 
 class WrappedInt {
+    /*
+    * All val, min, and max should be integer only.
+    * min must be smaller or equal to max, or an error will be thrown.
+    * val can be any integer, it will be wrapped if not within min and max.
+    * Can use Copy() to create another WrappedInt with the states,
+        but the callbacks might be copied as references only.
+
+    * UnderflowCallback(valBeforeWrapped, wrappedIntAfter):
+        * will be called when val underflowed.
+        * valBeforeWrapped is an integer, which is the out-range val before wrapped.
+        * wrappedIntAfter is the WrappedInt object (this) after wrapped.
+    * OverflowCallback(valBeforeWrapped, wrappedIntAfter):
+        * will be called when val overflowed.
+        * valBeforeWrapped is an integer, which is the out-range val before wrapped.
+        * wrappedIntAfter is the WrappedInt object (this) after wrapped.
+    * ValOnChangeCallback(oldVal, wrappedIntAfter):
+        * will be called whenever val is changed after setted or wrapped (when changing min and max).
+        * called from the setters instead of Wrap() due to how Wrap() is called
+            (unable to detect changes without wrap if not checked in val's setter;
+            will be called twice if checked in both val's setter and Wrap()).
+        * oldVal is the original val before changes.
+        * wrappedIntAfter is the WrappedInt object (this) after changes.
+    * ValOnSetCallback(wrappedInt):
+        * will be called when val is setted, regardless if val is changed.
+        * wrappedInt is the WrappedInt object (this) after it is setted.
+    */
+
     #min = 0;
     #max = 0;
     #value = 0;
@@ -14,32 +41,6 @@ class WrappedInt {
         valOnChangeCallback=null,
         valOnSetCallback=null
     ) {
-        /*
-        * All val, min, and max should be integer only.
-        * min must be smaller or equal to max, or an error will be thrown.
-        * val can be any integer, it will be wrapped if not within min and max.
-        * Can use Copy() to create another WrappedInt with the states,
-            but the callbacks might be copied as references only.
-
-        * underflowCallback(valBeforeWrapped, wrappedIntAfter):
-            * will be called when val underflowed.
-            * valBeforeWrapped is an integer, which is the out-range val before wrapped.
-            * wrappedIntAfter is the WrappedInt object (this) after wrapped.
-        * overflowCallback(valBeforeWrapped, wrappedIntAfter):
-            * will be called when val overflowed.
-            * valBeforeWrapped is an integer, which is the out-range val before wrapped.
-            * wrappedIntAfter is the WrappedInt object (this) after wrapped.
-        * valOnChangeCallback(oldVal, wrappedIntAfter):
-            * will be called whenever val is changed after setted or wrapped (when changing min and max).
-            * called from the setters instead of Wrap() due to how Wrap() is called
-                (unable to detect changes without wrap if not checked in val's setter;
-                will be called twice if checked in both val's setter and Wrap()).
-            * oldVal is the original val before changes.
-            * wrappedIntAfter is the WrappedInt object (this) after changes.
-        * valOnSetCallback(wrappedInt):
-            * will be called when val is setted, regardless if val is changed.
-            * wrappedInt is the WrappedInt object (this) after it is setted.
-        */
 
         EnsureInt(val);
         EnsureInt(min);
