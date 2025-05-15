@@ -148,6 +148,29 @@ class BrainfuckExecuter {
             memCellOnChangeCallback = ((index, oldVal, wrappedIntAfter, brainfuckExecuterAfter) => { }),
             memCellOnSetCallback = ((index, wrappedInt, brainfuckExecuterAfter) => { })
         } = config;
+    }
+
+    #InitializeMemory () {
+        
+    }
+
+    SetConfig (bfCode="", inputCallback=null, outputCallback=null, memSize=null, config={}) {
+        const {
+            cIndex = 0,
+            memPtr = 0,
+            mem = null,
+            cellMinVal = 0,
+            cellMaxVal = 255,
+            conditionVal = null,
+            defaultVal = null,
+            cIndexOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
+            memPtrOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
+            codeEndedCallback = ((brainfuckExecuter) => { }),
+            cellUnderflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            cellOverflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            memCellOnChangeCallback = ((index, oldVal, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            memCellOnSetCallback = ((index, wrappedInt, brainfuckExecuterAfter) => { })
+        } = config;
 
         /*
         The parameters not included in config are required, except memSize which will depends on mem.
@@ -179,10 +202,6 @@ class BrainfuckExecuter {
             value isn't valid; If no value is given, no error will be thrown,
             conditionalVal and defaultVal will be setted as cellMinVal.
         */
-    }
-
-    #InitializeMemory () {
-        
     }
 
     Execute () {
