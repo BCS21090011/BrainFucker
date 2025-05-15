@@ -1,8 +1,10 @@
+import { ValueError, ValueTooSmallError, ValueTooLargeError, TypeError } from "./CustomErrors";
+
 function EnsureInt (val, msg=null) {
     msg = msg ?? `${val} is not an integer.`;
 
     if (Number.isInteger(val) != true) {
-        throw msg;
+        throw new TypeError(msg);
     }
 }
 
@@ -10,7 +12,7 @@ function EnsureMinMax (min, max, msg=null) {
     msg = msg ?? `min, ${min}, shouldn't be bigger than max, ${max}.`;
 
     if (min > max) {
-        throw msg;
+        throw new ValueError(msg);
     }
 }
 
@@ -24,13 +26,13 @@ function EnsureInRange(val, min=null, max=null, smallerMsg=null, largerMsg=null)
 
     if (min != null) {
         if (val < min) {
-            throw smallerMsg;
+            throw new ValueTooSmallError(smallerMsg);
         }
     }
 
     if (max != null) {
         if (val > max) {
-            throw largerMsg;
+            throw new ValueTooLargeError(largerMsg);
         }
     }
 }
@@ -71,8 +73,8 @@ class WatchedVal {
 
         this.#val = val;
 
-        this.ValOnChangeCallback = valOnChangeCallback ?? function (valBefore, valAfter) { };
-        this.ValOnSetCallback = valOnSetCallback ?? function (val) { };
+        this.ValOnChangeCallback = valOnChangeCallback ?? ((valBefore, valAfter) => { });
+        this.ValOnSetCallback = valOnSetCallback ?? ((val) => { });
     }
 
     get Val () {

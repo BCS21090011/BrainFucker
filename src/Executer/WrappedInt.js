@@ -123,10 +123,7 @@ class WrappedInt {
         EnsureInt(val);
         EnsureInt(min);
         EnsureInt(max);
-
-        if (min > max) {
-            throw `min, ${min}, can't be bigger than max, ${max}.`;
-        }
+        EnsureMinMax(min, max);
 
         /*
         Take number with min = 0, max = 9 for example:
