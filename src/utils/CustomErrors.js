@@ -25,39 +25,39 @@ class CustomCarryError extends CustomError {
     }
 }
 
-class ValueError extends CustomCarryError {
+class CustomValueError extends CustomCarryError {
     constructor (msg=undefined, val=null, carryValue=null, identifier=null) {
         if (val != null) {
             msg = msg ?? `Val, ${val}, is invalid.`;
         }
 
-        super(msg, identifier, carryValue);
+        super(msg, carryValue, identifier);
         this.Val = val;
     }
 }
 
-class ValueTooSmallError extends ValueError {
+class CustomValueTooSmallError extends CustomValueError {
     constructor (msg=undefined, val=null, min=null, carryValue=null, identifier=null) {
         if (val != null && min != null) {
             msg = msg ?? `Val, ${val}, shouldn't be smaller than ${min}.`;
         }
 
-        super(msg, identifier, carryValue, val);
+        super(msg, val, carryValue, identifier);
         this.Min = min;
     }
 }
 
-class ValueTooLargeError extends ValueError {
+class CustomValueTooLargeError extends CustomValueError {
     constructor (msg=undefined, val=null, max=null, carryValue=null, identifier=null) {
         if (val != null && max != null) {
             msg = msg ?? `Val, ${val}, shouldn't be larger than ${max}.`;
         }
 
-        super(msg, identifier, carryValue, val);
+        super(msg, val, carryValue, identifier);
         this.Max = max;
     }
 }
 
-class TypeError extends CustomCarryError { }
+class CustomTypeError extends CustomCarryError { }
 
-export { CustomError, CustomCarryError, ValueError, ValueTooSmallError, ValueTooLargeError, TypeError }
+export { CustomError, CustomCarryError, CustomValueError, CustomValueTooSmallError, CustomValueTooLargeError, CustomTypeError }

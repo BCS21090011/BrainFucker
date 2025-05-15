@@ -1,10 +1,10 @@
-import { ValueError, ValueTooSmallError, ValueTooLargeError, TypeError } from "./CustomErrors";
+import { CustomValueError, CustomValueTooSmallError, CustomValueTooLargeError, CustomTypeError } from "./CustomErrors";
 
 function EnsureInt (val, msg=null) {
     msg = msg ?? `${val} is not an integer.`;
 
     if (Number.isInteger(val) != true) {
-        throw new TypeError(msg);
+        throw new CustomTypeError(msg);
     }
 }
 
@@ -12,7 +12,7 @@ function EnsureMinMax (min, max, msg=null) {
     msg = msg ?? `min, ${min}, shouldn't be bigger than max, ${max}.`;
 
     if (min > max) {
-        throw new ValueError(msg);
+        throw new CustomValueError(msg);
     }
 }
 
@@ -26,13 +26,13 @@ function EnsureInRange(val, min=null, max=null, smallerMsg=null, largerMsg=null)
 
     if (min != null) {
         if (val < min) {
-            throw new ValueTooSmallError(smallerMsg, val, min);
+            throw new CustomValueTooSmallError(smallerMsg, val, min);
         }
     }
 
     if (max != null) {
         if (val > max) {
-            throw new ValueTooLargeError(largerMsg, val, max);
+            throw new CustomValueTooLargeError(largerMsg, val, max);
         }
     }
 }
