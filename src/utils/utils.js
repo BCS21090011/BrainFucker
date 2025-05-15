@@ -26,13 +26,13 @@ function EnsureInRange(val, min=null, max=null, smallerMsg=null, largerMsg=null)
 
     if (min != null) {
         if (val < min) {
-            throw new ValueTooSmallError(smallerMsg);
+            throw new ValueTooSmallError(smallerMsg, val, min);
         }
     }
 
     if (max != null) {
         if (val > max) {
-            throw new ValueTooLargeError(largerMsg);
+            throw new ValueTooLargeError(largerMsg, val, max);
         }
     }
 }
