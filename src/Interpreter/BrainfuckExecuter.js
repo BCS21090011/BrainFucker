@@ -5,7 +5,7 @@ import { EnsureInRange, EnsureInt } from "../utils/utils";
 BrainfuckExecuter design:
 
 Separate concern, this class should only execute Brainfuck,
-with callback functions to interact with.
+    with callback functions to interact with.
 
 Parameters:
     * Brainfuck code
@@ -15,7 +15,7 @@ Parameters:
         * IO action
     * Memory size
         * The size of memory, will trim or extend memory if needed,
-        or initialize memory with default value if no memory provided
+            or initialize memory with default value if no memory provided
     * Code index
     * Memory pointer
     * Memory
@@ -31,8 +31,8 @@ Parameters:
     * Other callbacks
         * For interaction with others
 All these parameters above, except Brainfuck code (which is required to execute)
-and IO callbacks (these should interact with UI), are for customized behaviour,
-especially cell min and max value, as these doesn't follow the Brainfuck behaviours.
+    and IO callbacks (these should interact with UI), are for customized behaviour,
+    especially cell min and max value, as these doesn't follow the Brainfuck behaviours.
 
 Properties that will accept changes (class should react to these changes appropriately):
     * Brainfuck code
@@ -48,12 +48,12 @@ Properties that will accept changes (class should react to these changes appropr
         * Very likely to affect code flow
     * Memory pointer
         * Minor to no effect, the code will still be executed,
-        but might cause unexpected behaviour
+            but might cause unexpected behaviour
         * Might cause out of memory range issue
         * Very likely to affect code flow
     * Memory
         * Minor to no effect, the code will still be executed since the value should be
-        handled automatically by WrappedInt
+            handled automatically by WrappedInt
         * Very likely to affect code flow
     * Cell min value
         * The code will still be executed since the value should be handled automatically by WrappedInt
