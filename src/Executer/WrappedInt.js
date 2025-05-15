@@ -50,10 +50,10 @@ class WrappedInt {
         this.#min = min;
         this.#max = max;
 
-        this.UnderflowCallBack = underflowCallback ?? function (valBeforeWrapped, wrappedIntAfter) { };
-        this.OverflowCallBack = overflowCallback ?? function (valBeforeWrapped, wrappedIntAfter) { };
-        this.ValOnChangeCallback = valOnChangeCallback ?? function (oldVal, wrappedIntAfter) { };
-        this.ValOnSetCallback = valOnSetCallback ?? function (wrappedInt) { };
+        this.UnderflowCallBack = underflowCallback ?? ((valBeforeWrapped, wrappedIntAfter) => { });
+        this.OverflowCallBack = overflowCallback ?? ((valBeforeWrapped, wrappedIntAfter) => { });
+        this.ValOnChangeCallback = valOnChangeCallback ?? ((oldVal, wrappedIntAfter) => { });
+        this.ValOnSetCallback = valOnSetCallback ?? ((wrappedInt) => { });
 
         this.#value = val;
     }

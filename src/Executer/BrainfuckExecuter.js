@@ -17,6 +17,7 @@ class BrainfuckExecuter {
         * Memory size
             * The size of memory, will trim or extend memory if needed,
                 or initialize memory with default value if no memory provided
+            * Will be initialized when creating object.
         * Code index
         * Memory pointer
         * Memory
@@ -29,6 +30,10 @@ class BrainfuckExecuter {
             * The value which current cell must equal to to not execute loop
             * Must within cell min and max value
             * Default should be cell min value
+        * Default value
+            * Default value of each cell
+            * Can't be changed afterward, since the memory will already be initialized,
+                it would be difficult to tract which are changed which arent'
         * Other callbacks
             * For interaction with others
     All these parameters above, except Brainfuck code (which is required to execute)
@@ -108,8 +113,62 @@ class BrainfuckExecuter {
                     * Called when memory cell is setted
     */
 
-    constructor (bfCode="") {
+    constructor (bfCode="", inputCallback=null, outputCallback=null, memSize=null, config={}) {
+        const {
+            cIndex = 0,
+            memPtr = 0,
+            mem = null,
+            cellMinVal = 0,
+            cellMaxVal = 255,
+            conditionVal = null,
+            defaultVal = null,
+            cIndexOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
+            memPtrOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
+            codeEndedCallback = ((brainfuckExecuter) => { }),
+            cellUnderflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            cellOverflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            memCellOnChangeCallback = ((index, oldVal, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            memCellOnSetCallback = ((index, wrappedInt, brainfuckExecuterAfter) => { })
+        } = config;
 
+        /*
+        The parameters not included in config are required, except memSize which will depends on mem.
+        The reason memSize doesn't have a default value (30000) is for more customized behaviour:
+            * If memSize is provided:
+                * If mem is not provided:
+                    * Initialize a memSize mem with defaultVal
+                * If mem is provided:
+                    * If length of mem is smaller than memSize:
+                        * Extend mem until it has length of memSize
+                    * If length of mem is larger than memSize:
+                        * Trim or remove the exceeded part
+                    * Use mem
+            * If memSize is not provided:
+                * If mem is not provided:
+                    * Throws an error
+                * If mem is provided:
+                    * Use mem
+            
+            Please note that algorithm above is only if mem is valid,
+                meaning all value in mem is an integer.
+                If the value is out-ranged,
+                it will simply be wrapped (automatically by WrappedInt),
+                which will trigger underflow and overflow callback.
+
+        For conditionVal and defaultVal, they don't have default value (0) is because
+            the validity of these parameters are based on cellMinVal and cellMaxVal.
+            If value is given for these parameters, it will throw an error if the
+            value isn't valid; If no value is given, no error will be thrown,
+            conditionalVal and defaultVal will be setted as cellMinVal.
+        */
+    }
+
+    #InitializeMemory () {
+        
+    }
+
+    Execute () {
+        return this;    // For chaining
     }
 }
 
