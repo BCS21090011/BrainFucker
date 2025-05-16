@@ -145,28 +145,7 @@ class BrainfuckExecuter {
     #conditionVal = 0;
 
     constructor (bfCode="", inputCallback=null, outputCallback=null, memSize=null, config={}) {
-        const {
-            cIndex = 0,
-            memPtr = 0,
-            mem = null,
-            cellMinVal = 0,
-            cellMaxVal = 255,
-            conditionVal = null,
-            defaultVal = null,
-            cIndexOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
-            memPtrOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
-            memPtrUnderflowCallback = ((oldVal, brainfuckExecuter) => {
-                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
-            }),
-            memPtrOverflowCallback = ((oldVal, brainfuckExecuter) => {
-                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
-            }),
-            codeEndedCallback = ((brainfuckExecuter) => { }),
-            cellUnderflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
-            cellOverflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
-            memCellOnChangeCallback = ((index, oldVal, wrappedIntAfter, brainfuckExecuterAfter) => { }),
-            memCellOnSetCallback = ((index, wrappedInt, brainfuckExecuterAfter) => { })
-        } = config;
+        
     }
 
     get BFCode () {
@@ -296,15 +275,15 @@ class BrainfuckExecuter {
             conditionalVal and defaultVal will be setted as cellMinVal.
         */
 
-            this.CIndexOnChangeCallback = config.cIndexOnChangeCallback;
-            this.MemPtrOnChangeCallback = config.memPtrOnChangeCallback;
-            this.MemPtrUnderflowCallback = config.memPtrUnderflowCallback;
-            this.MemPtrOverflowCallback = config.memPtrOverflowCallback;
-            this.CodeEndedCallback = config.codeEndedCallback;
-            this.CellUnderflowCallback = config.cellUnderflowCallback;
-            this.CellOverflowCallback = config.cellOverflowCallback;
-            this.MemCellOnChangeCallback = config.memCellOnChangeCallback;
-            this.MemCellOnSetCallback = config.memCellOnSetCallback;
+            this.CIndexOnChangeCallback = cIndexOnChangeCallback;
+            this.MemPtrOnChangeCallback = memPtrOnChangeCallback;
+            this.MemPtrUnderflowCallback = memPtrUnderflowCallback;
+            this.MemPtrOverflowCallback = memPtrOverflowCallback;
+            this.CodeEndedCallback = codeEndedCallback;
+            this.CellUnderflowCallback = cellUnderflowCallback;
+            this.CellOverflowCallback = cellOverflowCallback;
+            this.MemCellOnChangeCallback = memCellOnChangeCallback;
+            this.MemCellOnSetCallback = memCellOnSetCallback;
     }
 
     Execute () {

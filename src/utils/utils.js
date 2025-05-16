@@ -60,21 +60,31 @@ function IsInRange(val, min=null, max=null) {
 class WatchedVal {
     #val = undefined;
 
-    constructor (val, valOnChangeCallback=null, valOnSetCallback=null) {
+    constructor (val, valOnChangeCallback=null, valOnSetCallback=null, valChangesCheckerCallback=null) {
         /*
+        The default valChangesCheckerCallback() is for immutable only.
+
         * valOnChangeCallback(valBefore, valAfter):
-            * called when val changes.
+            * Called when val changes.
             * valBefore is the val before changes.
             * valAfter is the val after changes.
         * valOnSetCallback(val):
-            * called when val is setted.
+            * Called when val is setted.
             * val is the val after setted.
+        * valChangesCheckerCallback(oldVal, newVal) -> bool:
+            * Called to check if oldVal and newVal are the same.
+            * oldVal is the original value.
+            * newVal is the new value.
+            * Return true if oldVal and newVal aren't the same, false otherwise.
         */
 
         this.#val = val;
 
         this.ValOnChangeCallback = valOnChangeCallback ?? ((valBefore, valAfter) => { });
         this.ValOnSetCallback = valOnSetCallback ?? ((val) => { });
+        this.ValChangesCheckerCallback = valChangesCheckerCallback ?? ((oldVal, newVal) => {
+            return oldVal !== newVal;
+        });
     }
 
     get Val () {
@@ -82,7 +92,7 @@ class WatchedVal {
     }
 
     set Val (newVal) {
-        if (this.#val !== newVal) {
+        if (this.ValChangesCheckerCallback(this.#val, newVal)) {
             const originalVal = this.#val;
 
             this.#val = newVal;

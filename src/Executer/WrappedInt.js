@@ -9,22 +9,22 @@ class WrappedInt {
         but the callbacks might be copied as references only.
 
     * UnderflowCallback(valBeforeWrapped, wrappedIntAfter):
-        * will be called when val underflowed.
+        * Will be called when val underflowed.
         * valBeforeWrapped is an integer, which is the out-range val before wrapped.
         * wrappedIntAfter is the WrappedInt object (this) after wrapped.
     * OverflowCallback(valBeforeWrapped, wrappedIntAfter):
-        * will be called when val overflowed.
+        * Will be called when val overflowed.
         * valBeforeWrapped is an integer, which is the out-range val before wrapped.
         * wrappedIntAfter is the WrappedInt object (this) after wrapped.
     * ValOnChangeCallback(oldVal, wrappedIntAfter):
-        * will be called whenever val is changed after setted or wrapped (when changing min and max).
-        * called from the setters instead of Wrap() due to how Wrap() is called
+        * Will be called whenever val is changed after setted or wrapped (when changing min and max).
+        * Called from the setters instead of Wrap() due to how Wrap() is called
             (unable to detect changes without wrap if not checked in val's setter;
             will be called twice if checked in both val's setter and Wrap()).
         * oldVal is the original val before changes.
         * wrappedIntAfter is the WrappedInt object (this) after changes.
     * ValOnSetCallback(wrappedInt):
-        * will be called when val is setted, regardless if val is changed.
+        * Will be called when val is setted, regardless if val is changed.
         * wrappedInt is the WrappedInt object (this) after it is setted.
     */
 
