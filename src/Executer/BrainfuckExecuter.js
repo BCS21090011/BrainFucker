@@ -28,107 +28,110 @@ class BrainfuckExecuter {
             * IO action
         * Memory size
             * The size of memory, will trim or extend memory if needed,
-                or initialize memory with default value if no memory provided
+                or initialize memory with default value if no memory provided.
             * Will be initialized when creating object.
         * Code index
         * Memory pointer
         * Memory
-            * To initialize memory with value (if wanted)
+            * To initialize memory with value (if wanted).
         * Cell min value
-            * The min value of cell before wrap
+            * The min value of cell before wrap.
         * Cell max value
-            * The max value of cell before wrap
+            * The max value of cell before wrap.
         * Conditional value
-            * The value which current cell must equal to to not execute loop
-            * Must within cell min and max value
-            * Default should be cell min value
+            * The value which current cell must equal to to not execute loop.
+            * Must within cell min and max value.
+            * Default should be cell min value.
         * Default value
-            * Default value of each cell
-            * Can't be changed afterward, since the memory will already be initialized,
-                it would be difficult to tract which are changed which arent'
+            * Default value of each cell.
+            * Won't be save as property.
+            * Will only be used when mem needed to be extended, i.e.,
+                memory size is longer than existing memory.
+            * Changing default value won't affect existing memory,
+                as it isn't easy to trace which memory cell is changed.
         * Other callbacks
-            * For interaction with others
+            * For interaction with others.
     All these parameters above, except Brainfuck code (which is required to execute)
         and IO callbacks (these should interact with UI), are for customized behaviour,
         especially cell min and max value, as these doesn't follow the Brainfuck behaviours.
 
     Properties that will accept changes (class should react to these changes appropriately):
         * Brainfuck code
-            * Will need to re-map loop pairs and left out loops
+            * Will need to re-map loop pairs and left out loops.
         * Callbacks
-            * Minor to no effect, just need to update the relevant callbacks
-            * Unlikely to affect the codeflow (except IO related), depends on the callback functions
+            * Minor to no effect, just need to update the relevant callbacks.
+            * Unlikely to affect the codeflow (except IO related), depends on the callback functions.
         * Memory size
-            * Change memory if needed
+            * Change memory if needed.
         * Code index
             * Minor to no effect, the code will still be executed,
-            but might cause unexpected behaviour
-            * Very likely to affect code flow
+            but might cause unexpected behaviour.
+            * Very likely to affect code flow.
         * Memory pointer
             * Minor to no effect, the code will still be executed,
-                but might cause unexpected behaviour
-            * Might cause out of memory range issue
-            * Very likely to affect code flow
+                but might cause unexpected behaviour.
+            * Might cause out of memory range issue.
+            * Very likely to affect code flow.
         * Memory
             * Minor to no effect, the code will still be executed since the value should be
-                handled automatically by WrappedInt
-            * Very likely to affect code flow
+                handled automatically by WrappedInt.
+            * Very likely to affect code flow.
         * Cell min value
-            * The code will still be executed since the value should be handled automatically by WrappedInt
-            * Very likely to affect code flow
-            * Likely to affect a large range of memory cells
+            * The code will still be executed since the value should be handled automatically by WrappedInt.
+            * Very likely to affect code flow.
+            * Likely to affect a large range of memory cells.
         * Cell max value
-            * The code will still be executed since the value should be handled automatically by WrappedInt
-            * Very likely to affect code flow
-            * Likely to affect a large range of memory cells
+            * The code will still be executed since the value should be handled automatically by WrappedInt.
+            * Very likely to affect code flow.
+            * Likely to affect a large range of memory cells.
         * Conditional value
-            * Minor to no effect, the code will still be executed, the behaviour of loops will change
-            * Very likely to affect code flow
-            * Might cause infinite loop
-            * Need to be re-calculated when cell min and max value changes
+            * Minor to no effect, the code will still be executed, the behaviour of loops will change.
+            * Very likely to affect code flow.
+            * Might cause infinite loop.
+            * Need to be re-calculated when cell min and max value changes.
         
         Indirectly:
             * Loop pairs
             * Left out loops
-                * The index of unpaired loop heads and tails
+                * The index of unpaired loop heads and tails.
 
     Properties that will change (should have callbacks to listen for these changes):
         * Code index
         * Memory pointer
         * Memory
         * Code ended
-            * A flag to indicate that the code execution ended
+            * A flag to indicate that the code execution ended.
     
     Callback functions:
         * InputCallback(brainfuckExecuter) -> int:
-            * Return an integer that represents the input value
-            * Called when brainfuck code is inputing ('.')
+            * Return an integer that represents the input value.
+            * Called when brainfuck code is inputing ('.').
         * OutputCallback(output, brainfuckExecuter):
-            * Called when brainfuck code is outputing (',')
+            * Called when brainfuck code is outputing (',').
 
         For others to listen to:
             * CIndexOnChangeCallback(oldVal, brainfuckExecuterAfter):
-                * Called when code index changes
+                * Called when code index changes.
             * MemPtrOnChangeCallback(oldVal, brainfuckExecuterAfter):
-                * Called when memory pointer changes
+                * Called when memory pointer changes.
             * MemPtrUnderflowCallback(oldVal, brainfuckExecuterAfter):
-                * Called when memory pointer underflows
-                * Default to throwing error
+                * Called when memory pointer underflows.
+                * Default to throwing error.
             * MemPtrOverflowCallback(oldVal, brainfuckExecuterAfter):
-                * Called when memory pointer overflows
-                * Default to throwing error
+                * Called when memory pointer overflows.
+                * Default to throwing error.
             * CodeEndedCallback(brainfuckExecuter):
-                * Called when code execution ended, which means reached the end of code
+                * Called when code execution ended, which means reached the end of code.
             
             Cell specific callbacks:
                 * CellUnderflowCallback(index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter):
-                    * Called when memory cell underflows
+                    * Called when memory cell underflows.
                 * CellOverflowCallback(index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter):
-                    * Called when memory cell overflows
+                    * Called when memory cell overflows.
                 * MemCellOnChangeCallback(index, oldVal, wrappedIntAfter, brainfuckExecuterAfter):
-                    * Called when memory cell changes
+                    * Called when memory cell changes.
                 * MemCellOnSetCallback(index, wrappedInt, brainfuckExecuterAfter):
-                    * Called when memory cell is setted
+                    * Called when memory cell is setted.
     */
 
     constructor (bfCode="", inputCallback=null, outputCallback=null, memSize=null, config={}) {
