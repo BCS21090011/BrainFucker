@@ -1,4 +1,4 @@
-import { WrappedInt } from "./WrappedInt";
+import WrappedInt from "./WrappedInt";
 import { EnsureInRange, EnsureInt } from "../utils/utils";
 import { CustomValueError } from "../utils/CustomErrors";
 
@@ -12,6 +12,8 @@ class MemPtrOutOfRangeError extends CustomValueError {
         this.MemSize = memSize;
     }
 }
+
+const BFMemoryMaxSize = 30000;
 
 class BrainfuckExecuter {
     /*
@@ -114,10 +116,10 @@ class BrainfuckExecuter {
                 * Called when code index changes.
             * MemPtrOnChangeCallback(oldVal, brainfuckExecuterAfter):
                 * Called when memory pointer changes.
-            * MemPtrUnderflowCallback(oldVal, brainfuckExecuterAfter):
+            * MemPtrUnderflowCallback(oldVal, brainfuckExecuter):
                 * Called when memory pointer underflows.
                 * Default to throwing error.
-            * MemPtrOverflowCallback(oldVal, brainfuckExecuterAfter):
+            * MemPtrOverflowCallback(oldVal, brainfuckExecuter):
                 * Called when memory pointer overflows.
                 * Default to throwing error.
             * CodeEndedCallback(brainfuckExecuter):
@@ -134,6 +136,14 @@ class BrainfuckExecuter {
                     * Called when memory cell is setted.
     */
 
+    #bfCode = "";
+    #cIndex = 0;
+    #memPtr = 0;
+    #memArr = [];
+    #cellMinVal = 0;
+    #cellMaxVal = 255;
+    #conditionVal = 0;
+
     constructor (bfCode="", inputCallback=null, outputCallback=null, memSize=null, config={}) {
         const {
             cIndex = 0,
@@ -145,6 +155,12 @@ class BrainfuckExecuter {
             defaultVal = null,
             cIndexOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
             memPtrOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
+            memPtrUnderflowCallback = ((oldVal, brainfuckExecuter) => {
+                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
+            }),
+            memPtrOverflowCallback = ((oldVal, brainfuckExecuter) => {
+                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
+            }),
             codeEndedCallback = ((brainfuckExecuter) => { }),
             cellUnderflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
             cellOverflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
@@ -153,8 +169,76 @@ class BrainfuckExecuter {
         } = config;
     }
 
-    #InitializeMemory (defaultVal=null) {
-        // Use object's memSize and mem.
+    get BFCode () {
+        return this.#bfCode;
+    }
+
+    get MemSize () {
+        return this.#memArr.length;
+    }
+
+    get CIndex () {
+        return this.#cIndex;
+    }
+
+    get MemPtr () {
+        return this.#memPtr;
+    }
+
+    get MemArr () {
+        // Copy the whole this.#memArr and return it.
+    }
+
+    get CellMinVal () {
+        return this.#cellMinVal;
+    }
+
+    get CellMaxVal () {
+        return this.#cellMaxVal;
+    }
+
+    get ConditionVal () {
+        return this.#conditionVal;
+    }
+
+    #InitializeMemory (memSize, defaultVal=null) {
+        // Memory will be trimmed if memSize is smaller.
+
+        EnsureInt(memSize);
+        EnsureInRange(memSize, 0, BFMemoryMaxSize);
+
+        defaultVal = defaultVal ?? this.#cellMinVal;
+
+        EnsureInt(defaultVal);
+        EnsureInRange(defaultVal, this.#cellMinVal, this.#cellMaxVal);
+
+        const currentMemSize = this.#memArr.length;
+        const diff = currentMemSize - memSize;
+        
+        if (diff < 0) { // memSize is larger:
+            for (let i = currentMemSize; i < memSize; i++) {
+                this.#memArr.push(new WrappedInt(
+                    defaultVal,
+                    this.#cellMinVal,
+                    this.#cellMaxVal,
+                    (valBeforeWrapped, wrappedIntAfter) => {
+                        this.CellUnderflowCallback(i, valBeforeWrapped, wrappedIntAfter, this);
+                    },
+                    (valBeforeWrapped, wrappedIntAfter) => {
+                        this.CellOverflowCallback(i, valBeforeWrapped, wrappedIntAfter, this);
+                    },
+                    (oldVal, wrappedIntAfter) => {
+                        this.MemCellOnChangeCallback(i, oldVal, wrappedIntAfter, this);
+                    },
+                    (wrappedInt) => {
+                        this.MemCellOnSetCallback(i, wrappedInt, this);
+                    }
+                ));
+            }
+        }
+        else if (diff > 0) {    // memArr is larger:
+            this.#memArr.splice(memSize, diff);
+        }
     }
 
     SetConfig (bfCode="", inputCallback=null, outputCallback=null, memSize=null, config={}) {
@@ -168,6 +252,12 @@ class BrainfuckExecuter {
             defaultVal = null,
             cIndexOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
             memPtrOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
+            memPtrUnderflowCallback = ((oldVal, brainfuckExecuter) => {
+                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
+            }),
+            memPtrOverflowCallback = ((oldVal, brainfuckExecuter) => {
+                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
+            }),
             codeEndedCallback = ((brainfuckExecuter) => { }),
             cellUnderflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
             cellOverflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
@@ -205,6 +295,16 @@ class BrainfuckExecuter {
             value isn't valid; If no value is given, no error will be thrown,
             conditionalVal and defaultVal will be setted as cellMinVal.
         */
+
+            this.CIndexOnChangeCallback = config.cIndexOnChangeCallback;
+            this.MemPtrOnChangeCallback = config.memPtrOnChangeCallback;
+            this.MemPtrUnderflowCallback = config.memPtrUnderflowCallback;
+            this.MemPtrOverflowCallback = config.memPtrOverflowCallback;
+            this.CodeEndedCallback = config.codeEndedCallback;
+            this.CellUnderflowCallback = config.cellUnderflowCallback;
+            this.CellOverflowCallback = config.cellOverflowCallback;
+            this.MemCellOnChangeCallback = config.memCellOnChangeCallback;
+            this.MemCellOnSetCallback = config.memCellOnSetCallback;
     }
 
     Execute () {
@@ -446,3 +546,4 @@ class BrainfuckExecuter {
 */
 
 export default BrainfuckExecuter;
+export { BFMemoryMaxSize, BrainfuckExecuter };

@@ -192,4 +192,5 @@ class WrappedInt {
     }
 }
 
+export default WrappedInt;
 export { WrappedInt };
