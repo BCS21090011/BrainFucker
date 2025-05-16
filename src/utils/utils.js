@@ -1,6 +1,6 @@
 import { CustomValueError, CustomValueTooSmallError, CustomValueTooLargeError, CustomTypeError } from "./CustomErrors";
 
-function EnsureInt (val, msg=null) {
+function EnsureInt (val, msg=undefined) {
     msg = msg ?? `${val} is not an integer.`;
 
     if (Number.isInteger(val) != true) {
@@ -8,7 +8,7 @@ function EnsureInt (val, msg=null) {
     }
 }
 
-function EnsureMinMax (min, max, msg=null) {
+function EnsureMinMax (min, max, msg=undefined) {
     msg = msg ?? `min, ${min}, shouldn't be bigger than max, ${max}.`;
 
     if (min > max) {
@@ -16,39 +16,39 @@ function EnsureMinMax (min, max, msg=null) {
     }
 }
 
-function EnsureInRange(val, min=null, max=null, smallerMsg=null, largerMsg=null) {
-    if (min != null && max != null) {
+function EnsureInRange(val, min=undefined, max=undefined, smallerMsg=undefined, largerMsg=undefined) {
+    if (min != undefined && max != undefined) {
         EnsureMinMax(min, max);
     }
 
     smallerMsg = smallerMsg ?? `val, ${val}, shouldn't be smaller than min, ${min}.`;
     largerMsg = largerMsg ?? `val, ${val}, shouldn't be larger than max, ${max}.`;
 
-    if (min != null) {
+    if (min != undefined) {
         if (val < min) {
             throw new CustomValueTooSmallError(smallerMsg, val, min);
         }
     }
 
-    if (max != null) {
+    if (max != undefined) {
         if (val > max) {
             throw new CustomValueTooLargeError(largerMsg, val, max);
         }
     }
 }
 
-function IsInRange(val, min=null, max=null) {
-    if (min != null && max != null) {
+function IsInRange(val, min=undefined, max=undefined) {
+    if (min != undefined && max != undefined) {
         EnsureMinMax(min, max);
     }
 
-    if (min != null) {
+    if (min != undefined) {
         if (val < min) {
             return false;
         }
     }
 
-    if (max != null) {
+    if (max != undefined) {
         if (val > max) {
             return false;
         }
@@ -60,7 +60,7 @@ function IsInRange(val, min=null, max=null) {
 class WatchedVal {
     #val = undefined;
 
-    constructor (val, valOnChangeCallback=null, valOnSetCallback=null, valChangesCheckerCallback=null) {
+    constructor (val, valOnChangeCallback=undefined, valOnSetCallback=undefined, valChangesCheckerCallback=undefined) {
         /*
         The default valChangesCheckerCallback() is for immutable only.
 

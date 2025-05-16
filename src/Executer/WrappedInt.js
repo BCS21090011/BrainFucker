@@ -36,10 +36,10 @@ class WrappedInt {
         val=0,
         min=0,
         max=0,
-        underflowCallback=null,
-        overflowCallback=null,
-        valOnChangeCallback=null,
-        valOnSetCallback=null
+        underflowCallback=undefined,
+        overflowCallback=undefined,
+        valOnChangeCallback=undefined,
+        valOnSetCallback=undefined
     ) {
 
         EnsureInt(val);
@@ -168,10 +168,10 @@ class WrappedInt {
             this.#value,
             this.#min,
             this.#max,
-            includeCallbacks ? this.UnderflowCallBack : null,
-            includeCallbacks ? this.OverflowCallBack : null,
-            includeCallbacks ? this.ValOnChangeCallback : null,
-            includeCallbacks ? this.ValOnSetCallback : null
+            includeCallbacks ? this.UnderflowCallBack : undefined,
+            includeCallbacks ? this.OverflowCallBack : undefined,
+            includeCallbacks ? this.ValOnChangeCallback : undefined,
+            includeCallbacks ? this.ValOnSetCallback : undefined
         );
     }
 
