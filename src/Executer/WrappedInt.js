@@ -194,3 +194,5 @@ class WrappedInt {
 
 export default WrappedInt;
 export { WrappedInt };
+
+// Todo: Change all onchange callbacks to return oldVal, newVal, and the object itself.
