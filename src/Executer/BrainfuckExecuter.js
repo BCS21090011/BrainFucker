@@ -153,8 +153,8 @@ class BrainfuckExecuter {
         } = config;
     }
 
-    #InitializeMemory () {
-        
+    #InitializeMemory (defaultVal=null) {
+        // Use object's memSize and mem.
     }
 
     SetConfig (bfCode="", inputCallback=null, outputCallback=null, memSize=null, config={}) {
