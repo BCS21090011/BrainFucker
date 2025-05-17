@@ -394,6 +394,7 @@ class BrainfuckExecuter {
         codeExecuteOperation(code, brainfuckExecuter):
             * Is the custom code operation, if given value, i.e. not undefined nor null,
                 the default standard brainfuck code operation will be prevented.
+            * Return the cIndex for next operation.
             * Code is the code character that cIndex points to in BFCode.
         */
 
@@ -498,6 +499,8 @@ class BrainfuckExecuter {
     }
 
     #BFDefaultCodeExecuteOperation (code) {
+        let nextCIndex = this.CIndex;
+
         if (code === '+') {
             this.BF_IncrementCellVal_Operation();
         }
@@ -522,6 +525,8 @@ class BrainfuckExecuter {
         else if (code === ']') {
 
         }
+
+        return nextCIndex + 1;
     }
 
     Execute () {
@@ -529,10 +534,10 @@ class BrainfuckExecuter {
             const code = this.BFCode[this.CIndex];
 
             if (this.CodeExecuteOperation == undefined) {
-                this.#BFDefaultCodeExecuteOperation(code);
+                this.CIndex = this.#BFDefaultCodeExecuteOperation(code);
             }
             else {
-                this.CodeExecuteOperation(code, this);
+                this.CIndex = this.CodeExecuteOperation(code, this);
             }
         }
 
