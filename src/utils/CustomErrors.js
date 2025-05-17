@@ -1,8 +1,8 @@
 class CustomError extends Error {
     #errorName = "CustomError";
-    #identifier = null; // If needed to differentiate with other error of same class.
+    #identifier = undefined; // If needed to differentiate with other error of same class.
 
-    constructor (msg, identifier=null) {
+    constructor (msg, identifier=undefined) {
         super(msg);
 
         this.name = this.constructor.name;
@@ -20,15 +20,15 @@ class CustomError extends Error {
 }
 
 class CustomCarryError extends CustomError {
-    constructor (msg, carryValue=null, identifier=null) {
+    constructor (msg, carryValue=undefined, identifier=undefined) {
         super(msg, identifier);
         this.CarryValue = carryValue;
     }
 }
 
 class CustomValueError extends CustomCarryError {
-    constructor (msg=undefined, val=null, carryValue=null, identifier=null) {
-        if (val != null) {
+    constructor (msg=undefined, val=undefined, carryValue=undefined, identifier=undefined) {
+        if (val != undefined) {
             msg = msg ?? `Val, ${val}, is invalid.`;
         }
 
@@ -38,8 +38,8 @@ class CustomValueError extends CustomCarryError {
 }
 
 class CustomValueTooSmallError extends CustomValueError {
-    constructor (msg=undefined, val=null, min=null, carryValue=null, identifier=null) {
-        if (val != null && min != null) {
+    constructor (msg=undefined, val=undefined, min=undefined, carryValue=undefined, identifier=undefined) {
+        if (val != undefined && min != undefined) {
             msg = msg ?? `Val, ${val}, shouldn't be smaller than ${min}.`;
         }
 
@@ -49,8 +49,8 @@ class CustomValueTooSmallError extends CustomValueError {
 }
 
 class CustomValueTooLargeError extends CustomValueError {
-    constructor (msg=undefined, val=null, max=null, carryValue=null, identifier=null) {
-        if (val != null && max != null) {
+    constructor (msg=undefined, val=undefined, max=undefined, carryValue=undefined, identifier=undefined) {
+        if (val != undefined && max != undefined) {
             msg = msg ?? `Val, ${val}, shouldn't be larger than ${max}.`;
         }
 
@@ -61,4 +61,15 @@ class CustomValueTooLargeError extends CustomValueError {
 
 class CustomTypeError extends CustomCarryError { }
 
-export { CustomError, CustomCarryError, CustomValueError, CustomValueTooSmallError, CustomValueTooLargeError, CustomTypeError }
+class CustomMissingArgumentError extends CustomCarryError {
+    constructor (msg, argumentName=undefined, carryValue=undefined, identifier=undefined) {
+        if (argumentName != undefined) {
+            msg = msg ?? `Argument, ${argumentName}, is required.`;
+        }
+
+        super(msg, carryValue, identifier);
+        this.ArgumentName = argumentName;
+    }
+}
+
+export { CustomError, CustomCarryError, CustomValueError, CustomValueTooSmallError, CustomValueTooLargeError, CustomTypeError, CustomMissingArgumentError }

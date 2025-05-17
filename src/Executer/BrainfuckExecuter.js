@@ -1,6 +1,6 @@
 import WrappedInt from "./WrappedInt";
 import { EnsureInRange, EnsureInt, WatchedVal } from "../utils/utils";
-import { CustomValueError } from "../utils/CustomErrors";
+import { CustomValueError, CustomMissingArgumentError } from "../utils/CustomErrors";
 
 class MemPtrOutOfRangeError extends CustomValueError {
     constructor (msg=undefined, memPtr=undefined, memSize=undefined, carryValue=undefined, identifier=undefined) {
@@ -302,16 +302,33 @@ class BrainfuckExecuter {
             value isn't valid; If no value is given, no error will be thrown,
             conditionalVal and defaultVal will be setted as cellMinVal.
         */
+
+        if (inputCallback == undefined) {
+            throw new CustomMissingArgumentError(undefined, "inputCallback");
+        }
+
+        if (outputCallback == undefined) {
+            throw new CustomMissingArgumentError(undefined, "outputCallback");
+        }
         
-            this.CIndexOnChangeCallback = cIndexOnChangeCallback;
-            this.MemPtrOnChangeCallback = memPtrOnChangeCallback;
-            this.MemPtrUnderflowCallback = memPtrUnderflowCallback;
-            this.MemPtrOverflowCallback = memPtrOverflowCallback;
-            this.CodeEndedCallback = codeEndedCallback;
-            this.CellUnderflowCallback = cellUnderflowCallback;
-            this.CellOverflowCallback = cellOverflowCallback;
-            this.MemCellOnChangeCallback = memCellOnChangeCallback;
-            this.MemCellOnSetCallback = memCellOnSetCallback;
+        this.CIndexOnChangeCallback = cIndexOnChangeCallback;
+        this.MemPtrOnChangeCallback = memPtrOnChangeCallback;
+        this.MemPtrUnderflowCallback = memPtrUnderflowCallback;
+        this.MemPtrOverflowCallback = memPtrOverflowCallback;
+        this.CodeEndedCallback = codeEndedCallback;
+        this.CellUnderflowCallback = cellUnderflowCallback;
+        this.CellOverflowCallback = cellOverflowCallback;
+        this.MemCellOnChangeCallback = memCellOnChangeCallback;
+        this.MemCellOnSetCallback = memCellOnSetCallback;
+
+        this.BFCode = bfCode;
+        this.CIndex = cIndex;
+        this.MemPtr = memPtr;
+        this.CellMinVal = cellMinVal;
+        this.CellMaxVal = cellMaxVal;
+        this.conditionVal = conditionVal ?? this.CellMinVal;
+        
+        defaultVal = defaultVal ?? this.CellMinVal;
     }
 
     Subscribe (
