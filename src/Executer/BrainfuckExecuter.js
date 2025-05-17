@@ -139,9 +139,38 @@ class BrainfuckExecuter {
             it might cause infinite recursive calls.
     */
 
-    #bfCode = new WatchedVal("");
-    #cIndex = new WatchedVal(0);
-    #memPtr = new WatchedVal(0);
+    /*
+    Don't link callbacks together directly, instead, call them via BrainfuckExecuter.
+    This is to prevent the callback functions called from WatchedVal not being the callback
+    function of BrainfuckExecuter (if it was changed).
+    */
+
+    #bfCode = new WatchedVal("",
+        (valBefore, valAfter) => {
+            const mapResult = BrainfuckExecuter.MapLoopPairs(valAfter);
+
+            this.#loopPairs = mapResult.LoopPairs;
+            this.#leftOutLoops = mapResult.LeftOutLoops;
+        }
+    );
+    #cIndex = new WatchedVal(0,
+        (valBefore, valAfter) => {
+            this.CIndexOnChangeCallback(valBefore, valAfter, this);
+        }
+    );
+    #memPtr = new WatchedVal(0,
+        (valBefore, valAfter) => {
+            this.MemPtrOnChangeCallback(valBefore, valAfter, this);
+
+            if (valAfter < 0) {
+                this.MemPtrUnderflowCallback(valAfter, this);
+            }
+
+            if (valAfter >= this.MemSize) {
+                this.MemPtrOverflowCallback(valAfter, this);
+            }
+        }
+    );
     #memArr = [];
     #cellMinVal = new WatchedVal(
         0,
@@ -165,28 +194,6 @@ class BrainfuckExecuter {
     #leftOutLoops = [];
 
     constructor (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {
-        /*
-        Don't link callbacks together directly, instead, call them via BrainfuckExecuter.
-        This is to prevent the callback functions called from WatchedVal not being the callback
-        function of BrainfuckExecuter (if it was changed).
-        */
-        
-        this.#cIndex.ValOnChangeCallback = (valBefore, valAfter) => {
-            this.CIndexOnChangeCallback(valBefore, valAfter, this);
-        };
-
-        this.#memPtr.ValOnChangeCallback = (valBefore, valAfter) => {
-            this.MemPtrOnChangeCallback(valBefore, valAfter, this);
-
-            if (valAfter < 0) {
-                this.MemPtrUnderflowCallback(valAfter, this);
-            }
-
-            if (valAfter >= this.MemSize) {
-                this.MemPtrOverflowCallback(valAfter, this);
-            }
-        };
-
         this.SetConfig(bfCode, inputCallback, outputCallback, memSize, config);
     }
 
@@ -196,11 +203,6 @@ class BrainfuckExecuter {
 
     set BFCode (newVal) {
         this.#bfCode.Val = newVal;
-
-        const mapResult = BrainfuckExecuter.MapLoopPairs(this.BFCode);
-
-        this.#loopPairs = mapResult.LoopPairs;
-        this.#leftOutLoops = mapResult.LeftOutLoops;
     }
 
     get MemSize () {
