@@ -156,6 +156,10 @@ class BrainfuckExecuter {
     #cIndex = new WatchedVal(0,
         (valBefore, valAfter) => {
             this.CIndexOnChangeCallback(valBefore, valAfter, this);
+
+            if (this.CodeEnded === true) {
+                this.CodeEndedCallback(this);
+            }
         }
     );
     #memPtr = new WatchedVal(0,
@@ -229,10 +233,6 @@ class BrainfuckExecuter {
         EnsureInt(newVal);
         EnsureInRange(0, this.BFCode.length - 1);
         this.#cIndex.Val = newVal;
-
-        if (this.CodeEnded === true) {
-            this.CodeEndedCallback(this);
-        }
     }
 
     get MemPtr () {
