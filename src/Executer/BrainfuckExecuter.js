@@ -140,8 +140,22 @@ class BrainfuckExecuter {
     #cIndex = new WatchedVal(0);
     #memPtr = new WatchedVal(0);
     #memArr = [];
-    #cellMinVal = new WatchedVal(0);
-    #cellMaxVal = new WatchedVal(255);
+    #cellMinVal = new WatchedVal(
+        0,
+        (valBefore, valAfter) => {
+            for (let i = 0; i < this.MemSize; i++) {
+                this.#memArr[i].Min = valAfter;
+            }
+        }
+    );
+    #cellMaxVal = new WatchedVal(
+        255,
+        (valBefore, valAfter) => {
+            for (let i = 0; i < this.MemSize; i++) {
+                this.#memArr[i].Max = valAfter;
+            }
+        }
+    );
     #conditionVal = 0;
 
     #loopPairs = {};
@@ -169,6 +183,8 @@ class BrainfuckExecuter {
                 this.MemPtrOverflowCallback(valAfter, this);
             }
         };
+
+        this.SetConfig(bfCode, inputCallback, outputCallback, memSize, config);
     }
 
     get BFCode () {
@@ -541,7 +557,7 @@ class BrainfuckExecuter {
     }
 
     #BFDefaultCodeExecuteOperation (code) {
-        let nextCIndex = this.CIndex;
+        let cIndex = this.CIndex;
 
         if (code === '+') {
             this.BF_IncrementCellVal_Operation();
@@ -562,13 +578,17 @@ class BrainfuckExecuter {
             this.BF_Input_Operation();
         }
         else if (code === '[') {
-
+            if (this.GetCurrentCellVal() === this.ConditionVal) {
+                cIndex = this.LoopPairs[cIndex];
+            }
         }
         else if (code === ']') {
-
+            if (this.GetCurrentCellVal() !== this.ConditionVal) {
+                cIndex = this.LoopPairs[cIndex];
+            }
         }
 
-        return nextCIndex + 1;
+        return cIndex + 1;
     }
 
     Execute () {
@@ -597,11 +617,11 @@ class BrainfuckExecuter {
     }
 
     BF_NextCell_Operation () {
-        this.CIndex += 1;
+        this.MemPtr += 1;
     }
 
     BF_PrevCell_Operation () {
-        this.CIndex -= 1;
+        this.MemPtr -= 1;
     }
 
     BF_Input_Operation () {
