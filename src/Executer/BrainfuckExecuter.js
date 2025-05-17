@@ -134,6 +134,9 @@ class BrainfuckExecuter {
                     * Called when memory cell changes.
                 * MemCellOnSetCallback(index, val, wrappedInt, brainfuckExecuterAfter):
                     * Called when memory cell is setted.
+        
+        Due to object itself is passed as argument for these callbacks,
+            it might cause infinite recursive calls.
     */
 
     #bfCode = new WatchedVal("");
@@ -265,6 +268,15 @@ class BrainfuckExecuter {
     }
     
     set CellMinVal (newVal) {
+        /*
+        Cell val will be process by WrappedInt automatically.
+        If changing min and max affect val,
+        underflow or overflow callback, and on-change callback will be triggered.
+        No callback will be triggered if val is not affected.
+        If new min and max value will affect a lot of cell val,
+        will trigger a lot callbacks.
+        */
+
         EnsureInt(newVal);
         EnsureMinMax(newVal, this.CellMaxVal);
         this.#cellMinVal.Val = newVal;
