@@ -112,27 +112,27 @@ class BrainfuckExecuter {
             * Called when brainfuck code is outputing (',').
 
         For others to listen to:
-            * CIndexOnChangeCallback(oldVal, brainfuckExecuterAfter):
+            * CIndexOnChangeCallback(oldVal, newVal, brainfuckExecuterAfter):
                 * Called when code index changes.
-            * MemPtrOnChangeCallback(oldVal, brainfuckExecuterAfter):
+            * MemPtrOnChangeCallback(oldVal, newVal, brainfuckExecuterAfter):
                 * Called when memory pointer changes.
-            * MemPtrUnderflowCallback(oldVal, brainfuckExecuter):
+            * MemPtrUnderflowCallback(val, brainfuckExecuter):
                 * Called when memory pointer underflows.
                 * Default to throwing error.
-            * MemPtrOverflowCallback(oldVal, brainfuckExecuter):
+            * MemPtrOverflowCallback(val, brainfuckExecuter):
                 * Called when memory pointer overflows.
                 * Default to throwing error.
             * CodeEndedCallback(brainfuckExecuter):
                 * Called when code execution ended, which means reached the end of code.
             
             Cell specific callbacks:
-                * CellUnderflowCallback(index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter):
+                * CellUnderflowCallback(index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter):
                     * Called when memory cell underflows.
-                * CellOverflowCallback(index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter):
+                * CellOverflowCallback(index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter):
                     * Called when memory cell overflows.
-                * MemCellOnChangeCallback(index, oldVal, wrappedIntAfter, brainfuckExecuterAfter):
+                * MemCellOnChangeCallback(index, oldVal, newVal, wrappedIntAfter, brainfuckExecuterAfter):
                     * Called when memory cell changes.
-                * MemCellOnSetCallback(index, wrappedInt, brainfuckExecuterAfter):
+                * MemCellOnSetCallback(index, val, wrappedInt, brainfuckExecuterAfter):
                     * Called when memory cell is setted.
     */
 
@@ -152,7 +152,7 @@ class BrainfuckExecuter {
         */
         
         this.#cIndex.ValChangesCheckerCallback = (oldVal, newVal) => {
-            this.CIndexOnChangeCallback(oldVal, this);
+            this.CIndexOnChangeCallback(oldVal, newVal, this);
         };
     }
 
@@ -228,17 +228,17 @@ class BrainfuckExecuter {
                     defaultVal,
                     this.CellMinVal,
                     this.CellMaxVal,
-                    (valBeforeWrapped, wrappedIntAfter) => {
-                        this.CellUnderflowCallback(i, valBeforeWrapped, wrappedIntAfter, this);
+                    (valBefore, valAfter, wrappedIntAfter) => {
+                        this.CellUnderflowCallback(i, valBefore, valAfter, wrappedIntAfter, this);
                     },
-                    (valBeforeWrapped, wrappedIntAfter) => {
-                        this.CellOverflowCallback(i, valBeforeWrapped, wrappedIntAfter, this);
+                    (valBefore, valAfter, wrappedIntAfter) => {
+                        this.CellOverflowCallback(i, valBefore, valAfter, wrappedIntAfter, this);
                     },
-                    (oldVal, wrappedIntAfter) => {
-                        this.MemCellOnChangeCallback(i, oldVal, wrappedIntAfter, this);
+                    (oldVal, newVal, wrappedIntAfter) => {
+                        this.MemCellOnChangeCallback(i, oldVal, newVal, wrappedIntAfter, this);
                     },
-                    (wrappedInt) => {
-                        this.MemCellOnSetCallback(i, wrappedInt, this);
+                    (val, wrappedInt) => {
+                        this.MemCellOnSetCallback(i, val, wrappedInt, this);
                     }
                 ));
             }
@@ -257,19 +257,19 @@ class BrainfuckExecuter {
             cellMaxVal = 255,
             conditionVal = undefined,
             defaultVal = undefined,
-            cIndexOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
-            memPtrOnChangeCallback = ((oldVal, brainfuckExecuterAfter) => { }),
-            memPtrUnderflowCallback = ((oldVal, brainfuckExecuter) => {
-                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
+            cIndexOnChangeCallback = ((oldVal, newVal, brainfuckExecuterAfter) => { }),
+            memPtrOnChangeCallback = ((oldVal, newVal, brainfuckExecuterAfter) => { }),
+            memPtrUnderflowCallback = ((val, brainfuckExecuter) => {
+                throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
             }),
-            memPtrOverflowCallback = ((oldVal, brainfuckExecuter) => {
-                throw new MemPtrOutOfRangeError(undefined, oldVal, brainfuckExecuter.MemSize);
+            memPtrOverflowCallback = ((val, brainfuckExecuter) => {
+                throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
             }),
             codeEndedCallback = ((brainfuckExecuter) => { }),
-            cellUnderflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
-            cellOverflowCallback = ((index, valBeforeWrapped, wrappedIntAfter, brainfuckExecuterAfter) => { }),
-            memCellOnChangeCallback = ((index, oldVal, wrappedIntAfter, brainfuckExecuterAfter) => { }),
-            memCellOnSetCallback = ((index, wrappedInt, brainfuckExecuterAfter) => { })
+            cellUnderflowCallback = ((index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            cellOverflowCallback = ((index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            memCellOnChangeCallback = ((index, oldVal, newVal, wrappedIntAfter, brainfuckExecuterAfter) => { }),
+            memCellOnSetCallback = ((index, val, wrappedInt, brainfuckExecuterAfter) => { })
         } = config;
 
         /*
@@ -363,7 +363,7 @@ class BrainfuckExecuter {
     }
 
     Execute () {
-        return this;    // For chaining
+        return this;    // For chaining.
     }
 }
 
