@@ -8,23 +8,27 @@ class WrappedInt {
     * Can use Copy() to create another WrappedInt with the states,
         but the callbacks might be copied as references only.
 
-    * UnderflowCallback(valBeforeWrapped, wrappedIntAfter):
+    * UnderflowCallback(valBefore, valAfter, wrappedIntAfter):
         * Will be called when val underflowed.
-        * valBeforeWrapped is an integer, which is the out-range val before wrapped.
+        * valBefore is an integer, which is the out-range val before wrapped.
+        * valAfter is the wrapped val integer.
         * wrappedIntAfter is the WrappedInt object (this) after wrapped.
-    * OverflowCallback(valBeforeWrapped, wrappedIntAfter):
+    * OverflowCallback(valBefore, valAfter, wrappedIntAfter):
         * Will be called when val overflowed.
-        * valBeforeWrapped is an integer, which is the out-range val before wrapped.
+        * valBefore is an integer, which is the out-range val before wrapped.
+        * valAfter is the wrapped val integer.
         * wrappedIntAfter is the WrappedInt object (this) after wrapped.
-    * ValOnChangeCallback(oldVal, wrappedIntAfter):
+    * ValOnChangeCallback(oldVal, newVal, wrappedIntAfter):
         * Will be called whenever val is changed after setted or wrapped (when changing min and max).
         * Called from the setters instead of Wrap() due to how Wrap() is called
             (unable to detect changes without wrap if not checked in val's setter;
             will be called twice if checked in both val's setter and Wrap()).
         * oldVal is the original val before changes.
+        * newVal is the new val after changes.
         * wrappedIntAfter is the WrappedInt object (this) after changes.
-    * ValOnSetCallback(wrappedInt):
+    * ValOnSetCallback(val, wrappedInt):
         * Will be called when val is setted, regardless if val is changed.
+        * val is the val integer after setted.
         * wrappedInt is the WrappedInt object (this) after it is setted.
     */
 
@@ -50,10 +54,10 @@ class WrappedInt {
         this.#min = min;
         this.#max = max;
 
-        this.UnderflowCallBack = underflowCallback ?? ((valBeforeWrapped, wrappedIntAfter) => { });
-        this.OverflowCallBack = overflowCallback ?? ((valBeforeWrapped, wrappedIntAfter) => { });
-        this.ValOnChangeCallback = valOnChangeCallback ?? ((oldVal, wrappedIntAfter) => { });
-        this.ValOnSetCallback = valOnSetCallback ?? ((wrappedInt) => { });
+        this.UnderflowCallBack = underflowCallback ?? ((valBefore, valAfter, wrappedIntAfter) => { });
+        this.OverflowCallBack = overflowCallback ?? ((valBefore, valAfter, wrappedIntAfter) => { });
+        this.ValOnChangeCallback = valOnChangeCallback ?? ((oldVal, newVal, wrappedIntAfter) => { });
+        this.ValOnSetCallback = valOnSetCallback ?? ((val, wrappedInt) => { });
 
         this.#value = val;
     }
@@ -74,7 +78,7 @@ class WrappedInt {
             this.Wrap();
 
             if (originalVal !== this.#value) {
-                this.ValOnChangeCallback(originalVal, this);
+                this.ValOnChangeCallback(originalVal, this.#value, this);
             }
         }
     }
@@ -95,7 +99,7 @@ class WrappedInt {
             this.Wrap();
 
             if (originalVal !== this.#value) {
-                this.ValOnChangeCallback(originalVal, this);
+                this.ValOnChangeCallback(originalVal, this.#value, this);
             }
         }
     }
@@ -113,10 +117,10 @@ class WrappedInt {
         this.Wrap();
 
         if (originalVal !== this.#value) {
-            this.ValOnChangeCallback(originalVal, this);
+            this.ValOnChangeCallback(originalVal, this.#value, this);
         }
         
-        this.ValOnSetCallback(this);
+        this.ValOnSetCallback(this.#value, this);
     }
 
     static Wrap (val, min, max) {
@@ -155,11 +159,11 @@ class WrappedInt {
         this.#value = WrappedInt.Wrap(this.#value, this.#min, this.#max);
 
         if (underflowed === true) {
-            this.UnderflowCallBack(originalVal, this);
+            this.UnderflowCallBack(originalVal, this.#value, this);
         }
 
         if (overflowed === true) {
-            this.OverflowCallBack(originalVal, this);
+            this.OverflowCallBack(originalVal, this.#value, this.#value, this);
         }
     }
 
