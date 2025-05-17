@@ -318,11 +318,11 @@ class BrainfuckExecuter {
         this.#memArr[index].Val = newVal;
     }
 
-    GetCurrentCellVal () {
+    get GetCurrentCellVal () {
         return this.GetCellVal(this.MemPtr);
     }
 
-    SetCurrentCellVal (newVal) {
+    set SetCurrentCellVal (newVal) {
         this.SetCellVal(this.MemPtr, newVal);
     }
 
@@ -590,12 +590,12 @@ class BrainfuckExecuter {
             this.BF_Input_Operation();
         }
         else if (code === '[') {
-            if (this.GetCurrentCellVal() === this.ConditionVal) {
+            if (this.GetCurrentCellVal === this.ConditionVal) {
                 cIndex = this.LoopPairs[cIndex];
             }
         }
         else if (code === ']') {
-            if (this.GetCurrentCellVal() !== this.ConditionVal) {
+            if (this.GetCurrentCellVal !== this.ConditionVal) {
                 cIndex = this.LoopPairs[cIndex];
             }
         }
@@ -619,42 +619,32 @@ class BrainfuckExecuter {
     }
 
     BF_IncrementCellVal_Operation () {
-        const val = this.GetCurrentCellVal();
-        this.SetCurrentCellVal(val + 1);
-
+        this.SetCurrentCellVal += 1;
         return this;
     }
 
     BF_DecrementCellVal_Operation () {
-        const val = this.GetCurrentCellVal();
-        this.SetCurrentCellVal(val - 1);
-
+        this.SetCurrentCellVal -= 1;
         return this;
     }
 
     BF_NextCell_Operation () {
         this.MemPtr += 1;
-
         return this;
     }
 
     BF_PrevCell_Operation () {
         this.MemPtr -= 1;
-
         return this;
     }
 
     BF_Input_Operation () {
-        const input = this.InputCallback(this);
-        this.SetCurrentCellVal(input);
-
+        this.SetCurrentCellVal = this.InputCallback(this);
         return this;
     }
 
     BF_Output_Operation () {
-        const output = this.GetCurrentCellVal();
-        this.OutputCallback(output, this);
-
+        this.OutputCallback(this.GetCurrentCellVal, this);
         return this;
     }
 }
