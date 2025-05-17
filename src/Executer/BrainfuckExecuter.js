@@ -512,7 +512,7 @@ class BrainfuckExecuter {
         }
     }
 
-    SubscribeCallback (
+    SubscribeCallbacks (
         inputCallback=undefined,
         outputCallback=undefined,
         cIndexOnChangeCallback=undefined,
