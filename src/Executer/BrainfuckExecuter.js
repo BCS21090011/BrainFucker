@@ -609,29 +609,41 @@ class BrainfuckExecuter {
     BF_IncrementCellVal_Operation () {
         const val = this.GetCurrentCellVal();
         this.SetCurrentCellVal(val + 1);
+
+        return this;
     }
 
     BF_DecrementCellVal_Operation () {
         const val = this.GetCurrentCellVal();
         this.SetCurrentCellVal(val - 1);
+
+        return this;
     }
 
     BF_NextCell_Operation () {
         this.MemPtr += 1;
+
+        return this;
     }
 
     BF_PrevCell_Operation () {
         this.MemPtr -= 1;
+
+        return this;
     }
 
     BF_Input_Operation () {
         const input = this.InputCallback(this);
         this.SetCurrentCellVal(input);
+
+        return this;
     }
 
     BF_Output_Operation () {
         const output = this.GetCurrentCellVal();
         this.OutputCallback(output, this);
+
+        return this;
     }
 }
 
