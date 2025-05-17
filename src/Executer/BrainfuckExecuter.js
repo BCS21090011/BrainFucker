@@ -512,7 +512,7 @@ class BrainfuckExecuter {
         }
     }
 
-    Subscribe (
+    SubscribeCallback (
         inputCallback=undefined,
         outputCallback=undefined,
         cIndexOnChangeCallback=undefined,
@@ -605,7 +605,7 @@ class BrainfuckExecuter {
         return cIndex + 1;
     }
 
-    Execute () {
+    BF_Execute () {
         if (this.CodeEnded === false) {
             const code = this.BFCode[this.CIndex];
 
