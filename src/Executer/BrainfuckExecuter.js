@@ -177,6 +177,11 @@ class BrainfuckExecuter {
 
     set BFCode (newVal) {
         this.#bfCode.Val = newVal;
+
+        const mapResult = BrainfuckExecuter.MapLoopPairs(this.BFCode);
+
+        this.#loopPairs = mapResult.LoopPairs;
+        this.#leftOutLoops = mapResult.LeftOutLoops;
     }
 
     get MemSize () {
@@ -185,6 +190,14 @@ class BrainfuckExecuter {
 
     set MemSize (newVal) {
         this.#AdjustMemSize(newVal);
+    }
+    
+    get LoopPairs () {
+        return { ...this.#loopPairs };
+    }
+
+    get LeftOutLoops () {
+        return { ...this.#leftOutLoops };
     }
 
     get CIndex () {
@@ -215,7 +228,7 @@ class BrainfuckExecuter {
         const copiedMem = []
 
         for (let i = 0; i < this.MemSize; i++) {
-            copiedMem.push(this.#memArr[i].Val);
+            copiedMem.push(this.GetCellVal(i));
         }
 
         return copiedMem;
@@ -289,6 +302,35 @@ class BrainfuckExecuter {
         for (let i = 0; i < mem.length; i++) {
             const val = mem[i];
             EnsureInt(mem);
+        }
+    }
+
+    static MapLoopPairs (bfCode) {
+        const loopHeadStack = [];
+        const loopPairs = {};
+        const leftOutLoops = [];
+
+        for (let i = 0; i < bfCode.length; i++) {
+            const code = bfCode[i];
+
+            if (code === '[') {
+                loopHeadStack.push(i);
+            }
+            else if (code === ']') {
+                if (loopHeadStack.length > 0) {
+                    const head = loopHeadStack.pop();
+                    loopPairs[head] = i;
+                    loopPairs[i] = head;
+                }
+                else {
+                    leftOutLoops.push(i);
+                }
+            }
+        }
+
+        return {
+            LoopPairs: loopPairs,
+            LeftOutLoops: leftOutLoops
         }
     }
 
