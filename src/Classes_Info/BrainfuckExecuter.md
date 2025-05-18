@@ -105,25 +105,25 @@ class BrainfuckExecuter {
             End([End])
         end
 
-    Start
-    -->
-    EnsureString
-    -->
-    SetBFCode
-    -->
-    WatchedValCheckSameVal
-    --false-->
-    MapLoopPairs
-    -->
-    SetLoopPairs
-    -->
-    SetLeftOutLoops
-    -->
-    End
+        Start
+        -->
+        EnsureString
+        -->
+        SetBFCode
+        -->
+        WatchedValCheckSameVal
+        --false-->
+        MapLoopPairs
+        -->
+        SetLoopPairs
+        -->
+        SetLeftOutLoops
+        -->
+        End
 
-    WatchedValCheckSameVal
-    --true-->
-    End
+        WatchedValCheckSameVal
+        --true-->
+        End
     ```
 
 ### CIndex
