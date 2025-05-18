@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 
+import BrainfuckExecuter from "./Executer/BrainfuckExecuter";
+
 function App() {
   const [bfCode, set_bfCode] = useState("")
   const [memArrSize, set_memArrSize] = useState(30000)
