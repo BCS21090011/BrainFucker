@@ -424,10 +424,23 @@ class BrainfuckExecuter {
 * Set ConditionVal
     ```mermaid
     flowchart
+        subgraph BrainfuckExecuter
+            Start([Set ConditionVal])
+            EnsureInt
+            EnsureInRange[Ensure CellMinVal <= newVal <= CellMaxVal]
+            SetConditionVal[#conditionVal = newVal]
+            End([End])
+        end
 
-    Start([Set ConditionVal])
-    -->
-    End([End])
+        Start
+        -->
+        EnsureInt
+        -->
+        EnsureInRange
+        -->
+        SetConditionVal
+        -->
+        End
     ```
 
 ### LoopPairs
