@@ -62,9 +62,27 @@ class BrainfuckExecuter {
 }
 ```
 
-## Properties
+## Private Properties
 
 ### #bfCode
+
+### #cIndex
+
+### #memPtr
+
+### #cellMinVal
+
+### #cellMaxVal
+
+### #conditionVal
+
+### #loopPairs
+
+### #leftOutLoops
+
+### #memArr
+
+## Public Properties
 
 ### BFCode
 
@@ -97,8 +115,6 @@ class BrainfuckExecuter {
     End
     ```
 
-### #cIndex
-
 ### CIndex
 
 * Get CIndex
@@ -119,8 +135,6 @@ class BrainfuckExecuter {
     -->
     End([End])
     ```
-
-### #memPtr
 
 ### MemPtr
 
@@ -155,8 +169,6 @@ class BrainfuckExecuter {
     End
     ```
 
-### #cellMinVal
-
 ### CellMinVal
 
 * Get CellMinVal
@@ -182,8 +194,6 @@ class BrainfuckExecuter {
     -->
     End([End])
     ```
-
-### #cellMaxVal
 
 ### CellMaxVal
 
@@ -211,8 +221,6 @@ class BrainfuckExecuter {
     End([End])
     ```
 
-### #conditionVal
-
 ### ConditionVal
 
 * Get ConditionVal
@@ -226,19 +234,13 @@ class BrainfuckExecuter {
     End([End])
     ```
 
-### #loopPairs
-
 ### LoopPairs
 
 * Get LoopPairs
 
-### #leftOutLoops
-
 ### LeftOutLoops
 
 * Get LeftOutLoops
-
-### #memArr
 
 ### MemArr
 
@@ -283,13 +285,65 @@ class BrainfuckExecuter {
     End([End])
     ```
 
+## Callbacks
+
+### InputCallback
+
+### OutputCallback
+
+### CIndexOnChangeCallback
+
+### MemPtrOnChangeCallback
+
+### MmePtrUnderflowCallback
+
+### MemPtrOverflowCallback
+
+### CodeEndedCallback
+
+### CellUnderflowCallback
+
+### CellOverflowCallback
+
+### MemCellOnChangeCallback
+
+### MemCellOnSetCallback
+
+### CodeExecuteOperation
+
 ## Static Methods
 
-### static ValidateMemArg(mem)
+### ValidateMemArg(mem)
 
-### static MapLoopPairs(bfCode)
+### MapLoopPairs(bfCode)
 
-## Methods
+## Private Methods
+
+### #CreateCell
+```mermaid
+flowchart
+Start([#CreateCell])
+-->
+End([End])
+```
+
+### #AdjustMemSize
+```mermaid
+flowchart
+Start([#AdjustMemSize])
+-->
+End([End])
+```
+
+### #BFDefaultCodeExecuteOperation
+```mermaid
+flowchart
+Start([#BFDefaultCodeExecuteOperation])
+-->
+End([End])
+```
+
+## Public Methods
 
 ### Constructor
 ```mermaid
@@ -326,34 +380,10 @@ Start([SetCellVal])
 End([End])
 ```
 
-### #CreateCell
-```mermaid
-flowchart
-Start([#CreateCell])
--->
-End([End])
-```
-
-### #AdjustMemSize
-```mermaid
-flowchart
-Start([#AdjustMemSize])
--->
-End([End])
-```
-
 ### SubscribeCallbacks
 ```mermaid
 flowchart
 Start([SubscribeCallbacks])
--->
-End([End])
-```
-
-### #BFDefaultCodeExecuteOperation
-```mermaid
-flowchart
-Start([#BFDefaultCodeExecuteOperation])
 -->
 End([End])
 ```
@@ -413,29 +443,3 @@ Start([BF_Output_Operation])
 -->
 End([End])
 ```
-
-## Callbacks
-
-### InputCallback
-
-### OutputCallback
-
-### CIndexOnChangeCallback
-
-### MemPtrOnChangeCallback
-
-### MmePtrUnderflowCallback
-
-### MemPtrOverflowCallback
-
-### CodeEndedCallback
-
-### CellUnderflowCallback
-
-### CellOverflowCallback
-
-### MemCellOnChangeCallback
-
-### MemCellOnSetCallback
-
-### CodeExecuteOperation
