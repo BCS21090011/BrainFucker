@@ -217,7 +217,7 @@ class BrainfuckExecuter {
         WatchedValCheckSameVal
         --false-->
         ForAllCell
-        -->
+        --Cell-->
         SetIndCellMin
         -->
         WrappedIntEnsureInt
@@ -247,7 +247,7 @@ class BrainfuckExecuter {
         ValOnChangeCallback
         -->
         ForAllCell
-        --Cell ended-->
+        --End of #memArr-->
         End
 
         WatchedValCheckSameVal
@@ -311,7 +311,7 @@ class BrainfuckExecuter {
         WatchedValCheckSameVal
         --false-->
         ForAllCell
-        -->
+        --Cell-->
         SetIndCellMax
         -->
         WrappedIntEnsureInt
@@ -341,7 +341,7 @@ class BrainfuckExecuter {
         ValOnChangeCallback
         -->
         ForAllCell
-        --Cell ended-->
+        --End of #memArr-->
         End
 
         WatchedValCheckSameVal
