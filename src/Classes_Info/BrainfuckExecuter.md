@@ -176,23 +176,91 @@ class BrainfuckExecuter {
 * Set CellMinVal
     ```mermaid
     flowchart
+        subgraph WatchedVal
+            SetCellMinVal[CellMinVal.Val = newVal]
+            WatchedValCheckSameVal{originalVal === newVal}
+        end
 
-    Start([Set CellMinVal])
-    -->
-    EnsureInt
-    -->
-    EnsureMinMax
-    -->
-    SetcellMinVal[Set #cellMinVal.Val]
-    -->
-    LoopCond{for cell in #memArr}
-    -->
-    SetCellMin[Set cell.Min]
-    -->
-    LoopCond
-    SetCellMin
-    -->
-    End([End])
+        subgraph WrappedInt
+            WrappedIntEnsureInt[Ensure newVal is int]
+            WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
+            WrappedIntEnsureMinMax1[EnsureMinMax]
+            WrappedIntEnsureMinMax2[EnsureMinMax]
+            SetIndCellMin[Cell.Min = newVal]
+            CheckUnderflow[Flag val < min as underflow]
+            CheckOverflow[Flag val > max as overflow]
+            Wrap
+            WasUnderflow{Was underflow}
+            WasOverflow{Was overflow}
+            WrappedIntValSameAsOriginal{val not changed?}
+        end
+
+        subgraph BrainfuckExecuter
+            Start([Set CellMinVal])
+            BrainfuckExecuterEnsureInt[Ensure newVal is int]
+            BrainfuckExecuterEnsureMinMax[EnsureMinMax]
+            ForAllCell{For Cell in #memArr}
+            UnderflowCallback
+            OverflowCallback
+            ValOnChangeCallback
+            End([End])
+        end
+
+        Start
+        -->
+        BrainfuckExecuterEnsureInt
+        -->
+        BrainfuckExecuterEnsureMinMax
+        -->
+        SetCellMinVal
+        -->
+        WatchedValCheckSameVal
+        --false-->
+        ForAllCell
+        -->
+        SetIndCellMin
+        -->
+        WrappedIntEnsureInt
+        -->
+        WrappedIntEnsureMinMax1
+        -->
+        CheckUnderflow
+        -->
+        CheckOverflow
+        -->
+        WrappedIntEnsureIntValMinMax
+        -->
+        WrappedIntEnsureMinMax2
+        -->
+        Wrap
+        -->
+        WasUnderflow
+        --true-->
+        UnderflowCallback
+        -->
+        WasOverflow
+        --true-->
+        OverflowCallback
+        -->
+        WrappedIntValSameAsOriginal
+        --false-->
+        ValOnChangeCallback
+        -->
+        ForAllCell
+        --Cell ended-->
+        End
+
+        WatchedValCheckSameVal
+        --true-->
+        End
+
+        WasUnderflow
+        --false-->
+        WasOverflow
+        --false-->
+        WrappedIntValSameAsOriginal
+        --true-->
+        ForAllCell
     ```
 
 ### CellMaxVal
@@ -202,23 +270,91 @@ class BrainfuckExecuter {
 * Set CellMaxVal
     ```mermaid
     flowchart
+        subgraph WatchedVal
+            SetCellMaxVal[CellMaxVal.Val = newVal]
+            WatchedValCheckSameVal{originalVal === newVal}
+        end
 
-    Start([Set CellMaxVal])
-    -->
-    EnsureInt
-    -->
-    EnsureMinMax
-    -->
-    SetcellMaxVal[Set #cellMaxVal.Val]
-    -->
-    LoopCond{for cell in #memArr}
-    -->
-    SetCellMax[Set cell.Max]
-    -->
-    LoopCond
-    SetCellMax
-    -->
-    End([End])
+        subgraph WrappedInt
+            WrappedIntEnsureInt[Ensure newVal is int]
+            WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
+            WrappedIntEnsureMinMax1[EnsureMinMax]
+            WrappedIntEnsureMinMax2[EnsureMinMax]
+            SetIndCellMax[Cell.Max = newVal]
+            CheckUnderflow[Flag val < min as underflow]
+            CheckOverflow[Flag val > max as overflow]
+            Wrap
+            WasUnderflow{Was underflow}
+            WasOverflow{Was overflow}
+            WrappedIntValSameAsOriginal{val not changed?}
+        end
+
+        subgraph BrainfuckExecuter
+            Start([Set CellMaxVal])
+            BrainfuckExecuterEnsureInt[Ensure newVal is int]
+            BrainfuckExecuterEnsureMinMax[EnsureMinMax]
+            ForAllCell{For Cell in #memArr}
+            UnderflowCallback
+            OverflowCallback
+            ValOnChangeCallback
+            End([End])
+        end
+
+        Start
+        -->
+        BrainfuckExecuterEnsureInt
+        -->
+        BrainfuckExecuterEnsureMinMax
+        -->
+        SetCellMaxVal
+        -->
+        WatchedValCheckSameVal
+        --false-->
+        ForAllCell
+        -->
+        SetIndCellMax
+        -->
+        WrappedIntEnsureInt
+        -->
+        WrappedIntEnsureMinMax1
+        -->
+        CheckUnderflow
+        -->
+        CheckOverflow
+        -->
+        WrappedIntEnsureIntValMinMax
+        -->
+        WrappedIntEnsureMinMax2
+        -->
+        Wrap
+        -->
+        WasUnderflow
+        --true-->
+        UnderflowCallback
+        -->
+        WasOverflow
+        --true-->
+        OverflowCallback
+        -->
+        WrappedIntValSameAsOriginal
+        --false-->
+        ValOnChangeCallback
+        -->
+        ForAllCell
+        --Cell ended-->
+        End
+
+        WatchedValCheckSameVal
+        --true-->
+        End
+
+        WasUnderflow
+        --false-->
+        WasOverflow
+        --false-->
+        WrappedIntValSameAsOriginal
+        --true-->
+        ForAllCell
     ```
 
 ### ConditionVal
