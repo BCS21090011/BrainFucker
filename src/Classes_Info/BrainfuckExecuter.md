@@ -589,11 +589,11 @@ End([End])
 
 ## Public Methods
 
-### Constructor
+### constructor
 ```mermaid
 flowchart
 
-Start([Constructor])
+Start([constructor])
 -->
 End([End])
 ```
