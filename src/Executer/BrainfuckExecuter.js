@@ -165,14 +165,7 @@ class BrainfuckExecuter {
     #memPtr = new WatchedVal(0,
         (valBefore, valAfter) => {
             this.MemPtrOnChangeCallback(valBefore, valAfter, this);
-
-            if (valAfter < 0) {
-                this.MemPtrUnderflowCallback(valAfter, this);
-            }
-
-            if (valAfter >= this.MemSize) {
-                this.MemPtrOverflowCallback(valAfter, this);
-            }
+            this.#CheckMemPtr();
         }
     );
     #memArr = [];
@@ -296,6 +289,8 @@ class BrainfuckExecuter {
         for (let i = 0; i < newMem.length; i++) {
             this.#memArr.push(this.#CreateCell(i, newMem[i]))
         }
+
+        this.#CheckMemPtr();
     }
 
     get CellMinVal () {
@@ -417,6 +412,22 @@ class BrainfuckExecuter {
         );
     }
 
+    #CheckMemPtr () {
+        let passed = true;
+
+        if (this.MemPtr < 0) {
+            passed = false;
+            this.MemPtrUnderflowCallback(this.MemPtr, this);
+        }
+
+        if (this.MemPtr >= this.MemSize) {
+            passed = false;
+            this.MemPtrOverflowCallback(this.MemPtr, this);
+        }
+
+        return passed;
+    }
+
     #AdjustMemSize (memSize, defaultVal=undefined) {
         // Memory will be trimmed if memSize is smaller.
 
@@ -439,6 +450,8 @@ class BrainfuckExecuter {
         else if (diff > 0) {    // memArr is larger:
             this.#memArr.splice(memSize, diff);
         }
+
+        this.#CheckMemPtr();
     }
 
     SetConfig (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {

@@ -48,6 +48,7 @@ class BrainfuckExecuter {
     static ValidateMemArg(mem)
     static MapLoopPairs(bfCode)
     #CreateCell(index, cellVal)
+    #CheckMemPtr()
     #AdjustMemSize(memSize, defaultVal)
     SubscribeCallbacks(all callbacks)
 
@@ -557,9 +558,9 @@ class BrainfuckExecuter {
 
 ## Static Methods
 
-### ValidateMemArg(mem)
+### ValidateMemArg
 
-### MapLoopPairs(bfCode)
+### MapLoopPairs
 
 ## Private Methods
 
@@ -567,6 +568,14 @@ class BrainfuckExecuter {
 ```mermaid
 flowchart
 Start([#CreateCell])
+-->
+End([End])
+```
+
+### #CheckMemPtr
+```mermaid
+flowchart
+Start([#CheckMemPtr])
 -->
 End([End])
 ```
