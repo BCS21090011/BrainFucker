@@ -76,6 +76,7 @@ class BrainfuckExecuter {
 ```
 
 ### Constructor
+
 ```mermaid
 flowchart
 
@@ -87,6 +88,7 @@ End([End])
 ```
 
 ### Set BFCode
+
 ```mermaid
 flowchart
 
@@ -97,8 +99,8 @@ SetbfCode[Set #bfCode.Val]
 MapLoopPairs
 -->
 SetLoopPairsLeftOutLoops[
-    Set loopPairs
-    Set leftOutLoops
+Set loopPairs
+Set leftOutLoops
 ]
 -->
 CodeEnded{CodeEnded?}
@@ -112,6 +114,7 @@ End
 ```
 
 ### Set CIndex
+
 ```mermaid
 flowchart
 
@@ -125,6 +128,7 @@ End([End])
 ```
 
 ### Set MemPtr
+
 ```mermaid
 flowchart
 
