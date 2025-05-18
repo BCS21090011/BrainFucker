@@ -492,10 +492,17 @@ class BrainfuckExecuter {
 * Set MemSize
     ```mermaid
     flowchart
+        subgraph BrainfuckExecuter
+            Start([Set MemSize])
+            AdjustMemSize
+            End([End])
+        end
 
-    Start([Set MemSize])
-    -->
-    End([End])
+        Start
+        -->
+        AdjustMemSize
+        -->
+        End
     ```
 
 ### CodeEnded
