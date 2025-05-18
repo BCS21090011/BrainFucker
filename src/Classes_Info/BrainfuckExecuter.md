@@ -192,7 +192,7 @@ class BrainfuckExecuter {
             Wrap
             WasUnderflow{Was underflow}
             WasOverflow{Was overflow}
-            WrappedIntValSameAsOriginal{val not changed?}
+            WrappedIntValChanged{val changed?}
         end
 
         subgraph BrainfuckExecuter
@@ -242,8 +242,8 @@ class BrainfuckExecuter {
         --true-->
         OverflowCallback
         -->
-        WrappedIntValSameAsOriginal
-        --false-->
+        WrappedIntValChanged
+        --true-->
         ValOnChangeCallback
         -->
         ForAllCell
@@ -258,8 +258,8 @@ class BrainfuckExecuter {
         --false-->
         WasOverflow
         --false-->
-        WrappedIntValSameAsOriginal
-        --true-->
+        WrappedIntValChanged
+        --false-->
         ForAllCell
     ```
 
@@ -286,7 +286,7 @@ class BrainfuckExecuter {
             Wrap
             WasUnderflow{Was underflow}
             WasOverflow{Was overflow}
-            WrappedIntValSameAsOriginal{val not changed?}
+            WrappedIntValChanged{val changed?}
         end
 
         subgraph BrainfuckExecuter
@@ -336,8 +336,8 @@ class BrainfuckExecuter {
         --true-->
         OverflowCallback
         -->
-        WrappedIntValSameAsOriginal
-        --false-->
+        WrappedIntValChanged
+        --true-->
         ValOnChangeCallback
         -->
         ForAllCell
@@ -352,8 +352,8 @@ class BrainfuckExecuter {
         --false-->
         WasOverflow
         --false-->
-        WrappedIntValSameAsOriginal
-        --true-->
+        WrappedIntValChanged
+        --false-->
         ForAllCell
     ```
 
