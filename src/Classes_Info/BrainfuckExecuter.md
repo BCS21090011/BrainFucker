@@ -458,10 +458,31 @@ class BrainfuckExecuter {
 * Set MemArr
     ```mermaid
     flowchart
+        subgraph BrainfuckExecuter
+            Start([Set MemArr])
+            ValidateMemArg
+            InitializeMemArr[#memArr = empty array]
+            ForCond{For i in newMem.length}
+            CreateCell
+            PushToMemArr[#memArr.push new cell]
+            End([End])
+        end
 
-    Start([Set MemArr])
-    -->
-    End([End])
+        Start
+        -->
+        ValidateMemArg
+        -->
+        InitializeMemArr
+        -->
+        ForCond
+        --i-->
+        CreateCell
+        -->
+        PushToMemArr
+        -->
+        ForCond
+        --loop ended-->
+        End
     ```
 
 ### MemSize
