@@ -516,10 +516,17 @@ class BrainfuckExecuter {
 * Set CurrentCellVal
     ```mermaid
     flowchart
+        subgraph BrainfuckExecuter
+            Start([Set CurrentCellVal])
+            SetCellVal[SetCellVal with MemPtr and newVal]
+            End([End])
+        end
 
-    Start([Set CurrentCellVal])
-    -->
-    End([End])
+        Start
+        -->
+        SetCellVal
+        -->
+        End
     ```
 
 ## Callbacks
