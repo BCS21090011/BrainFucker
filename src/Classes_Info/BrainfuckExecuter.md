@@ -91,27 +91,38 @@ class BrainfuckExecuter {
 * Set BFCode
     ```mermaid
     flowchart
+        subgraph WatchedVal
+            SetBFCode[#bfCode.Val = newVal]
+            WatchedValCheckSameVal{originalVal === newVal}
+        end
 
-    Start([Set BFCode])
+        subgraph BrainfuckExecuter
+            Start([Set BFCode])
+            EnsureString
+            MapLoopPairs[mapResult = MapLoopPairs]
+            SetLoopPairs[#loopPairs = mapResult.LoopPairs]
+            SetLeftOutLoops[#leftOutLoops = mapResult.LeftOutLoops]
+            End([End])
+        end
+
+    Start
     -->
     EnsureString
     -->
-    SetbfCode[Set #bfCode.Val]
+    SetBFCode
     -->
+    WatchedValCheckSameVal
+    --false-->
     MapLoopPairs
     -->
-    SetLoopPairsLeftOutLoops[
-    Set loopPairs
-    Set leftOutLoops
-    ]
+    SetLoopPairs
     -->
-    CodeEnded{CodeEnded?}
+    SetLeftOutLoops
+    -->
+    End
+
+    WatchedValCheckSameVal
     --true-->
-    CodeEndedCallback
-    -->
-    End([End])
-    CodeEnded
-    --false-->
     End
     ```
 
@@ -152,14 +163,14 @@ class BrainfuckExecuter {
     -->
     MemPtrOnChangeCallback
     -->
-    SmallerCheck{<0}
+    SmallerCheck{smaller than 0}
     --true-->
     MemPtrUnderflowCallback
     -->
     LargerCheck
     SmallerCheck
     --false--> 
-    LargerCheck{>=MemSize}
+    LargerCheck{larger or equal to MemSize}
     --true-->
     MemPtrOverflowCallback
     -->
@@ -177,7 +188,7 @@ class BrainfuckExecuter {
     ```mermaid
     flowchart
         subgraph WatchedVal
-            SetCellMinVal[CellMinVal.Val = newVal]
+            SetCellMinVal[#cellMinVal.Val = newVal]
             WatchedValCheckSameVal{originalVal === newVal}
         end
 
@@ -271,7 +282,7 @@ class BrainfuckExecuter {
     ```mermaid
     flowchart
         subgraph WatchedVal
-            SetCellMaxVal[CellMaxVal.Val = newVal]
+            SetCellMaxVal[#cellMaxVal.Val = newVal]
             WatchedValCheckSameVal{originalVal === newVal}
         end
 
