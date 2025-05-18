@@ -192,10 +192,7 @@ class BrainfuckExecuter {
             Start([Set MemPtr])
             EnsureInt
             MemPtrOnChangeCallback
-            IsNewValUnderflow{newVal < 0}
-            MemPtrUnderflowCallback
-            IsNewValOverflow{newVal > MemSize}
-            MemPtrOverflowCallback
+            CheckMemPtr
             End([End])
         end
 
@@ -209,24 +206,12 @@ class BrainfuckExecuter {
         --false-->
         MemPtrOnChangeCallback
         -->
-        IsNewValUnderflow
-        --true-->
-        MemPtrUnderflowCallback
-        -->
-        IsNewValOverflow
-        --true-->
-        MemPtrOverflowCallback
+        CheckMemPtr
         -->
         End
         
         WatchedValCheckSameVal
         --true-->
-        End
-
-        IsNewValUnderflow
-        --false-->
-        IsNewValOverflow
-        --false-->
         End
     ```
 
@@ -466,6 +451,7 @@ class BrainfuckExecuter {
             ForCond{For i in newMem.length}
             CreateCell
             PushToMemArr[#memArr.push new cell]
+            CheckMemPtr
             End([End])
         end
 
@@ -483,6 +469,8 @@ class BrainfuckExecuter {
         -->
         ForCond
         --loop ended-->
+        CheckMemPtr
+        -->
         End
     ```
 
