@@ -42,7 +42,7 @@ class BrainfuckExecuter {
     CodeExecuteOperation
 
     constructor(bfCode="", inputCallback, outputCallback, memSize, config)
-    SetConfig()
+    SetConfig(bfCode="", inputCallback, outputCallback, memSize, config)
     GetCellVal(index)
     SetCellVal(index, newVal)
     static ValidateMemArg(mem)
@@ -350,8 +350,6 @@ End([End])
 flowchart
 
 Start([Constructor])
--->
-SetConfig
 -->
 End([End])
 ```

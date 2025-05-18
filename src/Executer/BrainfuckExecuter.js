@@ -197,7 +197,34 @@ class BrainfuckExecuter {
     #loopPairs = {};
     #leftOutLoops = [];
 
+    CIndexOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { };
+    MemPtrOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { };
+    MemPtrUnderflowCallback = (val, brainfuckExecuter) => {
+        throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
+    };
+    MemPtrOverflowCallback = (val, brainfuckExecuter) => {
+        throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
+    };
+    CodeEndedCallback = (brainfuckExecuter) => { };
+    CellUnderflowCallback = (index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { };
+    CellOverflowCallback = (index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { };
+    MemCellOnChangeCallback = (index, oldVal, newVal, wrappedIntAfter, brainfuckExecuterAfter) => { };
+    MemCellOnSetCallback = (index, val, wrappedInt, brainfuckExecuterAfter) => { };
+    CodeExecuteOperation = undefined;
+
     constructor (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {
+        if (inputCallback == undefined) {
+            throw new CustomMissingArgumentError(undefined, "inputCallback");
+        }
+
+        if (outputCallback == undefined) {
+            throw new CustomMissingArgumentError(undefined, "outputCallback");
+        }
+
+        if (mem == undefined && memSize == undefined) {
+            throw new CustomMissingArgumentError(`Required either mem or memSize or both.`, "mem or memSize");
+        }
+        
         this.SetConfig(bfCode, inputCallback, outputCallback, memSize, config);
     }
 
@@ -419,19 +446,15 @@ class BrainfuckExecuter {
             cellMaxVal = 255,
             conditionVal = undefined,
             defaultVal = undefined,
-            cIndexOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { },
-            memPtrOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { },
-            memPtrUnderflowCallback = (val, brainfuckExecuter) => {
-                throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
-            },
-            memPtrOverflowCallback = (val, brainfuckExecuter) => {
-                throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
-            },
-            codeEndedCallback = (brainfuckExecuter) => { },
-            cellUnderflowCallback = (index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { },
-            cellOverflowCallback = (index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { },
-            memCellOnChangeCallback = (index, oldVal, newVal, wrappedIntAfter, brainfuckExecuterAfter) => { },
-            memCellOnSetCallback = (index, val, wrappedInt, brainfuckExecuterAfter) => { },
+            cIndexOnChangeCallback = undefined,
+            memPtrOnChangeCallback = undefined,
+            memPtrUnderflowCallback = undefined,
+            memPtrOverflowCallback = undefined,
+            codeEndedCallback = undefined,
+            cellUnderflowCallback = undefined,
+            cellOverflowCallback = undefined,
+            memCellOnChangeCallback = undefined,
+            memCellOnSetCallback = undefined,
             codeExecuteOperation = undefined
         } = config;
 
@@ -471,32 +494,21 @@ class BrainfuckExecuter {
             * Return the cIndex for next operation.
             * Code is the code character that cIndex points to in BFCode.
         */
-
-        if (inputCallback == undefined) {
-            throw new CustomMissingArgumentError(undefined, "inputCallback");
-        }
-
-        if (outputCallback == undefined) {
-            throw new CustomMissingArgumentError(undefined, "outputCallback");
-        }
-
-        if (mem == undefined && memSize == undefined) {
-            throw new CustomMissingArgumentError(`Required either mem or memSize or both.`, "mem or memSize");
-        }
         
-        this.InputCallback = inputCallback;
-        this.OutputCallback = outputCallback;
-        this.CIndexOnChangeCallback = cIndexOnChangeCallback;
-        this.MemPtrOnChangeCallback = memPtrOnChangeCallback;
-        this.MemPtrUnderflowCallback = memPtrUnderflowCallback;
-        this.MemPtrOverflowCallback = memPtrOverflowCallback;
-        this.CodeEndedCallback = codeEndedCallback;
-        this.CellUnderflowCallback = cellUnderflowCallback;
-        this.CellOverflowCallback = cellOverflowCallback;
-        this.MemCellOnChangeCallback = memCellOnChangeCallback;
-        this.MemCellOnSetCallback = memCellOnSetCallback;
-
-        this.CodeExecuteOperation = codeExecuteOperation;
+        this.SubscribeCallbacks(
+            inputCallback,
+            outputCallback,
+            cIndexOnChangeCallback,
+            memPtrOnChangeCallback,
+            memPtrUnderflowCallback,
+            memPtrOverflowCallback,
+            codeEndedCallback,
+            cellUnderflowCallback,
+            cellOverflowCallback,
+            memCellOnChangeCallback,
+            memCellOnSetCallback,
+            codeExecuteOperation
+        );
 
         this.BFCode = bfCode;
         this.CIndex = cIndex;
@@ -525,7 +537,8 @@ class BrainfuckExecuter {
         cellUnderflowCallback=undefined,
         cellOverflowCallback=undefined,
         memCellOnChangeCallback=undefined,
-        memCellOnSetCallback=undefined
+        memCellOnSetCallback=undefined,
+        codeExecuteOperation=undefined
     ) {
         if (inputCallback != undefined) {
             this.InputCallback = inputCallback;
@@ -570,6 +583,9 @@ class BrainfuckExecuter {
         if (memCellOnSetCallback != undefined) {
             this.MemCellOnSetCallback = memCellOnSetCallback;
         }
+
+        // Since codeExecuteOperation can be undefined, won't check:
+        this.CodeExecuteOperation = codeExecuteOperation;
     }
 
     #BFDefaultCodeExecuteOperation (code) {
