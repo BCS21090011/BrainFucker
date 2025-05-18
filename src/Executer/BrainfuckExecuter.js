@@ -206,6 +206,13 @@ class BrainfuckExecuter {
     CodeExecuteOperation = undefined;
 
     constructor (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {
+        /*
+        Check for arguments that are necessary to create the object.
+        These arguments are handled/checked here rather than in SetConfig()
+            is to avoid these arguments/parameters being undefined.
+        All arguments in SetConfig() can be undefined, so that those will be skipped.
+        */
+        
         if (inputCallback == undefined) {
             throw new CustomMissingArgumentError(undefined, "inputCallback");
         }
@@ -214,13 +221,11 @@ class BrainfuckExecuter {
             throw new CustomMissingArgumentError(undefined, "outputCallback");
         }
 
-        if (mem == undefined && memSize == undefined) {
-            throw new CustomMissingArgumentError(`Required either mem or memSize or both.`, "mem or memSize");
-        }
-
-        if (memSize == undefined && config.mem == undefined) {
+        if (config.mem == undefined && memSize == undefined) {
             throw new CustomMissingArgumentError("Must provide either memSize or mem.", "memSize or mem");
         }
+
+        // Other arguments for properties and callbacks won't be checked because they already have default value.
         
         this.SetConfig(bfCode, inputCallback, outputCallback, memSize, config);
     }
@@ -454,13 +459,13 @@ class BrainfuckExecuter {
         this.#CheckMemPtr();
     }
 
-    SetConfig (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {
+    SetConfig (bfCode=undefined, inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {
         const {
-            cIndex = 0,
-            memPtr = 0,
+            cIndex = undefined,
+            memPtr = undefined,
             mem = undefined,
-            cellMinVal = 0,
-            cellMaxVal = 255,
+            cellMinVal = undefined,
+            cellMaxVal = undefined,
             conditionVal = undefined,
             defaultVal = undefined,
             cIndexOnChangeCallback = undefined,
@@ -527,12 +532,29 @@ class BrainfuckExecuter {
             codeExecuteOperation
         );
 
-        this.BFCode = bfCode;
-        this.CIndex = cIndex;
-        this.MemPtr = memPtr;
-        this.CellMinVal = cellMinVal;
-        this.CellMaxVal = cellMaxVal;
-        this.ConditionVal = conditionVal ?? this.CellMinVal;
+        if (bfCode != undefined) {
+            this.BFCode = bfCode;
+        }
+
+        if (cIndex != undefined) {
+            this.CIndex = cIndex;
+        }
+
+        if (memPtr != undefined) {
+            this.MemPtr = memPtr;
+        }
+
+        if (cellMinVal != undefined) {
+            this.CellMinVal = cellMinVal;
+        }
+
+        if (cellMaxVal != undefined) {
+            this.CellMaxVal = cellMaxVal;
+        }
+
+        if (conditionVal != undefined) {
+            this.ConditionVal = conditionVal ?? this.CellMinVal;
+        }
 
         if (mem != undefined) {
             this.MemArr = mem;
@@ -601,7 +623,7 @@ class BrainfuckExecuter {
             this.MemCellOnSetCallback = memCellOnSetCallback;
         }
 
-        // Since codeExecuteOperation can be undefined, won't check:
+        // Since codeExecuteOperation can be undefined, won't check to skip:
         this.CodeExecuteOperation = codeExecuteOperation;
     }
 
