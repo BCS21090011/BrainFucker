@@ -263,7 +263,7 @@ class BrainfuckExecuter {
 
     set CIndex (newVal) {
         EnsureInt(newVal);
-        EnsureInRange(0, this.BFCode.length - 1);
+        EnsureInRange(newVal, 0, this.BFCode.length - 1);
         this.#cIndex.Val = newVal;
     }
 

@@ -133,18 +133,46 @@ class BrainfuckExecuter {
 * Set CIndex
     ```mermaid
     flowchart
+        subgraph WatchedVal
+            SetCIndex[#cIndex.Val = newVal]
+            WatchedValCheckSameVal{originalVal === newVal}
+        end
 
-    Start([Set CIndex])
-    -->
-    EnsureInt
-    -->
-    EnsureInRange
-    -->
-    SetcIndex[Set #cIndex.Val]
-    -->
-    CIndexOnChangeCallback
-    -->
-    End([End])
+        subgraph BrainfuckExecuter
+            Start([Set CIndex])
+            EnsureInt
+            EnsureInRange[Ensure 0 <= newVal < BFCode.length]
+            CIndexOnChangeCallback
+            IsCodeEnded{CodeEnded === true}
+            CodeEndedCallback
+            End([End])
+        end
+
+        Start
+        -->
+        EnsureInt
+        -->
+        EnsureInRange
+        -->
+        SetCIndex
+        -->
+        WatchedValCheckSameVal
+        --false-->
+        CIndexOnChangeCallback
+        -->
+        IsCodeEnded
+        --true-->
+        CodeEndedCallback
+        -->
+        End
+
+        WatchedValCheckSameVal
+        --true-->
+        End
+
+        IsCodeEnded
+        --false-->
+        End
     ```
 
 ### MemPtr
@@ -154,30 +182,51 @@ class BrainfuckExecuter {
 * Set MemPtr
     ```mermaid
     flowchart
+        subgraph WatchedVal
+            SetMemPtr[#memPtr.Val = newVal]
+            WatchedValCheckSameVal{originalVal === newVal}
+        end
 
-    Start([Set MemPtr])
-    -->
-    EnsureInt
-    -->
-    SetmemPtr[Set #memPtr.Val]
-    -->
-    MemPtrOnChangeCallback
-    -->
-    SmallerCheck{smaller than 0}
-    --true-->
-    MemPtrUnderflowCallback
-    -->
-    LargerCheck
-    SmallerCheck
-    --false--> 
-    LargerCheck{larger or equal to MemSize}
-    --true-->
-    MemPtrOverflowCallback
-    -->
-    End([End])
-    LargerCheck
-    --false-->
-    End
+        subgraph BrainfuckExecuter
+            Start([Set MemPtr])
+            EnsureInt
+            MemPtrOnChangeCallback
+            IsNewValUnderflow{newVal < 0}
+            MemPtrUnderflowCallback
+            IsNewValOverflow{newVal > MemSize}
+            MemPtrOverflowCallback
+            End([End])
+        end
+
+        Start
+        -->
+        EnsureInt
+        -->
+        SetMemPtr
+        -->
+        WatchedValCheckSameVal
+        --false-->
+        MemPtrOnChangeCallback
+        -->
+        IsNewValUnderflow
+        --true-->
+        MemPtrUnderflowCallback
+        -->
+        IsNewValOverflow
+        --true-->
+        MemPtrOverflowCallback
+        -->
+        End
+        
+        WatchedValCheckSameVal
+        --true-->
+        End
+
+        IsNewValUnderflow
+        --false-->
+        IsNewValOverflow
+        --false-->
+        End
     ```
 
 ### CellMinVal
