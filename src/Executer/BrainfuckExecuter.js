@@ -224,6 +224,10 @@ class BrainfuckExecuter {
         if (mem == undefined && memSize == undefined) {
             throw new CustomMissingArgumentError(`Required either mem or memSize or both.`, "mem or memSize");
         }
+
+        if (memSize == undefined && config.mem == undefined) {
+            throw new CustomMissingArgumentError("Must provide either memSize or mem.", "memSize or mem");
+        }
         
         this.SetConfig(bfCode, inputCallback, outputCallback, memSize, config);
     }
