@@ -120,6 +120,10 @@ flowchart
 
 Start([CIndex changes])
 -->
+EnsureInt
+-->
+EnsureInRange
+-->
 SetcIndex[Set #cIndex.Val]
 -->
 CIndexOnChangeCallback
@@ -133,6 +137,8 @@ End([End])
 flowchart
 
 Start([MemPtr changes])
+-->
+EnsureInt
 -->
 SetmemPtr[Set #memPtr.Val]
 -->
@@ -153,4 +159,19 @@ End([End])
 LargerCheck
 --false-->
 End
+```
+
+### Set CellMinVal
+```mermaid
+flowchart
+
+Start([CellMinVal changes])
+EnsureInt
+```
+
+### Set CellMaxVal
+```mermaid
+flowchart
+
+
 ```

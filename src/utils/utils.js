@@ -1,5 +1,13 @@
 import { CustomValueError, CustomValueTooSmallError, CustomValueTooLargeError, CustomTypeError } from "./CustomErrors";
 
+function EnsureString (val, msg=undefined) {
+    msg = msg ?? `${val} is not a string.`;
+
+    if (typeof val != "string") {
+        throw new CustomTypeError(msg);
+    }
+}
+
 function EnsureInt (val, msg=undefined) {
     msg = msg ?? `${val} is not an integer.`;
 
@@ -112,4 +120,4 @@ class WatchedVal {
     }
 }
 
-export { EnsureInt, EnsureMinMax, EnsureInRange, IsInRange, WatchedVal }
+export { EnsureString, EnsureInt, EnsureMinMax, EnsureInRange, IsInRange, WatchedVal }

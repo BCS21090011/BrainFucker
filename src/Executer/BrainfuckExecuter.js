@@ -1,5 +1,5 @@
 import WrappedInt from "./WrappedInt";
-import { EnsureInRange, EnsureInt, EnsureMinMax, WatchedVal } from "../utils/utils";
+import { EnsureInRange, EnsureInt, EnsureMinMax, EnsureString, WatchedVal } from "../utils/utils";
 import { CustomValueError, CustomMissingArgumentError } from "../utils/CustomErrors";
 
 class MemPtrOutOfRangeError extends CustomValueError {
@@ -206,6 +206,7 @@ class BrainfuckExecuter {
     }
 
     set BFCode (newVal) {
+        EnsureString(newVal);
         this.#bfCode.Val = newVal;
     }
 
@@ -240,6 +241,7 @@ class BrainfuckExecuter {
     }
 
     set MemPtr (newVal) {
+        EnsureInt(newVal);
         // Underflow and overflow will be handled by callbacks.
         this.#memPtr.Val = newVal;
     }
