@@ -416,13 +416,11 @@ class BrainfuckExecuter {
     ```mermaid
     flowchart TD
 
-    subgraph BrainfuckExecuter
-        Start([Set ConditionVal])
-        EnsureInt
-        EnsureInRange[Ensure CellMinVal <= newVal <= CellMaxVal]
-        SetConditionVal[#conditionVal = newVal]
-        End([End])
-    end
+    Start([Set ConditionVal])
+    EnsureInt
+    EnsureInRange[Ensure CellMinVal <= newVal <= CellMaxVal]
+    SetConditionVal[#conditionVal = newVal]
+    End([End])
 
     Start
     -->
@@ -451,16 +449,14 @@ class BrainfuckExecuter {
     ```mermaid
     flowchart TD
 
-    subgraph BrainfuckExecuter
-        Start([Set MemArr])
-        ValidateMemArg
-        InitializeMemArr[#memArr = empty array]
-        ForCond{For i in newMem.length}
-        CreateCell
-        PushToMemArr[#memArr.push new cell]
-        CheckMemPtr
-        End([End])
-    end
+    Start([Set MemArr])
+    ValidateMemArg
+    InitializeMemArr[#memArr = empty array]
+    ForCond{For i in newMem.length}
+    CreateCell
+    PushToMemArr[#memArr.push new cell]
+    CheckMemPtr
+    End([End])
 
     Start
     -->
@@ -489,11 +485,9 @@ class BrainfuckExecuter {
     ```mermaid
     flowchart TD
 
-    subgraph BrainfuckExecuter
-        Start([Set MemSize])
-        AdjustMemSize
-        End([End])
-    end
+    Start([Set MemSize])
+    AdjustMemSize
+    End([End])
 
     Start
     -->
@@ -514,11 +508,9 @@ class BrainfuckExecuter {
     ```mermaid
     flowchart TD
 
-    subgraph BrainfuckExecuter
-        Start([Set CurrentCellVal])
-        SetCellVal[SetCellVal with MemPtr and newVal]
-        End([End])
-    end
+    Start([Set CurrentCellVal])
+    SetCellVal[SetCellVal with MemPtr and newVal]
+    End([End])
 
     Start
     -->
@@ -559,13 +551,11 @@ class BrainfuckExecuter {
 ```mermaid
 flowchart TD
 
-subgraph BrainfuckExecuter
-    Start([ValidateMemArg])
-    ForCond{For i in mem.length}
-    SetVal[Get val in mem at index i]
-    EnsureInt[EnsureInt val]
-    End([End])
-end
+Start([ValidateMemArg])
+ForCond{For i in mem.length}
+SetVal[Get val in mem at index i]
+EnsureInt[EnsureInt val]
+End([End])
 
 Start
 -->
@@ -586,24 +576,22 @@ End
 ```mermaid
 flowchart TD
 
-subgraph MapLoopPairs
-    Start([MapLooPairs])
-    InitializeStack[Initialize empty loopHeadStack]
-    InitializeLoopPairs[Initialize empty loopPairs]
-    InitializeLeftOutLoops[Initialize empty leftOutLoops]
-    ForCond{For i in bfCode.length}
-    GetCode[Get code in bfCode at index i]
-    IsHead{Code is head?}
-    PushToStack[Push i to loopHeadStack]
-    IsTail{Code is tail}
-    HaveHeadInStack{Have head in loopHeadStack?}
-    PopStack[Pop last head from stack]
-    SetLoopHead[Store head = i in loopPairs]
-    SetLoopTail[Store i = head in loopPairs]
-    PushToLeftOut[Push i to leftOutLoops]
-    PushStackToLeftOut[Push all unmapped heads to leftOutLoops]
-    End([Return result])
-end
+Start([MapLooPairs])
+InitializeStack[Initialize empty loopHeadStack]
+InitializeLoopPairs[Initialize empty loopPairs]
+InitializeLeftOutLoops[Initialize empty leftOutLoops]
+ForCond{For i in bfCode.length}
+GetCode[Get code in bfCode at index i]
+IsHead{Code is head?}
+PushToStack[Push i to loopHeadStack]
+IsTail{Code is tail}
+HaveHeadInStack{Have head in loopHeadStack?}
+PopStack[Pop last head from stack]
+SetLoopHead[Store head = i in loopPairs]
+SetLoopTail[Store i = head in loopPairs]
+PushToLeftOut[Push i to leftOutLoops]
+PushStackToLeftOut[Push all unmapped heads to leftOutLoops]
+End([Return result])
 
 Start
 -->
@@ -658,10 +646,8 @@ End
 ```mermaid
 flowchart TD
 
-subgraph #CreateCell
-    Start([#CreateCell])
-    End([Return new WrappedInt with provided cell value, BrainfuckExecuter object's CellMinVal, CellMaxVal, CellUnderflowCallback, CellOverflowCallback, MemCellOnChangeCallback, and MemCellOnSetCallback])
-end
+Start([#CreateCell])
+End([Return new WrappedInt with provided cell value, BrainfuckExecuter object's CellMinVal, CellMaxVal, CellUnderflowCallback, CellOverflowCallback, MemCellOnChangeCallback, and MemCellOnSetCallback])
 
 Start
 -->
@@ -672,17 +658,15 @@ End
 ```mermaid
 flowchart TD
 
-subgraph #CheckMemPtr
-    Start([#CheckMemPtr])
-    InitializeFlag[Initialize passed as true]
-    IsMemPtrUnderflow{MemPtr < 0}
-    FlagUnderflow[passed = false]
-    MemPtrUnderflowCallback
-    IsMemPtrOverflow{MemPtr >= MemSize}
-    FlagOverflow[passed = false]
-    MemPtrOverflowCallback
-    End([Return passed])
-end
+Start([#CheckMemPtr])
+InitializeFlag[Initialize passed as true]
+IsMemPtrUnderflow{MemPtr < 0}
+FlagUnderflow[passed = false]
+MemPtrUnderflowCallback
+IsMemPtrOverflow{MemPtr >= MemSize}
+FlagOverflow[passed = false]
+MemPtrOverflowCallback
+End([Return passed])
 
 Start
 -->
@@ -712,6 +696,7 @@ End
 ### #AdjustMemSize
 ```mermaid
 flowchart TD
+
 Start([#AdjustMemSize])
 ```
 
