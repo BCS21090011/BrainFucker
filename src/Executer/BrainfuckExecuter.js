@@ -190,6 +190,9 @@ class BrainfuckExecuter {
     #loopPairs = {};
     #leftOutLoops = [];
 
+    InputCallback = (brainfuckExecuter) => {return brainfuckExecuter.CellMinVal; };
+    OutputCallback = (output, brainfuckExecuter) => { };
+
     CIndexOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { };
     MemPtrOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { };
     MemPtrUnderflowCallback = (val, brainfuckExecuter) => {
