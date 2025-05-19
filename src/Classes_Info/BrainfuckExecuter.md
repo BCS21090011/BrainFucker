@@ -671,7 +671,42 @@ End
 ### #CheckMemPtr
 ```mermaid
 flowchart TD
-Start([#CheckMemPtr])
+
+subgraph #CheckMemPtr
+    Start([#CheckMemPtr])
+    InitializeFlag[Initialize passed as true]
+    IsMemPtrUnderflow{MemPtr < 0}
+    FlagUnderflow[passed = false]
+    MemPtrUnderflowCallback
+    IsMemPtrOverflow{MemPtr >= MemSize}
+    FlagOverflow[passed = false]
+    MemPtrOverflowCallback
+    End([Return passed])
+end
+
+Start
+-->
+InitializeFlag
+-->
+IsMemPtrUnderflow
+--true-->
+FlagUnderflow
+-->
+MemPtrUnderflowCallback
+-->
+IsMemPtrOverflow
+--true-->
+FlagOverflow
+-->
+MemPtrOverflowCallback
+-->
+End
+
+IsMemPtrUnderflow
+--false-->
+IsMemPtrOverflow
+--false-->
+End
 ```
 
 ### #AdjustMemSize
