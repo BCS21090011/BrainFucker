@@ -394,6 +394,8 @@ class BrainfuckExecuter {
             }
         }
 
+        leftOutLoops.push(...loopHeadStack);
+
         return {
             LoopPairs: loopPairs,
             LeftOutLoops: leftOutLoops

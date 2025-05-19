@@ -91,7 +91,7 @@ class BrainfuckExecuter {
 
 * Set BFCode
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph WatchedVal
         SetBFCode[#bfCode.Val = newVal]
@@ -134,7 +134,7 @@ class BrainfuckExecuter {
 
 * Set CIndex
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph WatchedVal
         SetCIndex[#cIndex.Val = newVal]
@@ -184,7 +184,7 @@ class BrainfuckExecuter {
 
 * Set MemPtr
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph WatchedVal
         SetMemPtr[#memPtr.Val = newVal]
@@ -224,7 +224,7 @@ class BrainfuckExecuter {
 
 * Set CellMinVal
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph WatchedVal
         SetCellMinVal[#cellMinVal.Val = newVal]
@@ -319,7 +319,7 @@ class BrainfuckExecuter {
 
 * Set CellMaxVal
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph WatchedVal
         SetCellMaxVal[#cellMaxVal.Val = newVal]
@@ -414,7 +414,7 @@ class BrainfuckExecuter {
 
 * Set ConditionVal
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph BrainfuckExecuter
         Start([Set ConditionVal])
@@ -449,7 +449,7 @@ class BrainfuckExecuter {
 
 * Set MemArr
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph BrainfuckExecuter
         Start([Set MemArr])
@@ -487,7 +487,7 @@ class BrainfuckExecuter {
 
 * Set MemSize
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph BrainfuckExecuter
         Start([Set MemSize])
@@ -512,7 +512,7 @@ class BrainfuckExecuter {
 
 * Set CurrentCellVal
     ```mermaid
-    flowchart
+    flowchart TD
 
     subgraph BrainfuckExecuter
         Start([Set CurrentCellVal])
@@ -557,12 +557,12 @@ class BrainfuckExecuter {
 
 ### ValidateMemArg
 ```mermaid
-flowchart
+flowchart TD
 
 subgraph BrainfuckExecuter
     Start([ValidateMemArg])
     ForCond{For i in mem.length}
-    SetVal[val = mem at index i]
+    SetVal[Get val in mem at index i]
     EnsureInt[EnsureInt val]
     End([End])
 end
@@ -583,135 +583,171 @@ End
 ```
 
 ### MapLoopPairs
+```mermaid
+flowchart TD
+
+subgraph MapLoopPairs
+    Start([MapLooPairs])
+    InitializeStack[Initialize empty loopHeadStack]
+    InitializeLoopPairs[Initialize empty loopPairs]
+    InitializeLeftOutLoops[Initialize empty leftOutLoops]
+    ForCond{For i in bfCode.length}
+    GetCode[Get code in bfCode at index i]
+    IsHead{Code is head?}
+    PushToStack[Push i to loopHeadStack]
+    IsTail{Code is tail}
+    HaveHeadInStack{Have head in loopHeadStack?}
+    PopStack[Pop last head from stack]
+    SetLoopHead[Store head = i in loopPairs]
+    SetLoopTail[Store i = head in loopPairs]
+    PushToLeftOut[Push i to leftOutLoops]
+    PushStackToLeftOut[Push all unmapped heads to leftOutLoops]
+    End([Return result])
+end
+
+Start
+-->
+InitializeStack
+-->
+InitializeLoopPairs
+-->
+InitializeLeftOutLoops
+-->
+ForCond
+--i-->
+GetCode
+-->
+IsHead
+--true-->
+PushToStack
+-->
+ForCond
+
+IsHead
+--false-->
+IsTail
+--true-->
+HaveHeadInStack
+--true-->
+PopStack
+-->
+SetLoopHead
+-->
+SetLoopTail
+-->
+ForCond
+
+IsTail
+--false-->
+ForCond
+
+HaveHeadInStack
+--false-->
+PushToLeftOut
+-->
+ForCond
+--loop ended-->
+PushStackToLeftOut
+-->
+End
+```
 
 ## Private Methods
 
 ### #CreateCell
 ```mermaid
-flowchart
+flowchart TD
 Start([#CreateCell])
--->
-End([End])
 ```
 
 ### #CheckMemPtr
 ```mermaid
-flowchart
+flowchart TD
 Start([#CheckMemPtr])
--->
-End([End])
 ```
 
 ### #AdjustMemSize
 ```mermaid
-flowchart
+flowchart TD
 Start([#AdjustMemSize])
--->
-End([End])
 ```
 
 ### #BFDefaultCodeExecuteOperation
 ```mermaid
-flowchart
+flowchart TD
 Start([#BFDefaultCodeExecuteOperation])
--->
-End([End])
 ```
 
 ## Public Methods
 
 ### constructor
 ```mermaid
-flowchart
+flowchart TD
 Start([constructor])
--->
-End([End])
 ```
 
 ### SetConfig
 ```mermaid
-flowchart
+flowchart TD
 Start([SetConfig])
--->
-End([End])
 ```
 
 ### GetCellVal
 ```mermaid
-flowchart
+flowchart TD
 Start([GetCellVal])
--->
-End([End])
 ```
 
 ### SetCellVal
 ```mermaid
-flowchart
+flowchart TD
 Start([SetCellVal])
--->
-End([End])
 ```
 
 ### SubscribeCallbacks
 ```mermaid
-flowchart
+flowchart TD
 Start([SubscribeCallbacks])
--->
-End([End])
 ```
 
 ### BF_Execute
 ```mermaid
-flowchart
+flowchart TD
 Start([BF_Execute])
--->
-End([End])
 ```
 
 ### BF_IncrementCellVal_Operation
 ```mermaid
-flowchart
+flowchart TD
 Start([BF_IncrementCellVal_Operation])
--->
-End([End])
 ```
 
 ### BF_DecrementCellVal_Operation
 ```mermaid
-flowchart
+flowchart TD
 Start([BF_DecrementCellVal_Operation])
--->
-End([End])
 ```
 
 ### BF_NextCell_Operation
 ```mermaid
-flowchart
+flowchart TD
 Start([BF_NextCell_Operation])
--->
-End([End])
 ```
 
 ### BF_PrevCell_Operation
 ```mermaid
-flowchart
+flowchart TD
 Start([BF_PrevCell_Operation])
--->
-End([End])
 ```
 
 ### BF_Input_Operation
 ```mermaid
-flowchart
+flowchart TD
 Start([BF_Input_Operation])
--->
-End([End])
 ```
 
 ### BF_Output_Operation
 ```mermaid
-flowchart
+flowchart TD
 Start([BF_Output_Operation])
--->
-End([End])
 ```
