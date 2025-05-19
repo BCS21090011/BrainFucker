@@ -367,7 +367,7 @@ class BrainfuckExecuter {
     static ValidateMemArg (mem) {
         for (let i = 0; i < mem.length; i++) {
             const val = mem[i];
-            EnsureInt(mem);
+            EnsureInt(val);
         }
     }
 
