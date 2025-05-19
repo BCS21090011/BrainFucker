@@ -208,7 +208,7 @@ class BrainfuckExecuter {
     MemCellOnSetCallback = (index, val, wrappedInt, brainfuckExecuterAfter) => { };
     CodeExecuteOperation = undefined;
 
-    constructor (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {
+    constructor (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=30000, config={}) {
         /*
         Check for arguments that are necessary to create the object.
         These arguments are handled/checked here rather than in SetConfig()
@@ -442,14 +442,14 @@ class BrainfuckExecuter {
         // Memory will be trimmed if memSize is smaller.
 
         EnsureInt(memSize);
-        EnsureInRange(memSize, 0, BFMemoryMaxSize);
+        EnsureInRange(memSize, 1, BFMemoryMaxSize);
 
         defaultVal = defaultVal ?? this.CellMinVal;
 
         EnsureInt(defaultVal);
         EnsureInRange(defaultVal, this.CellMinVal, this.CellMaxVal);
 
-        const currentMemSize = this.#memArr.length;
+        const currentMemSize = this.MemSize;
         const diff = currentMemSize - memSize;
         
         if (diff < 0) { // memSize is larger:

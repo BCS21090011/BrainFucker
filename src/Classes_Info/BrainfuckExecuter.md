@@ -486,7 +486,7 @@ class BrainfuckExecuter {
     flowchart TD
 
     Start([Set MemSize])
-    AdjustMemSize
+    AdjustMemSize[#AdjustMemSize]
     End([End])
 
     Start
@@ -698,6 +698,60 @@ End
 flowchart TD
 
 Start([#AdjustMemSize])
+EnsureIntMemSize[Ensure memSize is int]
+EnsureInRangeMemSize[Ensure 1 <= memSize <= BFMemoryMaxSize]
+SetDefaultDefaultVal[Set defaultVal to CellMinVal if not provided]
+EnsureIntDefaultVal[Ensure defaultVal is int]
+EnsureInRangeDefaultVal[Ensure CellMinVal <= defaultVal <= CellMaxVal]
+SetCurrentMemSize[currentMemSize = MemSize before changes]
+CalcDiff[diff = currentMemSize - new memSize]
+IsMemSizeLarger{diff < 0}
+ForCond{For i = currentMemSize, until i < new memSize}
+CreateAndPushNewCell[#CreateCell and push to #memArr]
+IsMemSizeSmaller{diff > 0}
+SpliceMemArr[Splice the extra cells in #memArr]
+CheckMemPtr[#CheckMemPtr]
+End([End])
+
+Start
+-->
+EnsureIntMemSize
+-->
+EnsureInRangeMemSize
+-->
+SetDefaultDefaultVal
+-->
+EnsureIntDefaultVal
+-->
+EnsureInRangeDefaultVal
+-->
+SetCurrentMemSize
+-->
+CalcDiff
+-->
+IsMemSizeLarger
+--true-->
+ForCond
+--i-->
+CreateAndPushNewCell
+-->
+ForCond
+--loop ended-->
+CheckMemPtr
+-->
+End
+
+IsMemSizeLarger
+--false-->
+IsMemSizeSmaller
+--true-->
+SpliceMemArr
+-->
+CheckMemPtr
+
+IsMemSizeSmaller
+--false-->
+CheckMemPtr
 ```
 
 ### #BFDefaultCodeExecuteOperation
