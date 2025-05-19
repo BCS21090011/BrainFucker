@@ -92,39 +92,40 @@ class BrainfuckExecuter {
 * Set BFCode
     ```mermaid
     flowchart
-        subgraph WatchedVal
-            SetBFCode[#bfCode.Val = newVal]
-            WatchedValCheckSameVal{originalVal === newVal}
-        end
 
-        subgraph BrainfuckExecuter
-            Start([Set BFCode])
-            EnsureString
-            MapLoopPairs[mapResult = MapLoopPairs]
-            SetLoopPairs[#loopPairs = mapResult.LoopPairs]
-            SetLeftOutLoops[#leftOutLoops = mapResult.LeftOutLoops]
-            End([End])
-        end
+    subgraph WatchedVal
+        SetBFCode[#bfCode.Val = newVal]
+        WatchedValCheckSameVal{originalVal === newVal}
+    end
 
-        Start
-        -->
+    subgraph BrainfuckExecuter
+        Start([Set BFCode])
         EnsureString
-        -->
-        SetBFCode
-        -->
-        WatchedValCheckSameVal
-        --false-->
-        MapLoopPairs
-        -->
-        SetLoopPairs
-        -->
-        SetLeftOutLoops
-        -->
-        End
+        MapLoopPairs[mapResult = MapLoopPairs]
+        SetLoopPairs[#loopPairs = mapResult.LoopPairs]
+        SetLeftOutLoops[#leftOutLoops = mapResult.LeftOutLoops]
+        End([End])
+    end
 
-        WatchedValCheckSameVal
-        --true-->
-        End
+    Start
+    -->
+    EnsureString
+    -->
+    SetBFCode
+    -->
+    WatchedValCheckSameVal
+    --false-->
+    MapLoopPairs
+    -->
+    SetLoopPairs
+    -->
+    SetLeftOutLoops
+    -->
+    End
+
+    WatchedValCheckSameVal
+    --true-->
+    End
     ```
 
 ### CIndex
@@ -134,46 +135,47 @@ class BrainfuckExecuter {
 * Set CIndex
     ```mermaid
     flowchart
-        subgraph WatchedVal
-            SetCIndex[#cIndex.Val = newVal]
-            WatchedValCheckSameVal{originalVal === newVal}
-        end
 
-        subgraph BrainfuckExecuter
-            Start([Set CIndex])
-            EnsureInt
-            EnsureInRange[Ensure 0 <= newVal < BFCode.length]
-            CIndexOnChangeCallback
-            IsCodeEnded{CodeEnded === true}
-            CodeEndedCallback
-            End([End])
-        end
+    subgraph WatchedVal
+        SetCIndex[#cIndex.Val = newVal]
+        WatchedValCheckSameVal{originalVal === newVal}
+    end
 
-        Start
-        -->
+    subgraph BrainfuckExecuter
+        Start([Set CIndex])
         EnsureInt
-        -->
-        EnsureInRange
-        -->
-        SetCIndex
-        -->
-        WatchedValCheckSameVal
-        --false-->
+        EnsureInRange[Ensure 0 <= newVal < BFCode.length]
         CIndexOnChangeCallback
-        -->
-        IsCodeEnded
-        --true-->
+        IsCodeEnded{CodeEnded === true}
         CodeEndedCallback
-        -->
-        End
+        End([End])
+    end
 
-        WatchedValCheckSameVal
-        --true-->
-        End
+    Start
+    -->
+    EnsureInt
+    -->
+    EnsureInRange
+    -->
+    SetCIndex
+    -->
+    WatchedValCheckSameVal
+    --false-->
+    CIndexOnChangeCallback
+    -->
+    IsCodeEnded
+    --true-->
+    CodeEndedCallback
+    -->
+    End
 
-        IsCodeEnded
-        --false-->
-        End
+    WatchedValCheckSameVal
+    --true-->
+    End
+
+    IsCodeEnded
+    --false-->
+    End
     ```
 
 ### MemPtr
@@ -183,36 +185,37 @@ class BrainfuckExecuter {
 * Set MemPtr
     ```mermaid
     flowchart
-        subgraph WatchedVal
-            SetMemPtr[#memPtr.Val = newVal]
-            WatchedValCheckSameVal{originalVal === newVal}
-        end
 
-        subgraph BrainfuckExecuter
-            Start([Set MemPtr])
-            EnsureInt
-            MemPtrOnChangeCallback
-            CheckMemPtr
-            End([End])
-        end
+    subgraph WatchedVal
+        SetMemPtr[#memPtr.Val = newVal]
+        WatchedValCheckSameVal{originalVal === newVal}
+    end
 
-        Start
-        -->
+    subgraph BrainfuckExecuter
+        Start([Set MemPtr])
         EnsureInt
-        -->
-        SetMemPtr
-        -->
-        WatchedValCheckSameVal
-        --false-->
         MemPtrOnChangeCallback
-        -->
         CheckMemPtr
-        -->
-        End
-        
-        WatchedValCheckSameVal
-        --true-->
-        End
+        End([End])
+    end
+
+    Start
+    -->
+    EnsureInt
+    -->
+    SetMemPtr
+    -->
+    WatchedValCheckSameVal
+    --false-->
+    MemPtrOnChangeCallback
+    -->
+    CheckMemPtr
+    -->
+    End
+    
+    WatchedValCheckSameVal
+    --true-->
+    End
     ```
 
 ### CellMinVal
@@ -222,91 +225,92 @@ class BrainfuckExecuter {
 * Set CellMinVal
     ```mermaid
     flowchart
-        subgraph WatchedVal
-            SetCellMinVal[#cellMinVal.Val = newVal]
-            WatchedValCheckSameVal{originalVal === newVal}
-        end
 
-        subgraph WrappedInt
-            WrappedIntEnsureInt[Ensure newVal is int]
-            WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
-            WrappedIntEnsureMinMax1[EnsureMinMax]
-            WrappedIntEnsureMinMax2[EnsureMinMax]
-            SetIndCellMin[Cell.Min = newVal]
-            CheckUnderflow[Flag val < min as underflow]
-            CheckOverflow[Flag val > max as overflow]
-            Wrap
-            WasUnderflow{Was underflow}
-            WasOverflow{Was overflow}
-            WrappedIntValChanged{val changed?}
-        end
+    subgraph WatchedVal
+        SetCellMinVal[#cellMinVal.Val = newVal]
+        WatchedValCheckSameVal{originalVal === newVal}
+    end
 
-        subgraph BrainfuckExecuter
-            Start([Set CellMinVal])
-            BrainfuckExecuterEnsureInt[Ensure newVal is int]
-            BrainfuckExecuterEnsureMinMax[EnsureMinMax]
-            ForAllCell{For Cell in #memArr}
-            UnderflowCallback
-            OverflowCallback
-            ValOnChangeCallback
-            End([End])
-        end
-
-        Start
-        -->
-        BrainfuckExecuterEnsureInt
-        -->
-        BrainfuckExecuterEnsureMinMax
-        -->
-        SetCellMinVal
-        -->
-        WatchedValCheckSameVal
-        --false-->
-        ForAllCell
-        --Cell-->
-        SetIndCellMin
-        -->
-        WrappedIntEnsureInt
-        -->
-        WrappedIntEnsureMinMax1
-        -->
-        CheckUnderflow
-        -->
-        CheckOverflow
-        -->
-        WrappedIntEnsureIntValMinMax
-        -->
-        WrappedIntEnsureMinMax2
-        -->
+    subgraph WrappedInt
+        WrappedIntEnsureInt[Ensure newVal is int]
+        WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
+        WrappedIntEnsureMinMax1[EnsureMinMax]
+        WrappedIntEnsureMinMax2[EnsureMinMax]
+        SetIndCellMin[Cell.Min = newVal]
+        CheckUnderflow[Flag val < min as underflow]
+        CheckOverflow[Flag val > max as overflow]
         Wrap
-        -->
-        WasUnderflow
-        --true-->
+        WasUnderflow{Was underflow}
+        WasOverflow{Was overflow}
+        WrappedIntValChanged{val changed?}
+    end
+
+    subgraph BrainfuckExecuter
+        Start([Set CellMinVal])
+        BrainfuckExecuterEnsureInt[Ensure newVal is int]
+        BrainfuckExecuterEnsureMinMax[EnsureMinMax]
+        ForAllCell{For Cell in #memArr}
         UnderflowCallback
-        -->
-        WasOverflow
-        --true-->
         OverflowCallback
-        -->
-        WrappedIntValChanged
-        --true-->
         ValOnChangeCallback
-        -->
-        ForAllCell
-        --End of #memArr-->
-        End
+        End([End])
+    end
 
-        WatchedValCheckSameVal
-        --true-->
-        End
+    Start
+    -->
+    BrainfuckExecuterEnsureInt
+    -->
+    BrainfuckExecuterEnsureMinMax
+    -->
+    SetCellMinVal
+    -->
+    WatchedValCheckSameVal
+    --false-->
+    ForAllCell
+    --Cell-->
+    SetIndCellMin
+    -->
+    WrappedIntEnsureInt
+    -->
+    WrappedIntEnsureMinMax1
+    -->
+    CheckUnderflow
+    -->
+    CheckOverflow
+    -->
+    WrappedIntEnsureIntValMinMax
+    -->
+    WrappedIntEnsureMinMax2
+    -->
+    Wrap
+    -->
+    WasUnderflow
+    --true-->
+    UnderflowCallback
+    -->
+    WasOverflow
+    --true-->
+    OverflowCallback
+    -->
+    WrappedIntValChanged
+    --true-->
+    ValOnChangeCallback
+    -->
+    ForAllCell
+    --End of #memArr-->
+    End
 
-        WasUnderflow
-        --false-->
-        WasOverflow
-        --false-->
-        WrappedIntValChanged
-        --false-->
-        ForAllCell
+    WatchedValCheckSameVal
+    --true-->
+    End
+
+    WasUnderflow
+    --false-->
+    WasOverflow
+    --false-->
+    WrappedIntValChanged
+    --false-->
+    ForAllCell
     ```
 
 ### CellMaxVal
@@ -316,91 +320,92 @@ class BrainfuckExecuter {
 * Set CellMaxVal
     ```mermaid
     flowchart
-        subgraph WatchedVal
-            SetCellMaxVal[#cellMaxVal.Val = newVal]
-            WatchedValCheckSameVal{originalVal === newVal}
-        end
 
-        subgraph WrappedInt
-            WrappedIntEnsureInt[Ensure newVal is int]
-            WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
-            WrappedIntEnsureMinMax1[EnsureMinMax]
-            WrappedIntEnsureMinMax2[EnsureMinMax]
-            SetIndCellMax[Cell.Max = newVal]
-            CheckUnderflow[Flag val < min as underflow]
-            CheckOverflow[Flag val > max as overflow]
-            Wrap
-            WasUnderflow{Was underflow}
-            WasOverflow{Was overflow}
-            WrappedIntValChanged{val changed?}
-        end
+    subgraph WatchedVal
+        SetCellMaxVal[#cellMaxVal.Val = newVal]
+        WatchedValCheckSameVal{originalVal === newVal}
+    end
 
-        subgraph BrainfuckExecuter
-            Start([Set CellMaxVal])
-            BrainfuckExecuterEnsureInt[Ensure newVal is int]
-            BrainfuckExecuterEnsureMinMax[EnsureMinMax]
-            ForAllCell{For Cell in #memArr}
-            UnderflowCallback
-            OverflowCallback
-            ValOnChangeCallback
-            End([End])
-        end
-
-        Start
-        -->
-        BrainfuckExecuterEnsureInt
-        -->
-        BrainfuckExecuterEnsureMinMax
-        -->
-        SetCellMaxVal
-        -->
-        WatchedValCheckSameVal
-        --false-->
-        ForAllCell
-        --Cell-->
-        SetIndCellMax
-        -->
-        WrappedIntEnsureInt
-        -->
-        WrappedIntEnsureMinMax1
-        -->
-        CheckUnderflow
-        -->
-        CheckOverflow
-        -->
-        WrappedIntEnsureIntValMinMax
-        -->
-        WrappedIntEnsureMinMax2
-        -->
+    subgraph WrappedInt
+        WrappedIntEnsureInt[Ensure newVal is int]
+        WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
+        WrappedIntEnsureMinMax1[EnsureMinMax]
+        WrappedIntEnsureMinMax2[EnsureMinMax]
+        SetIndCellMax[Cell.Max = newVal]
+        CheckUnderflow[Flag val < min as underflow]
+        CheckOverflow[Flag val > max as overflow]
         Wrap
-        -->
-        WasUnderflow
-        --true-->
+        WasUnderflow{Was underflow}
+        WasOverflow{Was overflow}
+        WrappedIntValChanged{val changed?}
+    end
+
+    subgraph BrainfuckExecuter
+        Start([Set CellMaxVal])
+        BrainfuckExecuterEnsureInt[Ensure newVal is int]
+        BrainfuckExecuterEnsureMinMax[EnsureMinMax]
+        ForAllCell{For Cell in #memArr}
         UnderflowCallback
-        -->
-        WasOverflow
-        --true-->
         OverflowCallback
-        -->
-        WrappedIntValChanged
-        --true-->
         ValOnChangeCallback
-        -->
-        ForAllCell
-        --End of #memArr-->
-        End
+        End([End])
+    end
 
-        WatchedValCheckSameVal
-        --true-->
-        End
+    Start
+    -->
+    BrainfuckExecuterEnsureInt
+    -->
+    BrainfuckExecuterEnsureMinMax
+    -->
+    SetCellMaxVal
+    -->
+    WatchedValCheckSameVal
+    --false-->
+    ForAllCell
+    --Cell-->
+    SetIndCellMax
+    -->
+    WrappedIntEnsureInt
+    -->
+    WrappedIntEnsureMinMax1
+    -->
+    CheckUnderflow
+    -->
+    CheckOverflow
+    -->
+    WrappedIntEnsureIntValMinMax
+    -->
+    WrappedIntEnsureMinMax2
+    -->
+    Wrap
+    -->
+    WasUnderflow
+    --true-->
+    UnderflowCallback
+    -->
+    WasOverflow
+    --true-->
+    OverflowCallback
+    -->
+    WrappedIntValChanged
+    --true-->
+    ValOnChangeCallback
+    -->
+    ForAllCell
+    --End of #memArr-->
+    End
 
-        WasUnderflow
-        --false-->
-        WasOverflow
-        --false-->
-        WrappedIntValChanged
-        --false-->
-        ForAllCell
+    WatchedValCheckSameVal
+    --true-->
+    End
+
+    WasUnderflow
+    --false-->
+    WasOverflow
+    --false-->
+    WrappedIntValChanged
+    --false-->
+    ForAllCell
     ```
 
 ### ConditionVal
@@ -410,23 +415,24 @@ class BrainfuckExecuter {
 * Set ConditionVal
     ```mermaid
     flowchart
-        subgraph BrainfuckExecuter
-            Start([Set ConditionVal])
-            EnsureInt
-            EnsureInRange[Ensure CellMinVal <= newVal <= CellMaxVal]
-            SetConditionVal[#conditionVal = newVal]
-            End([End])
-        end
 
-        Start
-        -->
+    subgraph BrainfuckExecuter
+        Start([Set ConditionVal])
         EnsureInt
-        -->
-        EnsureInRange
-        -->
-        SetConditionVal
-        -->
-        End
+        EnsureInRange[Ensure CellMinVal <= newVal <= CellMaxVal]
+        SetConditionVal[#conditionVal = newVal]
+        End([End])
+    end
+
+    Start
+    -->
+    EnsureInt
+    -->
+    EnsureInRange
+    -->
+    SetConditionVal
+    -->
+    End
     ```
 
 ### LoopPairs
@@ -444,34 +450,35 @@ class BrainfuckExecuter {
 * Set MemArr
     ```mermaid
     flowchart
-        subgraph BrainfuckExecuter
-            Start([Set MemArr])
-            ValidateMemArg
-            InitializeMemArr[#memArr = empty array]
-            ForCond{For i in newMem.length}
-            CreateCell
-            PushToMemArr[#memArr.push new cell]
-            CheckMemPtr
-            End([End])
-        end
 
-        Start
-        -->
+    subgraph BrainfuckExecuter
+        Start([Set MemArr])
         ValidateMemArg
-        -->
-        InitializeMemArr
-        -->
-        ForCond
-        --i-->
+        InitializeMemArr[#memArr = empty array]
+        ForCond{For i in newMem.length}
         CreateCell
-        -->
-        PushToMemArr
-        -->
-        ForCond
-        --loop ended-->
+        PushToMemArr[#memArr.push new cell]
         CheckMemPtr
-        -->
-        End
+        End([End])
+    end
+
+    Start
+    -->
+    ValidateMemArg
+    -->
+    InitializeMemArr
+    -->
+    ForCond
+    --i-->
+    CreateCell
+    -->
+    PushToMemArr
+    -->
+    ForCond
+    --loop ended-->
+    CheckMemPtr
+    -->
+    End
     ```
 
 ### MemSize
@@ -481,17 +488,18 @@ class BrainfuckExecuter {
 * Set MemSize
     ```mermaid
     flowchart
-        subgraph BrainfuckExecuter
-            Start([Set MemSize])
-            AdjustMemSize
-            End([End])
-        end
 
-        Start
-        -->
+    subgraph BrainfuckExecuter
+        Start([Set MemSize])
         AdjustMemSize
-        -->
-        End
+        End([End])
+    end
+
+    Start
+    -->
+    AdjustMemSize
+    -->
+    End
     ```
 
 ### CodeEnded
@@ -505,17 +513,18 @@ class BrainfuckExecuter {
 * Set CurrentCellVal
     ```mermaid
     flowchart
-        subgraph BrainfuckExecuter
-            Start([Set CurrentCellVal])
-            SetCellVal[SetCellVal with MemPtr and newVal]
-            End([End])
-        end
 
-        Start
-        -->
-        SetCellVal
-        -->
-        End
+    subgraph BrainfuckExecuter
+        Start([Set CurrentCellVal])
+        SetCellVal[SetCellVal with MemPtr and newVal]
+        End([End])
+    end
+
+    Start
+    -->
+    SetCellVal
+    -->
+    End
     ```
 
 ## Callbacks
@@ -547,6 +556,31 @@ class BrainfuckExecuter {
 ## Static Methods
 
 ### ValidateMemArg
+```mermaid
+flowchart
+
+subgraph BrainfuckExecuter
+    Start([ValidateMemArg])
+    ForCond{For i in mem.length}
+    SetVal[val = mem at index i]
+    EnsureInt[EnsureInt val]
+    End([End])
+end
+
+Start
+-->
+ForCond
+--i-->
+SetVal
+-->
+EnsureInt
+-->
+ForCond
+
+ForCond
+--loop ended-->
+End
+```
 
 ### MapLoopPairs
 
@@ -589,7 +623,6 @@ End([End])
 ### constructor
 ```mermaid
 flowchart
-
 Start([constructor])
 -->
 End([End])
