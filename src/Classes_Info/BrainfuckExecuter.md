@@ -868,7 +868,42 @@ End
 ### constructor
 ```mermaid
 flowchart TD
+
 Start([constructor])
+CheckInputCallback{InputCallback not provided?}
+InpThrowCustomMissingArgumentError[Throw CustomMissingArgumentError]
+CheckOutputCallback{OutputCallback not provided?}
+OutThrowCustomMissingArgumentError[Throw CustomMissingArgumentError]
+CheckMemMemSize{Both mem and memSize are not provided?}
+MemThrowCustomMissingArgumentError[Throw CustomMissingArgumentError]
+SetConfig
+End([End])
+
+Start
+-->
+CheckInputCallback
+--true-->
+InpThrowCustomMissingArgumentError
+-->
+CheckOutputCallback
+--true-->
+OutThrowCustomMissingArgumentError
+-->
+CheckMemMemSize
+--true-->
+MemThrowCustomMissingArgumentError
+-->
+SetConfig
+-->
+End
+
+CheckInputCallback
+--false-->
+CheckOutputCallback
+--false-->
+CheckMemMemSize
+--false-->
+SetConfig
 ```
 
 ### SetConfig
