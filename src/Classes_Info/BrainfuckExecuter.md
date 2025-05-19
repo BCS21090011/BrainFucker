@@ -657,7 +657,15 @@ End
 ### #CreateCell
 ```mermaid
 flowchart TD
-Start([#CreateCell])
+
+subgraph #CreateCell
+    Start([#CreateCell])
+    End([Return new WrappedInt with provided cell value, BrainfuckExecuter object's CellMinVal, CellMaxVal, CellUnderflowCallback, CellOverflowCallback, MemCellOnChangeCallback, and MemCellOnSetCallback])
+end
+
+Start
+-->
+End
 ```
 
 ### #CheckMemPtr
