@@ -75,7 +75,7 @@ class WrappedInt {
 
             const originalVal = this.#value;
 
-            this.Wrap();
+            this.#Wrap();
 
             if (originalVal !== this.#value) {
                 this.ValOnChangeCallback(originalVal, this.#value, this);
@@ -96,7 +96,7 @@ class WrappedInt {
 
             const originalVal = this.#value;
 
-            this.Wrap();
+            this.#Wrap();
 
             if (originalVal !== this.#value) {
                 this.ValOnChangeCallback(originalVal, this.#value, this);
@@ -114,7 +114,7 @@ class WrappedInt {
         const originalVal = this.#value;
 
         this.#value = newVal;
-        this.Wrap();
+        this.#Wrap();
 
         if (originalVal !== this.#value) {
             this.ValOnChangeCallback(originalVal, this.#value, this);
@@ -142,7 +142,7 @@ class WrappedInt {
         return ((val - min) % diff + diff) % diff + min;
     }
 
-    Wrap () {
+    #Wrap () {
         let underflowed = false;
         let overflowed = false;
 

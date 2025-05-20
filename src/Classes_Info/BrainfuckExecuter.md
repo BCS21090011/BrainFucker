@@ -1013,18 +1013,81 @@ flowchart TD
 
 subgraph BrainfuckExecuter
     Start([SetCellVal])
+    CellUnderflowCallback
+    CellOverflowCallback
+    MemCellOnChangeCallback
+    MemCellOnSetCallback
     End([End])
 end
 
 subgraph WrappedInt
     SetVal[Set cell.Val for cell in #memArr at index]
+    EnsureInt[Ensure newVal is an int]
+    SetOriginalVal[originalVal = val before changes]
+    SetPrivVal[#value = newVal]
+    InitializeUnderflowFlag[underflowed = false]
+    InitializeOverflowFlag[overflowed = false]
+    SetOriginalVal_wrap[originalVal = val before changes]
+    CheckUnderflow[Flag val < min as underflow]
+    CheckOverflow[Flag val > max as overflow]
+    WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
+    WrappedIntEnsureMinMax[Ensure min max]
+    Wrap
+    WasUnderflow{Was underflow}
+    WasOverflow{Was overflow}
+    WrappedIntValChanged{val changed?}
 end
 
 Start
 -->
 SetVal
 -->
+EnsureInt
+-->
+SetOriginalVal
+-->
+SetPrivVal
+-->
+InitializeUnderflowFlag
+-->
+InitializeOverflowFlag
+-->
+SetOriginalVal_wrap
+-->
+CheckUnderflow
+-->
+CheckOverflow
+-->
+WrappedIntEnsureIntValMinMax
+-->
+WrappedIntEnsureMinMax
+-->
+Wrap
+-->
+WasUnderflow
+--true-->
+CellUnderflowCallback
+-->
+WasOverflow
+--true-->
+CellOverflowCallback
+-->
+WrappedIntValChanged
+--true-->
+MemCellOnChangeCallback
+-->
+MemCellOnSetCallback
+-->
 End
+
+
+WasUnderflow
+--false-->
+WasOverflow
+--false-->
+WrappedIntValChanged
+--false-->
+MemCellOnSetCallback
 ```
 
 ### SubscribeCallbacks
