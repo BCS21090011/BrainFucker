@@ -521,14 +521,55 @@ class BrainfuckExecuter {
 ### LoopPairs
 
 * Get LoopPairs
+    ```mermaid
+    flowchart TD
+
+    Start([Get LoopPairs])
+    End([Return shallow copy of #loopPairs])
+
+    Start
+    -->
+    End
+    ```
 
 ### LeftOutLoops
 
 * Get LeftOutLoops
+    ```mermaid
+    flowchart TD
+
+    Start([Get LeftOutLoops])
+    End([Return shallow copy of #leftOutLoops])
+
+    Start
+    -->
+    End
+    ```
 
 ### MemArr
 
 * Get MemArr
+    ```mermaid
+    flowchart TD
+
+    Start([Get MemArr])
+    InitializeEmptyCopiedMem[copiedMem = empty array]
+    ForCond{For i in MemSize}
+    Push[Push GetCellVal at index i to copiedMem]
+    End([Return copiedMem])
+
+    Start
+    -->
+    InitializeEmptyCopiedMem
+    -->
+    ForCond
+    --i-->
+    Push
+    -->
+    ForCond
+    --loop ended-->
+    End
+    ```
 
 * Set MemArr
     ```mermaid
@@ -565,6 +606,16 @@ class BrainfuckExecuter {
 ### MemSize
 
 * Get MemSize
+    ```mermaid
+    flowchart TD
+
+    Start([Get MemSize])
+    End([Return #memArr.length])
+
+    Start
+    -->
+    End
+    ```
 
 * Set MemSize
     ```mermaid
@@ -584,10 +635,30 @@ class BrainfuckExecuter {
 ### CodeEnded
 
 * Get CodeEnded
+    ```mermaid
+    flowchart TD
+
+    Start([Get CodeEnded])
+    End([Return CIndex larger or equal to BFCode.length])
+
+    Start
+    -->
+    End
+    ```
 
 ### CurrentCellVal
 
 * Get CurrentCellVal
+    ```mermaid
+    flowchart TD
+
+    Start([Get CurrentCellVal])
+    End([Return GetCellVal with MemPtr])
+
+    Start
+    -->
+    End
+    ```
 
 * Set CurrentCellVal
     ```mermaid

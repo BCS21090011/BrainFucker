@@ -280,7 +280,7 @@ class BrainfuckExecuter {
 
     get MemArr () {
         // Copy the whole this.#memArr and return it.
-        const copiedMem = []
+        const copiedMem = [];
 
         for (let i = 0; i < this.MemSize; i++) {
             copiedMem.push(this.GetCellVal(i));
@@ -341,11 +341,7 @@ class BrainfuckExecuter {
     }
 
     get CodeEnded () {
-        if (this.CIndex >= this.BFCode.length) {
-            return true;
-        }
-
-        return false;
+        return this.CIndex >= this.BFCode.length;
     }
     
     GetCellVal (index) {
