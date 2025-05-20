@@ -4,62 +4,62 @@
 classDiagram
 
 class BrainfuckExecuter {
-    WatchedVal #bfCode
-    str BFCode
-    WatchedVal #cIndex
-    int CIndex
-    WatchedVal #memPtr
-    int MemPtr
-    WatchedVal #cellMinVal
-    int CellMinVal
-    WatchedVal #cellMaxVal
-    int CellMaxVal
+    -WatchedVal #bfCode
+    +str BFCode
+    -WatchedVal #cIndex
+    +int CIndex
+    -WatchedVal #memPtr
+    +int MemPtr
+    -WatchedVal #cellMinVal
+    +int CellMinVal
+    -WatchedVal #cellMaxVal
+    +int CellMaxVal
 
-    int #conditionVal
-    int ConditionVal
-    obj #loopPairs
-    obj LoopPairs
-    arr #leftOutLoops
-    arr LeftOutLoops
-    arr #memArr
-    arr MemArr
+    -int #conditionVal
+    +int ConditionVal
+    -obj #loopPairs
+    +obj LoopPairs
+    -arr #leftOutLoops
+    +arr LeftOutLoops
+    -arr #memArr
+    +arr MemArr
 
-    int MemSize
-    bool CodeEnded
-    int CurrentCellVal
+    +int MemSize
+    +bool CodeEnded
+    +int CurrentCellVal
 
-    InputCallback
-    OutputCallback
-    CIndexOnChangeCallback
-    MemPtrOnChangeCallback
-    MmePtrUnderflowCallback
-    MemPtrOverflowCallback
-    CodeEndedCallback
-    CellUnderflowCallback
-    CellOverflowCallback
-    MemCellOnChangeCallback
-    MemCellOnSetCallback
-    CodeExecuteOperation
+    +InputCallback
+    +OutputCallback
+    +CIndexOnChangeCallback
+    +MemPtrOnChangeCallback
+    +MmePtrUnderflowCallback
+    +MemPtrOverflowCallback
+    +CodeEndedCallback
+    +CellUnderflowCallback
+    +CellOverflowCallback
+    +MemCellOnChangeCallback
+    +MemCellOnSetCallback
+    +CodeExecuteOperation
 
-    constructor(bfCode="", inputCallback, outputCallback, memSize, config)
-    SetConfig(bfCode="", inputCallback, outputCallback, memSize, config)
-    GetCellVal(index)
-    SetCellVal(index, newVal)
-    static ValidateMemArg(mem)
-    static MapLoopPairs(bfCode)
-    #CreateCell(index, cellVal)
-    #CheckMemPtr()
-    #AdjustMemSize(memSize, defaultVal)
-    SubscribeCallbacks(all callbacks)
+    +constructor(bfCode="", inputCallback, outputCallback, memSize, config)
+    +SetConfig(bfCode="", inputCallback, outputCallback, memSize, config)
+    +GetCellVal(index)
+    +SetCellVal(index, newVal)
+    +ValidateMemArg(mem)$
+    +MapLoopPairs(bfCode)$
+    -#CreateCell(index, cellVal)
+    -#CheckMemPtr()
+    -#AdjustMemSize(memSize, defaultVal)
+    +SubscribeCallbacks(all callbacks)
 
-    #BFDefaultCodeExecuteOperation(code)
-    BF_Execute()
-    BF_IncrementCellVal_Operation()
-    BF_DecrementCellVal_Operation()
-    BF_NextCell_Operation()
-    BF_PrevCell_Operation()
-    BF_Input_Operation()
-    BF_Output_Operation()
+    -#BFDefaultCodeExecuteOperation(code)
+    +BF_Execute()
+    +BF_IncrementCellVal_Operation()
+    +BF_DecrementCellVal_Operation()
+    +BF_NextCell_Operation()
+    +BF_PrevCell_Operation()
+    +BF_Input_Operation()
+    +BF_Output_Operation()
 }
 ```
 
