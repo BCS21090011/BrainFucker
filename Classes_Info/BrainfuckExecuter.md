@@ -1,4 +1,4 @@
-# [BrainfuckExecuter](./src/Executer/BrainfuckExecuter.js)
+# [BrainfuckExecuter](/src/Executer/BrainfuckExecuter.js)
 
 ```mermaid
 classDiagram
