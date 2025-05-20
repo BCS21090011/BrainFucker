@@ -654,13 +654,21 @@ class BrainfuckExecuter {
             this.BF_Input_Operation();
         }
         else if (code === '[') {
-            if (this.CurrentCellVal === this.ConditionVal) {
-                cIndex = this.LoopPairs[cIndex];
+            const tail = this.LoopPairs[cIndex];
+
+            if (tail != undefined) {
+                if (this.CurrentCellVal === this.ConditionVal) {
+                    cIndex = this.LoopPairs[cIndex];
+                }
             }
         }
         else if (code === ']') {
-            if (this.CurrentCellVal !== this.ConditionVal) {
-                cIndex = this.LoopPairs[cIndex];
+            const head = this.LoopPairs[cIndex];
+
+            if (head != undefined) {
+                if (this.CurrentCellVal !== this.ConditionVal) {
+                    cIndex = this.LoopPairs[cIndex];
+                }
             }
         }
 

@@ -929,9 +929,13 @@ BF_Output_Operation
 CheckOutput{code === '.'}
 BF_Input_Operation
 CheckLoopHead{code === '【'}
+GetTail[tail = LoopPairs with cIndex]
+CheckHasTail{tail != undefined}
 CheckCondPass{CurrentCellVal === ConditionVal}
 HeadSetCIndex[cIndex = LoopPairs with cIndex]
 CheckLoopTail{code === '】'}
+GetHead[head = LoopPairs with cIndex]
+CheckHasHead{head != undefined}
 CheckCondFail{CurrentCellVal !== ConditionVal}
 TailSetCIndex[cIndex = LoopPairs with cIndex]
 End([Return cIndex + 1])
@@ -996,6 +1000,10 @@ End
 
 CheckLoopHead
 --true-->
+GetTail
+-->
+CheckHasTail
+--true-->
 CheckCondPass
 --true-->
 HeadSetCIndex
@@ -1004,10 +1012,22 @@ End
 
 CheckLoopTail
 --true-->
+GetHead
+-->
+CheckHasHead
+--true-->
 CheckCondFail
 --true-->
 TailSetCIndex
 -->
+End
+
+CheckHasTail
+--false-->
+End
+
+CheckHasHead
+--false-->
 End
 
 CheckCondPass
