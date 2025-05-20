@@ -1233,35 +1233,89 @@ End
 ### BF_IncrementCellVal_Operation
 ```mermaid
 flowchart TD
+
 Start([BF_IncrementCellVal_Operation])
+Operation[CurrentCellVal += 1]
+End([Return this])
+
+Start
+-->
+Operation
+-->
+End
 ```
 
 ### BF_DecrementCellVal_Operation
 ```mermaid
 flowchart TD
+
 Start([BF_DecrementCellVal_Operation])
+Operation[CurrentCellVal -= 1]
+End([Return this])
+
+Start
+-->
+Operation
+-->
+End
 ```
 
 ### BF_NextCell_Operation
 ```mermaid
 flowchart TD
+
 Start([BF_NextCell_Operation])
+Operation[MemPtr += 1]
+End([Return this])
+
+Start
+-->
+Operation
+-->
+End
 ```
 
 ### BF_PrevCell_Operation
 ```mermaid
 flowchart TD
+
 Start([BF_PrevCell_Operation])
+Operation[MemPtr -= 1]
+End([Return this])
+
+Start
+-->
+Operation
+-->
+End
 ```
 
 ### BF_Input_Operation
 ```mermaid
 flowchart TD
+
 Start([BF_Input_Operation])
+Operation[CurrentCellVal = InputCallback]
+End([Return this])
+
+Start
+-->
+Operation
+-->
+End
 ```
 
 ### BF_Output_Operation
 ```mermaid
 flowchart TD
+
 Start([BF_Output_Operation])
+Operation[Call OutputCallback with CurrentCellVal]
+End([Return this])
+
+Start
+-->
+Operation
+-->
+End
 ```
