@@ -1030,7 +1030,106 @@ End
 ### SubscribeCallbacks
 ```mermaid
 flowchart TD
+
 Start([SubscribeCallbacks])
+CheckInputCallback{Is inputCallback provided?}
+SetInputCallback[InputCallback = new inputCallback]
+CheckOutputCallback{Is outputCallback provided?}
+SetOutputCallback[OutputCallback = new outputCallback]
+CheckCIndexOnChangeCallback{Is cIndexOnChangeCallback provided?}
+SetCIndexOnChangeCallback[CIndexOnChangeCallback = new cIndexOnChangeCallback]
+CheckMemPtrOnChangeCallback{Is memPtrOnChangeCallback provided?}
+SetMemPtrOnChangeCallback[MemPtrOnChangeCallback = new memPtrOnChangeCallback]
+CheckMemPtrUnderflowCallback{Is memPtrUnderflowCallback provided?}
+SetMemPtrUnderflowCallback[MemPtrUnderflowCallback = new memPtrUnderflowCallback]
+CheckMemPtrOverflowCallback{Is memPtrOverflowCallback provided?}
+SetMemPtrOverflowCallback[MemPtrOverflowCallback = new memPtrOverflowCallback]
+CheckCodeEndedCallback{Is codeEndedCallback provided?}
+SetCodeEndedCallback[CodeEndedCallback = new codeEndedCallback]
+CheckCellUnderflowCallback{Is cellUnderflowCallback provided?}
+SetCellUnderflowCallback[CellUnderflowCallback = new cellUnderflowCallback]
+CheckCellOverflowCallback{Is cellOverflowCallback provided?}
+SetCellOverflowCallback[CellOverflowCallback = new cellOverflowCallback]
+CheckMemCellOnChangeCallback{Is memCellOnChangeCallback provided?}
+SetMemCellOnChangeCallback[MemCellOnChangeCallback = new memCellOnChangeCallback]
+CheckMemCellOnSetCallback{Is memCellOnSetCallback provided?}
+SetMemCellOnSetCallback[MemCellOnSetCallback = new memCellOnSetCallback]
+SetCodeExecuteOperation[CodeExecuteOperation = new codeExecuteOperation]
+End([Return this])
+
+Start
+-->
+CheckInputCallback
+--true-->
+SetInputCallback
+-->
+CheckOutputCallback
+--true-->
+SetOutputCallback
+-->
+CheckCIndexOnChangeCallback
+--true-->
+SetCIndexOnChangeCallback
+-->
+CheckMemPtrOnChangeCallback
+--true-->
+SetMemPtrOnChangeCallback
+-->
+CheckMemPtrUnderflowCallback
+--true-->
+SetMemPtrUnderflowCallback
+-->
+CheckMemPtrOverflowCallback
+--true-->
+SetMemPtrOverflowCallback
+-->
+CheckCodeEndedCallback
+--true-->
+SetCodeEndedCallback
+-->
+CheckCellUnderflowCallback
+--true-->
+SetCellUnderflowCallback
+-->
+CheckCellOverflowCallback
+--true-->
+SetCellOverflowCallback
+-->
+CheckMemCellOnChangeCallback
+--true-->
+SetMemCellOnChangeCallback
+-->
+CheckMemCellOnSetCallback
+--true-->
+SetMemCellOnSetCallback
+-->
+SetCodeExecuteOperation
+-->
+End
+
+CheckInputCallback
+--false-->
+CheckOutputCallback
+--false-->
+CheckCIndexOnChangeCallback
+--false-->
+CheckMemPtrOnChangeCallback
+--false-->
+CheckMemPtrUnderflowCallback
+--false-->
+CheckMemPtrOverflowCallback
+--false-->
+CheckCodeEndedCallback
+--false-->
+CheckCellUnderflowCallback
+--false-->
+CheckCellOverflowCallback
+--false-->
+CheckMemCellOnChangeCallback
+--false-->
+CheckMemCellOnSetCallback
+--false-->
+SetCodeExecuteOperation
 ```
 
 ### BF_Execute
