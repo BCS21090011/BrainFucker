@@ -568,6 +568,8 @@ class BrainfuckExecuter {
         if (memSize != undefined) {
             this.#AdjustMemSize(memSize, defaultVal);
         }
+
+        return this;
     }
 
     SubscribeCallbacks (
@@ -630,6 +632,8 @@ class BrainfuckExecuter {
 
         // Since codeExecuteOperation can be undefined, won't check to skip:
         this.CodeExecuteOperation = codeExecuteOperation;
+
+        return this;
     }
 
     #BFDefaultCodeExecuteOperation (code) {

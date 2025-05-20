@@ -929,7 +929,7 @@ CheckMem{Is mem provided?}
 SetMem[Mem = new mem]
 CheckMemSize{Is memSize provided?}
 AdjustMemSize[#AdjustMemSize with memSize and defaultVal]
-End([End])
+End([Return this])
 
 Start
 -->
