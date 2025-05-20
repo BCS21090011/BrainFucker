@@ -999,7 +999,7 @@ subgraph BrainfuckExecuter
 end
 
 subgraph WrappedInt
-    End([Return #memArr[index].Val])
+    End([Return cell.Val for cell in #memArr at index])
 end
 
 Start
@@ -1010,7 +1010,21 @@ End
 ### SetCellVal
 ```mermaid
 flowchart TD
-Start([SetCellVal])
+
+subgraph BrainfuckExecuter
+    Start([SetCellVal])
+    End([End])
+end
+
+subgraph WrappedInt
+    SetVal[Set cell.Val for cell in #memArr at index]
+end
+
+Start
+-->
+SetVal
+-->
+End
 ```
 
 ### SubscribeCallbacks
