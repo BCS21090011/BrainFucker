@@ -88,6 +88,21 @@ class BrainfuckExecuter {
 ### BFCode
 
 * Get BFCode
+    ```mermaid
+    flowchart TD
+
+    subgraph BrainfuckExecuter
+        Start([Get BFCode])
+    end
+
+    subgraph WatchedVal
+        End([Return #bfCode.Val])
+    end
+
+    Start
+    -->
+    End
+    ```
 
 * Set BFCode
     ```mermaid
@@ -131,6 +146,21 @@ class BrainfuckExecuter {
 ### CIndex
 
 * Get CIndex
+    ```mermaid
+    flowchart TD
+
+    subgraph BrainfuckExecuter
+        Start([Get CIndex])
+    end
+
+    subgraph WatchedVal
+        End([Return #cIndex.Val])
+    end
+
+    Start
+    -->
+    End
+    ```
 
 * Set CIndex
     ```mermaid
@@ -181,6 +211,21 @@ class BrainfuckExecuter {
 ### MemPtr
 
 * Get MemPtr
+    ```mermaid
+    flowchart TD
+
+    subgraph BrainfuckExecuter
+        Start([Get MemPtr])
+    end
+
+    subgraph WatchedVal
+        End([Return #memPtr.Val])
+    end
+
+    Start
+    -->
+    End
+    ```
 
 * Set MemPtr
     ```mermaid
@@ -221,6 +266,21 @@ class BrainfuckExecuter {
 ### CellMinVal
 
 * Get CellMinVal
+    ```mermaid
+    flowchart TD
+
+    subgraph BrainfuckExecuter
+        Start([Get CellMinVal])
+    end
+
+    subgraph WatchedVal
+        End([Return #cellMinVal.Val])
+    end
+
+    Start
+    -->
+    End
+    ```
 
 * Set CellMinVal
     ```mermaid
@@ -316,6 +376,21 @@ class BrainfuckExecuter {
 ### CellMaxVal
 
 * Get CellMaxVal
+    ```mermaid
+    flowchart TD
+
+    subgraph BrainfuckExecuter
+        Start([Get CellMaxVal])
+    end
+
+    subgraph WatchedVal
+        End([Return #cellMaxVal.Val])
+    end
+
+    Start
+    -->
+    End
+    ```
 
 * Set CellMaxVal
     ```mermaid
@@ -411,6 +486,16 @@ class BrainfuckExecuter {
 ### ConditionVal
 
 * Get ConditionVal
+    ```mermaid
+    flowchart TD
+
+    Start([Get ConditionVal])
+    End([Return #conditionVal])
+
+    Start
+    -->
+    End
+    ```
 
 * Set ConditionVal
     ```mermaid
