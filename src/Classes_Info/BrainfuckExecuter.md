@@ -1198,7 +1198,36 @@ SetCodeExecuteOperation
 ### BF_Execute
 ```mermaid
 flowchart TD
+
 Start([BF_Execute])
+IsCodeNotEnded{CodeEnded === false}
+GetCurrentCode[code = character in BFCode at CIndex]
+CodeExecuteOperationNotProvided{CodeExecuteOperation == undefined}
+BFDefaultCodeExecuteOperation[CIndex = #BFDefaultCodeExecuteOperation]
+CodeExecuteOperation[CIndex = CodeExecuteOperation]
+End([Return this])
+
+Start
+-->
+IsCodeNotEnded
+--true-->
+GetCurrentCode
+-->
+CodeExecuteOperationNotProvided
+--true-->
+BFDefaultCodeExecuteOperation
+-->
+End
+
+CodeExecuteOperationNotProvided
+--false-->
+CodeExecuteOperation
+-->
+End
+
+IsCodeNotEnded
+--false-->
+End
 ```
 
 ### BF_IncrementCellVal_Operation
