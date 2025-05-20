@@ -993,7 +993,18 @@ End
 ### GetCellVal
 ```mermaid
 flowchart TD
-Start([GetCellVal])
+
+subgraph BrainfuckExecuter
+    Start([GetCellVal])
+end
+
+subgraph WrappedInt
+    End([Return #memArr[index].Val])
+end
+
+Start
+-->
+End
 ```
 
 ### SetCellVal
