@@ -558,7 +558,7 @@ class BrainfuckExecuter {
         }
 
         if (conditionVal != undefined) {
-            this.ConditionVal = conditionVal ?? this.CellMinVal;
+            this.ConditionVal = conditionVal;
         }
 
         if (mem != undefined) {

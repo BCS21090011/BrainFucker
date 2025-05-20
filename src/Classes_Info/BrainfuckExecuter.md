@@ -909,7 +909,85 @@ SetConfig
 ### SetConfig
 ```mermaid
 flowchart TD
+
 Start([SetConfig])
+DestructureConfig[Destructure config argument]
+SubscribeCallbacks[SubscribeCallbacks with all callbacks]
+CheckBFCode{Is bfCode provided?}
+SetBFCode[BFCode = new bfCode]
+CheckCIndex{Is cIndex provided?}
+SetCIndex[CIndex = new cIndex]
+CheckMemPtr{Is memPtr provided?}
+SetMemPtr[MemPtr = new memPtr]
+CheckCellMinVal{Is cellMinVal provided?}
+SetCellMinVal[CellMinVal = new cellMinVal]
+CheckCellMaxVal{Is cellMaxVal provided?}
+SetCellMaxVal[CellMaxVal = new cellMaxVal]
+CheckConditionVal{Is conditionVal provided?}
+SetConditionVal[ConditionVal = new conditionVal]
+CheckMem{Is mem provided?}
+SetMem[Mem = new mem]
+CheckMemSize{Is memSize provided?}
+AdjustMemSize[#AdjustMemSize with memSize and defaultVal]
+End([End])
+
+Start
+-->
+DestructureConfig
+-->
+SubscribeCallbacks
+-->
+CheckBFCode
+--true-->
+SetBFCode
+-->
+CheckCIndex
+--true-->
+SetCIndex
+-->
+CheckMemPtr
+--true-->
+SetMemPtr
+-->
+CheckCellMinVal
+--true-->
+SetCellMinVal
+-->
+CheckCellMaxVal
+--true-->
+SetCellMaxVal
+-->
+CheckConditionVal
+--true-->
+SetConditionVal
+-->
+CheckMem
+--true-->
+SetMem
+-->
+CheckMemSize
+--true-->
+AdjustMemSize
+-->
+End
+
+CheckBFCode
+--false-->
+CheckCIndex
+--false-->
+CheckMemPtr
+--false-->
+CheckCellMinVal
+--false-->
+CheckCellMaxVal
+--false-->
+CheckConditionVal
+--false-->
+CheckMem
+--false-->
+CheckMemSize
+--false-->
+End
 ```
 
 ### GetCellVal
