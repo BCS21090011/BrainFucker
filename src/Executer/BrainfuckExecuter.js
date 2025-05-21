@@ -22,8 +22,6 @@ class BrainfuckExecuter {
 
             this.#loopPairs = mapResult.LoopPairs;
             this.#leftOutLoops = mapResult.LeftOutLoops;
-
-            this.CIndex = 0;
         }
     );
     #cIndex = new WatchedVal(0,
@@ -137,7 +135,6 @@ class BrainfuckExecuter {
 
     set CIndex (newVal) {
         EnsureInt(newVal);
-        EnsureInRange(newVal, 0, this.BFCode.length - 1);
         this.#cIndex.Val = newVal;
     }
 

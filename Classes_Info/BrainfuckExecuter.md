@@ -175,7 +175,6 @@ class BrainfuckExecuter {
     subgraph BrainfuckExecuter
         Start([Set CIndex])
         EnsureInt
-        EnsureInRange[Ensure 0 <= newVal < BFCode.length]
         CIndexOnChangeCallback
         IsCodeEnded{CodeEnded === true}
         CodeEndedCallback
@@ -185,8 +184,6 @@ class BrainfuckExecuter {
     Start
     -->
     EnsureInt
-    -->
-    EnsureInRange
     -->
     SetCIndex
     -->
