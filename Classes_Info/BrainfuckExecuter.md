@@ -1,5 +1,7 @@
 # [BrainfuckExecuter](/src/Executer/BrainfuckExecuter.js)
 
+This class should and will only execute brainfuck. Can be interact with using callbacks.
+
 ```mermaid
 classDiagram
 
@@ -68,9 +70,28 @@ class BrainfuckExecuter {
 
 ### #bfCode
 
+* Private `WatchedVal` type string.
+* Stores the brainfuck code to be, or already, executed.
+* If not provided in [`constructor`](#constructor), the default value is empty string (`""`).
+* When the value changes, loop pairs and left-out loops will be remaped.
+* Changing this will **not** change the CIndex.
+
 ### #cIndex
 
+* Private `WatchedVal` type integer.
+* This index points to the current code to be executed.
+* The value can be any integer, not limited within 0 and [`BFCode`](#bfcode).
+* If not provided in [`constructor`](#constructor), the default value is 0.
+* When the value changes, [`CIndexOnChangeCallback`](#cindexonchangecallback) will be called, and if it is larger or equal to [`BFCode`](#bfcode), [`CodeEndedCallback`](#codeendedcallback) will be called.
+* Will be affected by [`BF_Execute`](#bf_execute), which is the return value of [`CodeExecuteOperation`](#codeexecuteoperation), if that callback is provided.
+
 ### #memPtr
+
+* Private `WatchedVal` type integer.
+* This points to the current cell in [`#memArr`](#memarr).
+* Limited by the [`MemSize`](#memsize).
+* If not provided in [`constructor`](#constructor), the default value is 0.
+* When the value changes, [`MemPtrOnChangeCallback`](#memptronchangecallback) will be called, and if it is underflowed (smaller than 0) or overflowed (larger or equal to [`MemSize`](#memsize)), [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
 
 ### #cellMinVal
 
