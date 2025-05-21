@@ -22,6 +22,8 @@ class BrainfuckExecuter {
 
             this.#loopPairs = mapResult.LoopPairs;
             this.#leftOutLoops = mapResult.LeftOutLoops;
+
+            this.CIndex = 0;
         }
     );
     #cIndex = new WatchedVal(0,
