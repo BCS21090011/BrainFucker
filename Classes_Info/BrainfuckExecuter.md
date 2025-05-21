@@ -92,6 +92,7 @@ class BrainfuckExecuter {
 * Limited by the [`MemSize`](#memsize).
 * If not provided in [`constructor`](#constructor), the default value is 0.
 * When the value changes, [`MemPtrOnChangeCallback`](#memptronchangecallback) will be called, and if it is underflowed (smaller than 0) or overflowed (larger or equal to [`MemSize`](#memsize)), [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
+* Will be affected by [`BF_NextCell_Operation`](#bf_nextcell_operation) and [`BF_PrevCell_Operation`](#bf_prevcell_operation).
 
 ### #cellMinVal
 
