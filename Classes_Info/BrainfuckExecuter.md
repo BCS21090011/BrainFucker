@@ -60,6 +60,7 @@ class BrainfuckExecuter {
     +BF_PrevCell_Operation()
     +BF_Input_Operation()
     +BF_Output_Operation()
+    +toJSON()
 }
 ```
 
@@ -1492,6 +1493,18 @@ End([Return this])
 Start
 -->
 Operation
+-->
+End
+```
+
+### toJSON
+```mermaid
+flowchart TD
+
+Start([toJSON])
+End([Return properties as JSON])
+
+Start
 -->
 End
 ```
