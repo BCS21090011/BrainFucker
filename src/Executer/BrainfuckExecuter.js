@@ -466,6 +466,22 @@ class BrainfuckExecuter {
         return this;
     }
 
+    toJSON () {
+        return {
+            "BFCode": this.BFCode,
+            "CIndex": this.CIndex,
+            "MemPtr": this.MemPtr,
+            "MemSize": this.MemSize,
+            "MemArr": this.MemArr,
+            "CodeEnded": this.CodeEnded,
+            "CellMinVal": this.CellMinVal,
+            "CellMaxVal": this.CellMaxVal,
+            "ConditionVal": this.ConditionVal,
+            "LoopPairs": this.LoopPairs,
+            "LeftOutLoops": this.LeftOutLoops
+        }
+    }
+
     #BFDefaultCodeExecuteOperation (code) {
         let cIndex = this.CIndex;
 
@@ -552,22 +568,6 @@ class BrainfuckExecuter {
     BF_Output_Operation () {
         this.OutputCallback(this.CurrentCellVal, this);
         return this;
-    }
-
-    toJSON () {
-        return {
-            "BFCode": this.BFCode,
-            "CIndex": this.CIndex,
-            "MemPtr": this.MemPtr,
-            "MemSize": this.MemSize,
-            "MemArr": this.MemArr,
-            "CodeEnded": this.CodeEnded,
-            "CellMinVal": this.CellMinVal,
-            "CellMaxVal": this.CellMaxVal,
-            "ConditionVal": this.ConditionVal,
-            "LoopPairs": this.LoopPairs,
-            "LeftOutLoops": this.LeftOutLoops
-        }
     }
 }
 

@@ -51,6 +51,7 @@ class BrainfuckExecuter {
     -#CheckMemPtr()
     -#AdjustMemSize(memSize, defaultVal)
     +SubscribeCallbacks(all callbacks)
+    +toJSON()
 
     -#BFDefaultCodeExecuteOperation(code)
     +BF_Execute()
@@ -60,7 +61,6 @@ class BrainfuckExecuter {
     +BF_PrevCell_Operation()
     +BF_Input_Operation()
     +BF_Output_Operation()
-    +toJSON()
 }
 ```
 
