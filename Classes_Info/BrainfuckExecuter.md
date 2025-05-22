@@ -73,7 +73,7 @@ class BrainfuckExecuter {
 * Private `WatchedVal` type string.
 * Stores the brainfuck code to be, or already, executed.
 * The default value is empty string (`""`).
-* When the value changes, loop pairs and left-out loops will be remaped.
+* When the value changes, *[`loop pairs`](#looppairs-1)* and *[`left-out loops`](#leftoutloops-1)* will be remaped.
 * Changing this will **not** change the CIndex.
 * Exposed by [`BFCode`](#bfcode-1) with getter and setter.
 
@@ -135,7 +135,7 @@ class BrainfuckExecuter {
 ### #loopPairs
 
 * Private JavaScript object.
-* This stores all pairs of loop heads (`[`) and loop tails (`]`) in [`BFCode`](#bfcode-1) by index (integer), which is where they jump to.
+* This stores all pairs of *loop heads* (`[`) and *loop tails* (`]`) in [`BFCode`](#bfcode-1) by index (integer), which is where they jump to.
 * Bi-directional.
 * Default to empty.
 * Can only be changed (re-mapped) when [`BFCode`](#bfcode-1) changes.
@@ -146,7 +146,7 @@ class BrainfuckExecuter {
 ### #leftOutLoops
 
 * Private array of integers.
-* This stores the index (integer) of all loop heads (`[`) and loop tails (`]`) without it's pair of tail and head respectively.
+* This stores the index (integer) of all *loop heads* (`[`) and *loop tails* (`]`) without it's pair of *tail* and *head* respectively.
 * Default to empty.
 * Can only be changed (re-mapped) when [`BFCode`](#bfcode-1) changes.
 * The changing of this property will not affect anything, this is not even used within the class.
@@ -154,6 +154,9 @@ class BrainfuckExecuter {
 * Exposed by [`LeftOutLoops`](#leftoutloops-1) with getter **only** (can't be setted).
 
 ### #memArr
+
+* Private array of `WrappedInt`.
+* This is the memory, with all the cells.
 
 ## Public Properties
 
@@ -646,6 +649,7 @@ class BrainfuckExecuter {
 
     Start([Set MemArr])
     ValidateMemArg
+    EnsureInRange[Ensure 1 <= newMem.length <= BFMemoryMaxSize]
     InitializeMemArr[#memArr = empty array]
     ForCond{For i in newMem.length}
     CreateCell
@@ -656,6 +660,8 @@ class BrainfuckExecuter {
     Start
     -->
     ValidateMemArg
+    -->
+    EnsureInRange
     -->
     InitializeMemArr
     -->

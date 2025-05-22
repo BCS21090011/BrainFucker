@@ -164,6 +164,7 @@ class BrainfuckExecuter {
 
     set MemArr (newMem) {
         BrainfuckExecuter.ValidateMemArg(newMem);
+        EnsureInRange(newMem.length, 1, BFMemoryMaxSize);
 
         this.#memArr = [];
 
