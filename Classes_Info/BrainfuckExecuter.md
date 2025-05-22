@@ -68,6 +68,13 @@ class BrainfuckExecuter {
 }
 ```
 
+## Constants
+
+## BFMemoryMaxSize
+
+* Value is 30000.
+* The maximum cell a `BrainfuckExecuter` can have.
+
 ## Private Properties
 
 ### #bfCode
@@ -161,6 +168,7 @@ class BrainfuckExecuter {
 * Private array of `WrappedInt`.
 * This is the memory, with all the cells.
 * Default to empty, but will have at least one cell when object is constructed.
+* After object constructed, should have length between 1 and [`BFMemoryMaxSize`](#bfmemorymaxsize).
 * Can only change the length, and when changed, will affect [`MemPtr`](#memptr-1).
 * Can be changed by [`MemSize`](#memsize) and [`#AdjustMemSize`](#adjustmemsize), which will trim or extend the array.
 * After changes, if [`MemPtr`](#memptr-1) is underflowed or overflowed, [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
@@ -171,6 +179,9 @@ class BrainfuckExecuter {
 ## Public Properties
 
 ### BFCode
+
+* Public string.
+* The getter and setter of [`bfCode`](#bfcode).
 
 * Get BFCode
     ```mermaid
@@ -229,6 +240,9 @@ class BrainfuckExecuter {
     ```
 
 ### CIndex
+
+* Public integer.
+* The getter and setter of [`#cIndex`](#cindex).
 
 * Get CIndex
     ```mermaid
@@ -292,6 +306,9 @@ class BrainfuckExecuter {
 
 ### MemPtr
 
+* Public integer.
+* The getter and setter of [`#memPtr`](#memptr).
+
 * Get MemPtr
     ```mermaid
     flowchart TD
@@ -346,6 +363,9 @@ class BrainfuckExecuter {
     ```
 
 ### CellMinVal
+
+* Public integer.
+* The getter and setter of [`#cellMinVal`](#cellminval).
 
 * Get CellMinVal
     ```mermaid
@@ -457,6 +477,9 @@ class BrainfuckExecuter {
 
 ### CellMaxVal
 
+* Public integer.
+* The getter and setter of [`#cellMaxVal`](#cellmaxval).
+
 * Get CellMaxVal
     ```mermaid
     flowchart TD
@@ -567,6 +590,9 @@ class BrainfuckExecuter {
 
 ### ConditionVal
 
+* Public integer.
+* The getter and setter of [`#conditionVal`](#conditionval).
+
 * Get ConditionVal
     ```mermaid
     flowchart TD
@@ -602,6 +628,10 @@ class BrainfuckExecuter {
 
 ### LoopPairs
 
+* Public JavaScript object.
+* The getter of [`#loopPairs`](#looppairs).
+* The getter will only return the shallow copy of [`#loopPairs`](#looppairs).
+
 * Get LoopPairs
     ```mermaid
     flowchart TD
@@ -616,6 +646,10 @@ class BrainfuckExecuter {
 
 ### LeftOutLoops
 
+* Public array of integers.
+* The getter of [`#leftOutLoops`](#leftoutloops).
+* The getter will only return the shallow copy of [`#leftOutLoops`](#leftoutloops).
+
 * Get LeftOutLoops
     ```mermaid
     flowchart TD
@@ -629,6 +663,11 @@ class BrainfuckExecuter {
     ```
 
 ### MemArr
+
+* Public array of integers.
+* The getter and setter of [`#memArr`](#memarr).
+* The getter will only return the value of cells in [`#memArr`](#memarr).
+* The setter will only accept array of integers with length between 1 and [`BFMemoryMaxSize`](#bfmemorymaxsize), the setter will create cells with callbacks with values provided.
 
 * Get MemArr
     ```mermaid
@@ -689,6 +728,13 @@ class BrainfuckExecuter {
     ```
 
 ### MemSize
+
+* Public integer.
+* The value should be in between 1 and [`BFMemoryMaxSize`](#bfmemorymaxsize).
+* The getter will return the length of [`#memArr`](#memarr).
+* The setter will trim or extend [`#memArr`](#memarr).
+* When triming, will remove last few extra cells.
+* When extending [`#memArr`](#memarr), will create cells with [`CellMinVal`](#cellminval-1) as value.
 
 * Get MemSize
     ```mermaid
