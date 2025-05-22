@@ -29,6 +29,7 @@ class BrainfuckExecuter {
     +int MemSize
     +bool CodeEnded
     +int CurrentCellVal
+    +AllCellVal
 
     +InputCallback
     +OutputCallback
@@ -45,6 +46,7 @@ class BrainfuckExecuter {
 
     +constructor(bfCode="", inputCallback, outputCallback, memSize, config)
     +SetConfig(bfCode="", inputCallback, outputCallback, memSize, config)
+    +SetAllCellVal(newVal)
     +GetCellVal(index)
     +SetCellVal(index, newVal)
     +ValidateMemArg(mem)$
@@ -751,6 +753,98 @@ class BrainfuckExecuter {
     End
     ```
 
+### AllCellVal
+
+* Set AllCellVal
+    ```mermaid
+    flowchart TD
+
+    subgraph BrainfuckExecuter
+        Start([Set AllCellVal])
+        BFEnsureInt[Ensure newVal is an int]
+        ForCond{For cell in #memArr}
+        CellUnderflowCallback
+        CellOverflowCallback
+        MemCellOnChangeCallback
+        MemCellOnSetCallback
+        End([End])
+    end
+
+    subgraph WrappedInt
+        SetVal[Set cell.Val for cell in #memArr]
+        EnsureInt[Ensure newVal is an int]
+        SetOriginalVal[originalVal = val before changes]
+        SetPrivVal[#value = newVal]
+        InitializeUnderflowFlag[underflowed = false]
+        InitializeOverflowFlag[overflowed = false]
+        SetOriginalVal_wrap[originalVal = val before changes]
+        CheckUnderflow[Flag val < min as underflow]
+        CheckOverflow[Flag val > max as overflow]
+        WrappedIntEnsureIntValMinMax[Ensure all val, min, and max are int]
+        WrappedIntEnsureMinMax[Ensure min max]
+        Wrap
+        WasUnderflow{Was underflow}
+        WasOverflow{Was overflow}
+        WrappedIntValChanged{val changed?}
+    end
+
+    Start
+    -->
+    BFEnsureInt
+    -->
+    ForCond
+    --cell-->
+    SetVal
+    -->
+    EnsureInt
+    -->
+    SetOriginalVal
+    -->
+    SetPrivVal
+    -->
+    InitializeUnderflowFlag
+    -->
+    InitializeOverflowFlag
+    -->
+    SetOriginalVal_wrap
+    -->
+    CheckUnderflow
+    -->
+    CheckOverflow
+    -->
+    WrappedIntEnsureIntValMinMax
+    -->
+    WrappedIntEnsureMinMax
+    -->
+    Wrap
+    -->
+    WasUnderflow
+    --true-->
+    CellUnderflowCallback
+    -->
+    WasOverflow
+    --true-->
+    CellOverflowCallback
+    -->
+    WrappedIntValChanged
+    --true-->
+    MemCellOnChangeCallback
+    -->
+    MemCellOnSetCallback
+    -->
+    ForCond
+    --loop end-->
+    End
+
+    WasUnderflow
+    --false-->
+    WasOverflow
+    --false-->
+    WrappedIntValChanged
+    --false-->
+    MemCellOnSetCallback
+    ```
+
 ## Callbacks
 
 ### InputCallback
@@ -1278,6 +1372,7 @@ flowchart TD
 
 subgraph BrainfuckExecuter
     Start([SetCellVal])
+    BFEnsureInt[Ensure newVal is an int]
     CellUnderflowCallback
     CellOverflowCallback
     MemCellOnChangeCallback
@@ -1304,6 +1399,8 @@ subgraph WrappedInt
 end
 
 Start
+-->
+BFEnsureInt
 -->
 SetVal
 -->
@@ -1353,6 +1450,21 @@ WasOverflow
 WrappedIntValChanged
 --false-->
 MemCellOnSetCallback
+```
+
+### SetAllCellVal
+```mermaid
+flowchart TD
+
+Start([SetAllCellVal])
+SetAllCellVal[AllCellVal = newVal]
+End([Return this])
+
+Start
+-->
+SetAllCellVal
+-->
+End
 ```
 
 ### SubscribeCallbacks

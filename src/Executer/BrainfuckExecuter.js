@@ -223,6 +223,8 @@ class BrainfuckExecuter {
     }
 
     SetCellVal (index, newVal) {
+        EnsureInt(newVal);
+        // Didn't check if in range so that it can be wrapped.
         this.#memArr[index].Val = newVal;
     }
 
@@ -232,6 +234,19 @@ class BrainfuckExecuter {
 
     set CurrentCellVal (newVal) {
         this.SetCellVal(this.MemPtr, newVal);
+    }
+
+    set AllCellVal (newVal) {
+        EnsureInt(newVal);
+
+        this.#memArr.forEach((cell) => {
+            cell.Val = newVal;
+        });
+    }
+
+    SetAllCellVal (newVal) {
+        this.AllCellVal = newVal;
+        return this;
     }
 
     static ValidateMemArg (mem) {
