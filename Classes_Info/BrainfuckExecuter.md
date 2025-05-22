@@ -97,6 +97,7 @@ class BrainfuckExecuter {
 * Default to 0.
 * When the value changes, [`MemPtrOnChangeCallback`](#memptronchangecallback) will be called, and if it is underflowed (smaller than 0) or overflowed (larger or equal to [`MemSize`](#memsize)), [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
 * Will be affected by [`BF_NextCell_Operation`](#bf_nextcell_operation) and [`BF_PrevCell_Operation`](#bf_prevcell_operation).
+* When be affected when [`MemArr`](#memarr-1) and [`MemSize`](#memsize) changes.
 * Exposed by [`MemPtr`](#memptr-1) with getter and setter.
 
 ### #cellMinVal
@@ -107,7 +108,7 @@ class BrainfuckExecuter {
 * Value is not limited, but must be smaller or equal to [`CellMaxVal`](#cellmaxval-1).
 * Default to 0.
 * When the value changes, the min of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, [`CellUnderflowCallback`](#cellunderflowcallback), [`CellOverflowCallback`](#celloverflowcallback), and [`MemCellOnChangeCallback`](#memcellonchangecallback) will be called respectively.
-* This property, with [`#cellMaxVal`](#cellmaxval) are the only two that will affect every cells in [`#memArr`](#memarr).
+* This property, with [`#cellMaxVal`](#cellmaxval), [`AllCelVal`](#allcellval), and [`SetAllCellVal`](#setallcellval) are the only members that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`CellMinVal`](#cellminval-1) with getter and setter.
 
@@ -119,7 +120,7 @@ class BrainfuckExecuter {
 * Value is not limited, but must be larger or equal to [`CellMinVal`](#cellminval-1).
 * Default to 255.
 * When the value changes, the max of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, [`CellUnderflowCallback`](#cellunderflowcallback), [`CellOverflowCallback`](#celloverflowcallback), and [`MemCellOnChangeCallback`](#memcellonchangecallback) will be called respectively.
-* This property, with [`#cellMinVal`](#cellminval) are the only two that will affect every cells in [`#memArr`](#memarr).
+* This property, with [`#cellMinVal`](#cellminval), [`AllCelVal`](#allcellval), and [`SetAllCellVal`](#setallcellval) are the only members that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`CellMaxVal`](#cellmaxval-1) with getter and setter.
 
@@ -160,6 +161,12 @@ class BrainfuckExecuter {
 * Private array of `WrappedInt`.
 * This is the memory, with all the cells.
 * Default to empty, but will have at least one cell when object is constructed.
+* Can only change the length, and when changed, will affect [`MemPtr`](#memptr-1).
+* Can be changed by [`MemSize`](#memsize) and [`#AdjustMemSize`](#adjustmemsize), which will trim or extend the array.
+* After changes, if [`MemPtr`](#memptr-1) is underflowed or overflowed, [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
+* Will affect the maximum value of [`MemPtr`](#memptr-1).
+* Brainfuck execution operations will not affect this property.
+* Exposed by [`MemArr`](#memarr-1) with getter and setter, which getter will only return the value of each cell.
 
 ## Public Properties
 
