@@ -72,7 +72,7 @@ class BrainfuckExecuter {
 
 * Private `WatchedVal` type string.
 * Stores the brainfuck code to be, or already, executed.
-* If not provided in [`constructor`](#constructor), the default value is empty string (`""`).
+* The default value is empty string (`""`).
 * When the value changes, loop pairs and left-out loops will be remaped.
 * Changing this will **not** change the CIndex.
 * Exposed by [`BFCode`](#bfcode-1) with getter and setter.
@@ -82,7 +82,7 @@ class BrainfuckExecuter {
 * Private `WatchedVal` type integer.
 * This index points to the current code to be executed.
 * The value can be any integer, not limited within 0 and [`BFCode`](#bfcode).
-* If not provided in [`constructor`](#constructor), the default value is 0.
+* The default value is 0.
 * When the value changes, [`CIndexOnChangeCallback`](#cindexonchangecallback) will be called, and if it is larger or equal to [`BFCode`](#bfcode), [`CodeEndedCallback`](#codeendedcallback) will be called.
 * Will be affected by [`BF_Execute`](#bf_execute), which is the return value of [`CodeExecuteOperation`](#codeexecuteoperation), if that callback is provided.
 * Exposed by [`CIndex`](#cindex-1) with getter and setter.
@@ -92,7 +92,7 @@ class BrainfuckExecuter {
 * Private `WatchedVal` type integer.
 * This points to the current cell in [`#memArr`](#memarr).
 * Limited by the [`MemSize`](#memsize).
-* If not provided in [`constructor`](#constructor), the default value is 0.
+* The default value is 0.
 * When the value changes, [`MemPtrOnChangeCallback`](#memptronchangecallback) will be called, and if it is underflowed (smaller than 0) or overflowed (larger or equal to [`MemSize`](#memsize)), [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
 * Will be affected by [`BF_NextCell_Operation`](#bf_nextcell_operation) and [`BF_PrevCell_Operation`](#bf_prevcell_operation).
 * Exposed by [`MemPtr`](#memptr-1) with getter and setter.
@@ -103,7 +103,7 @@ class BrainfuckExecuter {
 * This is the min boundary of cells in [`#memArr`](#memarr) (inclusive).
 * This property is for custom Brainfuck behaviour.
 * Value is not limited, but must be smaller or equal to [`CellMaxVal`](#cellmaxval-1).
-* If not provided in [`constructor`](#constructor), the default value is 0.
+* The default value is 0.
 * When the value changes, the min of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, [`CellUnderflowCallback`](#cellunderflowcallback), [`CellOverflowCallback`](#celloverflowcallback), and [`MemCellOnChangeCallback`](#memcellonchangecallback) will be called respectively.
 * This property, with [`#cellMaxVal`](#cellmaxval) are the only two that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
@@ -115,7 +115,7 @@ class BrainfuckExecuter {
 * This is the max boundary of cells in [`#memArr`](#memarr) (inclusive).
 * This property is for custom Brainfuck behaviour.
 * Value is not limited, but must be larger or equal to [`CellMinVal`](#cellminval-1).
-* If not provided in [`constructor`](#constructor), the default value is 255.
+* The default value is 255.
 * When the value changes, the max of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, [`CellUnderflowCallback`](#cellunderflowcallback), [`CellOverflowCallback`](#celloverflowcallback), and [`MemCellOnChangeCallback`](#memcellonchangecallback) will be called respectively.
 * This property, with [`#cellMinVal`](#cellminval) are the only two that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
@@ -125,15 +125,33 @@ class BrainfuckExecuter {
 
 * Private integer.
 * This is the condition value, used in loop checking in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
-* If not provided in [`constructor`](#constructor), the default value is 0.
+* The default value is 0.
 * In [`SetConfig`](#setconfig), if conditionVal is not within [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1), and new conditionVal is not provided, it will set to [`CellMinVal`](#cellminval-1).
 * The changing of this property will not affect anything, except how loop will behave in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`ConditionVal`](#conditionval-1) with getter and setter.
+* The reason I didn't throw error for out-of-range conditionVal is because it will increase the complexity when setting [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1).
 
 ### #loopPairs
 
+* Private JavaScript object.
+* This stores all pairs of loop heads (`[`) and loop tails (`]`) in [`BFCode`](#bfcode-1) by index (integer), which is where they jump to.
+* Bi-directional.
+* Default to empty.
+* Can only be changed (re-mapped) when [`BFCode`](#bfcode-1) changes.
+* The changing of this property will not affect anything, except how loop will behave in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
+* Brainfuck execution operations will not affect this property.
+* Exposed by [`LoopPairs`](#looppairs-1) with getter **only** (can't be setted).
+
 ### #leftOutLoops
+
+* Private array of integers.
+* This stores the index (integer) of all loop heads (`[`) and loop tails (`]`) without it's pair of tail and head respectively.
+* Default to empty.
+* Can only be changed (re-mapped) when [`BFCode`](#bfcode-1) changes.
+* The changing of this property will not affect anything, this is not even used within the class.
+* Brainfuck execution operations will not affect this property.
+* Exposed by [`LeftOutLoops`](#leftoutloops-1) with getter **only** (can't be setted).
 
 ### #memArr
 
