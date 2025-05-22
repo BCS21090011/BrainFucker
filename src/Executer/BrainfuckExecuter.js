@@ -16,7 +16,8 @@ class MemPtrOutOfRangeError extends CustomValueError {
 const BFMemoryMaxSize = 30000;
 
 class BrainfuckExecuter {
-    #bfCode = new WatchedVal("",
+    #bfCode = new WatchedVal(
+        "",
         (valBefore, valAfter) => {
             const mapResult = BrainfuckExecuter.MapLoopPairs(valAfter);
 
@@ -24,7 +25,8 @@ class BrainfuckExecuter {
             this.#leftOutLoops = mapResult.LeftOutLoops;
         }
     );
-    #cIndex = new WatchedVal(0,
+    #cIndex = new WatchedVal(
+        0,
         (valBefore, valAfter) => {
             this.CIndexOnChangeCallback(valBefore, valAfter, this);
 
@@ -33,7 +35,8 @@ class BrainfuckExecuter {
             }
         }
     );
-    #memPtr = new WatchedVal(0,
+    #memPtr = new WatchedVal(
+        0,
         (valBefore, valAfter) => {
             this.MemPtrOnChangeCallback(valBefore, valAfter, this);
             this.#CheckMemPtr();

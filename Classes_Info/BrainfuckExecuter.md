@@ -75,6 +75,7 @@ class BrainfuckExecuter {
 * If not provided in [`constructor`](#constructor), the default value is empty string (`""`).
 * When the value changes, loop pairs and left-out loops will be remaped.
 * Changing this will **not** change the CIndex.
+* Exposed by [`BFCode`](#bfcode-1) with getter and setter.
 
 ### #cIndex
 
@@ -84,6 +85,7 @@ class BrainfuckExecuter {
 * If not provided in [`constructor`](#constructor), the default value is 0.
 * When the value changes, [`CIndexOnChangeCallback`](#cindexonchangecallback) will be called, and if it is larger or equal to [`BFCode`](#bfcode), [`CodeEndedCallback`](#codeendedcallback) will be called.
 * Will be affected by [`BF_Execute`](#bf_execute), which is the return value of [`CodeExecuteOperation`](#codeexecuteoperation), if that callback is provided.
+* Exposed by [`CIndex`](#cindex-1) with getter and setter.
 
 ### #memPtr
 
@@ -93,10 +95,31 @@ class BrainfuckExecuter {
 * If not provided in [`constructor`](#constructor), the default value is 0.
 * When the value changes, [`MemPtrOnChangeCallback`](#memptronchangecallback) will be called, and if it is underflowed (smaller than 0) or overflowed (larger or equal to [`MemSize`](#memsize)), [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
 * Will be affected by [`BF_NextCell_Operation`](#bf_nextcell_operation) and [`BF_PrevCell_Operation`](#bf_prevcell_operation).
+* Exposed by [`MemPtr`](#memptr-1) with getter and setter.
 
 ### #cellMinVal
 
+* Private `WatchedVal` type integer.
+* This is the min boundary of cells in [`#memArr`](#memarr) (inclusive).
+* This property is for custom Brainfuck behaviour.
+* Value is not limited, but must be smaller or equal to [`CellMaxVal`](#cellmaxval-1).
+* If not provided in [`constructor`](#constructor), the default value is 0.
+* When the value changes, the min of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, respective callback will be called.
+* This property, with [`#cellMaxVal`](#cellmaxval) are the only two that will affect every cells in [`#memArr`](#memarr).
+* Brainfuck execution operations will not affect this property.
+* Exposed by [`CellMinVal`](#cellminval-1) with getter and setter.
+
 ### #cellMaxVal
+
+* Private `WatchedVal` type integer.
+* This is the max boundary of cells in [`#memArr`](#memarr) (inclusive).
+* This property is for custom Brainfuck behaviour.
+* Value is not limited, but must be larger or equal to [`CellMinVal`](#cellminval-1).
+* If not provided in [`constructor`](#constructor), the default value is 255.
+* When the value changes, the max of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, respective callback will be called.
+* This property, with [`#cellMinVal`](#cellminval) are the only two that will affect every cells in [`#memArr`](#memarr).
+* Brainfuck execution operations will not affect this property.
+* Exposed by [`CellMaxVal`](#cellmaxval-1) with getter and setter.
 
 ### #conditionVal
 
