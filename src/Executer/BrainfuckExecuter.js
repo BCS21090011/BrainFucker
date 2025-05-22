@@ -1,5 +1,5 @@
 import WrappedInt from "./WrappedInt";
-import { EnsureInRange, EnsureInt, EnsureMinMax, EnsureString, WatchedVal } from "../utils/utils";
+import { EnsureInRange, EnsureInt, EnsureMinMax, EnsureString, IsInRange, WatchedVal } from "../utils/utils";
 import { CustomValueError, CustomMissingArgumentError } from "../utils/CustomErrors";
 
 class MemPtrOutOfRangeError extends CustomValueError {
@@ -390,7 +390,13 @@ class BrainfuckExecuter {
         }
 
         if (conditionVal != undefined) {
+            EnsureInRange(conditionVal, this.CellMinVal, this.CellMaxVal);
             this.ConditionVal = conditionVal;
+        }
+        else {
+            if (IsInRange(this.ConditionVal, this.CellMinVal, this.CellMaxVal) === false) {
+                this.ConditionVal = this.CellMinVal;
+            }
         }
 
         if (mem != undefined) {

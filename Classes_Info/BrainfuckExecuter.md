@@ -104,7 +104,7 @@ class BrainfuckExecuter {
 * This property is for custom Brainfuck behaviour.
 * Value is not limited, but must be smaller or equal to [`CellMaxVal`](#cellmaxval-1).
 * If not provided in [`constructor`](#constructor), the default value is 0.
-* When the value changes, the min of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, respective callback will be called.
+* When the value changes, the min of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, [`CellUnderflowCallback`](#cellunderflowcallback), [`CellOverflowCallback`](#celloverflowcallback), and [`MemCellOnChangeCallback`](#memcellonchangecallback) will be called respectively.
 * This property, with [`#cellMaxVal`](#cellmaxval) are the only two that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`CellMinVal`](#cellminval-1) with getter and setter.
@@ -116,12 +116,20 @@ class BrainfuckExecuter {
 * This property is for custom Brainfuck behaviour.
 * Value is not limited, but must be larger or equal to [`CellMinVal`](#cellminval-1).
 * If not provided in [`constructor`](#constructor), the default value is 255.
-* When the value changes, the max of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, respective callback will be called.
+* When the value changes, the max of **all** cells in [`#memArr`](#memarr) will be changed, which might changes the value of each cell, and if the new value underflowed, overflowed, or changed, [`CellUnderflowCallback`](#cellunderflowcallback), [`CellOverflowCallback`](#celloverflowcallback), and [`MemCellOnChangeCallback`](#memcellonchangecallback) will be called respectively.
 * This property, with [`#cellMinVal`](#cellminval) are the only two that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`CellMaxVal`](#cellmaxval-1) with getter and setter.
 
 ### #conditionVal
+
+* Private integer.
+* This is the condition value, used in loop checking in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
+* If not provided in [`constructor`](#constructor), the default value is 0.
+* In [`SetConfig`](#setconfig), if conditionVal is not within [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1), and new conditionVal is not provided, it will set to [`CellMinVal`](#cellminval-1).
+* The changing of this property will not affect anything, except how loop will behave in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
+* Brainfuck execution operations will not affect this property.
+* Exposed by [`ConditionVal`](#conditionval-1) with getter and setter.
 
 ### #loopPairs
 
@@ -1143,7 +1151,10 @@ SetCellMinVal[CellMinVal = new cellMinVal]
 CheckCellMaxVal{Is cellMaxVal provided?}
 SetCellMaxVal[CellMaxVal = new cellMaxVal]
 CheckConditionVal{Is conditionVal provided?}
+EnsureInRange[Ensure CellMinVal <= new conditionVal <= CellMaxVal]
 SetConditionVal[ConditionVal = new conditionVal]
+CheckConditionValNotInRange{Check if not CellMinVal <= new conditionVal <= CellMaxVal}
+SetConditionVal2[ConditionVal = CellMinVal]
 CheckMem{Is mem provided?}
 SetMem[Mem = new mem]
 CheckMemSize{Is memSize provided?}
@@ -1178,6 +1189,8 @@ SetCellMaxVal
 -->
 CheckConditionVal
 --true-->
+EnsureInRange
+-->
 SetConditionVal
 -->
 CheckMem
@@ -1202,11 +1215,19 @@ CheckCellMaxVal
 --false-->
 CheckConditionVal
 --false-->
+CheckConditionValNotInRange
+--true-->
+SetConditionVal2
+-->
 CheckMem
 --false-->
 CheckMemSize
 --false-->
 End
+
+CheckConditionValNotInRange
+--false-->
+CheckMem
 ```
 
 ### GetCellVal
