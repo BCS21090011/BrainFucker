@@ -666,7 +666,7 @@ class BrainfuckExecuter {
 
 * Public array of integers.
 * The getter and setter of [`#memArr`](#memarr).
-* The getter will only return the value of cells in [`#memArr`](#memarr).
+* The getter will only return the value of cells in [`#memArr`](#memarr), not the `WrappedInt` object.
 * The setter will only accept array of integers with length between 1 and [`BFMemoryMaxSize`](#bfmemorymaxsize), the setter will create cells with callbacks with values provided.
 
 * Get MemArr
@@ -730,11 +730,12 @@ class BrainfuckExecuter {
 ### MemSize
 
 * Public integer.
-* The value should be in between 1 and [`BFMemoryMaxSize`](#bfmemorymaxsize).
+* The getter and setter that shows and modify the size of memory ([`#memArr`](#memarr)).
 * The getter will return the length of [`#memArr`](#memarr).
 * The setter will trim or extend [`#memArr`](#memarr).
 * When triming, will remove last few extra cells.
 * When extending [`#memArr`](#memarr), will create cells with [`CellMinVal`](#cellminval-1) as value.
+* The value should be in between 1 and [`BFMemoryMaxSize`](#bfmemorymaxsize).
 
 * Get MemSize
     ```mermaid
@@ -765,6 +766,9 @@ class BrainfuckExecuter {
 
 ### CodeEnded
 
+* Public boolean.
+* The getter that shows if the code execution is ended, i.e., no more character in [`BFCode`](#bfcode-1) pointed by [`CIndex`](#cindex-1) to execute.
+
 * Get CodeEnded
     ```mermaid
     flowchart TD
@@ -778,6 +782,10 @@ class BrainfuckExecuter {
     ```
 
 ### CurrentCellVal
+
+* Public integer.
+* The getter and setter to get and set the value of the cell pointed by [`MemPtr`](#memptr-1) in [`#memArr`](#memarr).
+* The getter will only return the value of the cell, not the `WrappedInt` object.
 
 * Get CurrentCellVal
     ```mermaid
@@ -807,6 +815,11 @@ class BrainfuckExecuter {
     ```
 
 ### AllCellVal
+
+* Public integer.
+* The setter to set the value of all cells in [`#memArr`](#memarr).
+* This might change the value of many cells, which, same as [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1), might trigger callbacks.
+* No getter.
 
 * Set AllCellVal
     ```mermaid
