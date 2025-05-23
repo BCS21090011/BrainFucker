@@ -1135,6 +1135,14 @@ End
 ## Private Methods
 
 ### #CreateCell
+
+* Arguments:
+  * index: The index of the new cell. This is required for the callbacks.
+  * cellVal: The value of the create cell.
+* Return:
+  * The created `WrappedInt` cell.
+* Create new `WrappedInt` cell, used when setting [`MemArr`](#memarr-1), [`MemSize`](#memsize), and [`#AdjustMemSize`](#adjustmemsize).
+
 ```mermaid
 flowchart TD
 
