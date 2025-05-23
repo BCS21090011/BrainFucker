@@ -64,7 +64,7 @@ class BrainfuckExecuter {
     #loopPairs = {};
     #leftOutLoops = [];
 
-    InputCallback = (brainfuckExecuter) => {return brainfuckExecuter.CellMinVal; };
+    InputCallback = (brainfuckExecuter) => { return brainfuckExecuter.CellMinVal; };
     OutputCallback = (output, brainfuckExecuter) => { };
 
     CIndexOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { };
@@ -76,10 +76,10 @@ class BrainfuckExecuter {
         throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
     };
     CodeEndedCallback = (brainfuckExecuter) => { };
-    CellUnderflowCallback = (index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { };
-    CellOverflowCallback = (index, valBefore, valAfter, wrappedIntAfter, brainfuckExecuterAfter) => { };
-    MemCellOnChangeCallback = (index, oldVal, newVal, wrappedIntAfter, brainfuckExecuterAfter) => { };
-    MemCellOnSetCallback = (index, val, wrappedInt, brainfuckExecuterAfter) => { };
+    CellUnderflowCallback = (index, valBefore, valAfter, brainfuckExecuterAfter) => { };
+    CellOverflowCallback = (index, valBefore, valAfter, brainfuckExecuterAfter) => { };
+    MemCellOnChangeCallback = (index, oldVal, newVal, brainfuckExecuterAfter) => { };
+    MemCellOnSetCallback = (index, val, brainfuckExecuterAfter) => { };
     CodeExecuteOperation = undefined;
 
     constructor (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=30000, config={}) {

@@ -44,8 +44,8 @@ class BrainfuckExecuter {
     +MemCellOnSetCallback
     +CodeExecuteOperation
 
-    +constructor(bfCode="", inputCallback, outputCallback, memSize, config)
-    +SetConfig(bfCode="", inputCallback, outputCallback, memSize, config)
+    +constructor(bfCode="", memSize, config)
+    +SetConfig(bfCode="", memSize, config)
     +SetAllCellVal(newVal)
     +GetCellVal(index)
     +SetCellVal(index, newVal)
@@ -915,29 +915,106 @@ class BrainfuckExecuter {
 
 ### InputCallback
 
-* Will be called for input in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation)
+* Argument:
+  * brainfuckExecuter: The current object.
+* Return:
+  * The integer input value, how the input is converted or interpreted to integer is depends on the user.
+* Default to return [`CellMinVal`](#cellminval-1).
+* Will be called for input in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation) and [`BF_Input_Operation`](#bf_input_operation).
 
 ### OutputCallback
 
+* Argument:
+  * output: The integer output, how the output is converted or interpreted from integer is depends on the user.
+  * brainfuckExecuter: The current object.
+* Will be called for ouptut in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation) and [`BF_Output_Operation`](#bf_output_operation).
+
 ### CIndexOnChangeCallback
+
+* Arguments:
+  * oldVal: The original [`CIndex`](#cindex-1) value, integer.
+  * newVal: The new changed [`CIndex`](#cindex-1) value, integer.
+  * brainfuckExecuterAfter: The current object after the changes.
+* Will be called when [`CIndex`](#cindex-1) changes.
 
 ### MemPtrOnChangeCallback
 
+* Arguments:
+  * oldVal: The original [`MemPtr`](#memptr-1) value, integer.
+  * newVal: The new changed [`MemPtr`](#memptr-1) value, integer.
+  * brainfuckExecuterAfter: The current object after the changes.
+* Will be called when [`MemPtr`](#memptr-1) changes.
+
 ### MmePtrUnderflowCallback
+
+* Arguments:
+  * val: The underflowed value, integer.
+  * brainfuckExecuter: The current object.
+* Default to throw `MemPtrOutOfRangeError`.
+* Will be called when [`MemPtr`](#memptr-1) is underflowed (smaller than 0).
 
 ### MemPtrOverflowCallback
 
+* Arguments:
+  * val: The overflowed value, integer.
+  * brainfuckExecuter: The current object.
+* Default to throw `MemPtrOutOfRangeError`.
+* Will be called when [`MemPtr`](#memptr-1) is overflowed (larger or equal to [`MemSize`](#memsize)).
+
 ### CodeEndedCallback
+
+* Arguments:
+  * brainfuckExecuter: The current object.
+* Will be called when the code is ended, i.e., [`CIndex`](#cindex-1) is larger or equal to the length of [`BFCode`](#bfcode-1).
 
 ### CellUnderflowCallback
 
+* Arguments:
+  * index: The index of cell that underflowed, integer.
+  * valBefore: The original value of cell, integer.
+  * valAfter: The wrapped value of cell, integer.
+  * brainfuckExecuterAfter: The current object.
+* Will be called when the cell value underflowed, i.e., smaller than [`CellMinVal`](#cellminval-1).
+
 ### CellOverflowCallback
+
+* Arguments:
+  * index: The index of cell that overflowed, integer.
+  * valBefore: The original value of cell, integer.
+  * valAfter: The wrapped value of cell, integer.
+  * brainfuckExecuterAfter: The current object.
+* Will be called when the cell value overflowed, i.e., larger than [`CellMaxVal`](#cellmaxval-1).
 
 ### MemCellOnChangeCallback
 
+* Arguments:
+  * index: The index of cell that value was changed, integer.
+  * oldVal: The original value of cell, integer.
+  * newVal: The new value of cell after changes, integer.
+  * brainfuckExecuterAfter: The current object.
+* Will be called when the cell value changes.
+* Will be called after [`CellUnderflowCallback`](#cellunderflowcallback) and [`CellOverflowCalback`](#celloverflowcallback), if those are called.
+* Please note that a cell underflowed or overflowed doesn't necessary change the value (wrapped into the same value), therefore not necessary call this callback.
+
 ### MemCellOnSetCallback
 
+* Arguments:
+  * index: The index of cell that value was setted, integer.
+  * val: The value of cell, integer.
+  * brainfuckExecuterAfter: The current object.
+* Will be called when the cell value is setted.
+* Will be called after [`CellUnderflowCallback`](#cellunderflowcallback), [`CellOverflowCalback`](#celloverflowcallback), and [`MemCellOnChangeCallback`](#memcellonchangecallback), if those are called.
+* This will be called even if the value is not changed, underflowed, or overflowed.
+
 ### CodeExecuteOperation
+
+* Arguments:
+  * code: The current code character in [`BFCode`](#bfcode-1) pointed by [`CIndex`](#cindex-1).
+  * brainfuckExecuter: The current object.
+* Return:
+  * The next cIndex, integer.
+* To override the default Brainfuck execution, [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation), in [`BF_Execute`](#bf_execute).
+* If this is `undefined`, then [`BF_Execute`](#bf_execute) will use the default [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
 
 ## Static Methods
 
