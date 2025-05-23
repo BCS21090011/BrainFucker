@@ -82,7 +82,7 @@ class BrainfuckExecuter {
 * Private `WatchedVal` type string.
 * Stores the brainfuck code to be, or already, executed.
 * Default to empty string (`""`).
-* When the value changes, *[`loop pairs`](#looppairs-1)* and *[`left-out loops`](#leftoutloops-1)* will be remaped.
+* When the value changes, *[loop pairs](#looppairs-1)* and *[left-out loops](#leftoutloops-1)* will be remaped.
 * Changing this will **not** change the CIndex.
 * Exposed by [`BFCode`](#bfcode-1) with getter and setter.
 
@@ -1019,6 +1019,12 @@ class BrainfuckExecuter {
 ## Static Methods
 
 ### ValidateMemArg
+
+* Arguments:
+  * mem: The array of integers (memory) to be validated.
+* Validate and ensure that all values in `mem` are integers.
+* Will not return anything, instead, it will raise an `CustomTypeError` when a non-integer value encountered.
+
 ```mermaid
 flowchart TD
 
@@ -1044,6 +1050,21 @@ End
 ```
 
 ### MapLoopPairs
+
+* Arguments:
+  * bfCode: The Brainfuck code to map.
+* Return:
+  * JavaScript object containing *loop-pairs* (bi-directional) and *left-out loops*, as shown below:
+    ```JavaScript
+        LoopPairs: {
+            integer: integer
+        },
+        LeftOutLoops: [integers]
+    ```
+    * LoopPairs: A JavaScript object with both key and value are integers, bi-directional.
+    * LeftOutLoops: The index of left-out, unpaired heads and tails.
+* Map the *loop-pairs* (`[`) and *left-out loops* (`]`).
+
 ```mermaid
 flowchart TD
 

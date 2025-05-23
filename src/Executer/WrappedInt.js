@@ -59,7 +59,7 @@ class WrappedInt {
         this.ValOnChangeCallback = valOnChangeCallback ?? ((oldVal, newVal, wrappedIntAfter) => { });
         this.ValOnSetCallback = valOnSetCallback ?? ((val, wrappedInt) => { });
 
-        this.#value = val;
+        this.#value = WrappedInt.Wrap(val, this.#min, this.#max);
     }
 
     get Min () {
