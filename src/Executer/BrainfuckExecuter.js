@@ -89,14 +89,6 @@ class BrainfuckExecuter {
             is to avoid these arguments/parameters being undefined.
         All arguments in SetConfig() can be undefined, so that those will be skipped.
         */
-        
-        if (inputCallback == undefined) {
-            throw new CustomMissingArgumentError(undefined, "inputCallback");
-        }
-
-        if (outputCallback == undefined) {
-            throw new CustomMissingArgumentError(undefined, "outputCallback");
-        }
 
         if (config.mem == undefined && memSize == undefined) {
             throw new CustomMissingArgumentError("Must provide either memSize or mem.", "memSize or mem");
@@ -104,7 +96,7 @@ class BrainfuckExecuter {
 
         // Other arguments for properties and callbacks won't be checked because they already have default value.
         
-        this.SetConfig(bfCode, inputCallback, outputCallback, memSize, config);
+        this.SetConfig(bfCode, memSize, config);
     }
 
     get BFCode () {
@@ -349,7 +341,7 @@ class BrainfuckExecuter {
         this.#CheckMemPtr();
     }
 
-    SetConfig (bfCode=undefined, inputCallback=undefined, outputCallback=undefined, memSize=undefined, config={}) {
+    SetConfig (bfCode=undefined, memSize=undefined, config={}) {
         const {
             cIndex = undefined,
             memPtr = undefined,
@@ -358,6 +350,8 @@ class BrainfuckExecuter {
             cellMaxVal = undefined,
             conditionVal = undefined,
             defaultVal = undefined,
+            inputCallback = undefined,
+            outputCallback = undefined,
             cIndexOnChangeCallback = undefined,
             memPtrOnChangeCallback = undefined,
             memPtrUnderflowCallback = undefined,

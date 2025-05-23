@@ -915,6 +915,8 @@ class BrainfuckExecuter {
 
 ### InputCallback
 
+* Will be called for input in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation)
+
 ### OutputCallback
 
 ### CIndexOnChangeCallback
