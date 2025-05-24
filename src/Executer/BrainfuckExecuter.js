@@ -386,6 +386,11 @@ class BrainfuckExecuter {
         if (cIndex != undefined) {
             this.CIndex = cIndex;
         }
+        else {
+            if (this.CodeEnded === true) {
+                this.CodeEndedCallback(this);
+            }
+        }
 
         if (memPtr != undefined) {
             this.MemPtr = memPtr;

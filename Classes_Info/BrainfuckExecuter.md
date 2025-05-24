@@ -1458,6 +1458,8 @@ CheckBFCode{Is bfCode provided?}
 SetBFCode[BFCode = new bfCode]
 CheckCIndex{Is cIndex provided?}
 SetCIndex[CIndex = new cIndex]
+CheckCodeEnded{Check if CodeEnded === true}
+CodeEndedCallback
 CheckMemPtr{Is memPtr provided?}
 SetMemPtr[MemPtr = new memPtr]
 CheckCellMinVal{Is cellMinVal provided?}
@@ -1521,6 +1523,10 @@ CheckBFCode
 --false-->
 CheckCIndex
 --false-->
+CheckCodeEnded
+--true-->
+CodeEndedCallback
+-->
 CheckMemPtr
 --false-->
 CheckCellMinVal
@@ -1538,6 +1544,10 @@ CheckMem
 CheckMemSize
 --false-->
 End
+
+CheckCodeEnded
+--false-->
+CheckMemPtr
 
 CheckConditionValNotInRange
 --false-->
