@@ -1155,6 +1155,12 @@ End
 ```
 
 ### #CheckMemPtr
+
+* Return:
+  * Boolean, `true` if [`MemPtr`](#memptr-1) is within [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1), `false` otherwise.
+* Check if [`MemPtr`](#memptr-1) is within [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1).
+* Will call [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) if [`MemPtr`](#memptr-1) is smaller than [`CellMinVal`](#cellminval-1), [`MemPtrOverflowCallback`](#memptroverflowcallback) if [`MemPtr`](#memptr-1) is larger than [`CellMaxVal`](#cellmaxval-1).
+
 ```mermaid
 flowchart TD
 
@@ -1194,6 +1200,14 @@ End
 ```
 
 ### #AdjustMemSize
+
+* Arguments:
+  * memSize: The intended size of [`#memArr`](#memarr).
+  * defaultVal: The value used to create new `WrappedInt` when extending.
+* Extend or trim [`#memArr`](#memarr) based on the given `memSize`.
+* Will create new `WrappedInt` with `defaultVal` when extending. If `defaultVal` is not provided, will use [`CellMinVal`](#cellminval-1).
+* Will remove the last extra cells (`WrappedInt`) when trimming.
+
 ```mermaid
 flowchart TD
 
@@ -1255,6 +1269,13 @@ CheckMemPtr
 ```
 
 ### #BFDefaultCodeExecuteOperation
+
+* Arguments:
+  * code: The code character to execute.
+* Return:
+  * The next `cIndex`, integer.
+* The default execution, basically how brainfuck execution should behave.
+
 ```mermaid
 flowchart TD
 
