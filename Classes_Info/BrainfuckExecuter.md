@@ -1408,6 +1408,29 @@ End
 
 ### constructor
 
+* Arguments:
+  * bfCode: The Brainfuck code string, defaults to empty string (`""`).
+  * memSize: The size (integer) of memory, defaults to 30000.
+  * config: All other configs:
+    * cIndex
+    * memPtr
+    * mem
+    * cellMinVal
+    * cellMaxVal
+    * conditionVal
+    * defaultVal
+    * inputCallback
+    * outputCallback
+    * cIndexOnChangeCallback
+    * memPtrOnChangeCallback
+    * memPtrUnderflowCallback
+    * memPtrOverflowCallback
+    * codeEndedCallback
+    * cellUnderflowCallback
+    * cellOverflowCallback
+    * memCellOnChangeCallback
+    * memCellOnSetCallback
+    * codeExecuteOperation
 
 ```mermaid
 flowchart TD
@@ -1450,6 +1473,34 @@ SetConfig
 ```
 
 ### SetConfig
+
+* Arguments:
+  * bfCode: The Brainfuck code string, defaults to empty string (`""`).
+  * memSize: The size (integer) of memory, defaults to 30000.
+  * config: All other configs:
+    * cIndex
+    * memPtr
+    * mem
+    * cellMinVal
+    * cellMaxVal
+    * conditionVal
+    * defaultVal
+    * inputCallback
+    * outputCallback
+    * cIndexOnChangeCallback
+    * memPtrOnChangeCallback
+    * memPtrUnderflowCallback
+    * memPtrOverflowCallback
+    * codeEndedCallback
+    * cellUnderflowCallback
+    * cellOverflowCallback
+    * memCellOnChangeCallback
+    * memCellOnSetCallback
+    * codeExecuteOperation
+* Return:
+  * Current object
+* To setup or change the properties and callbacks.
+
 ```mermaid
 flowchart TD
 
@@ -1557,6 +1608,13 @@ CheckMem
 ```
 
 ### GetCellVal
+
+* Arguments:
+  * index: The index (integer) of cell to get value.
+* Return:
+  * The integer value of the cell.
+* To get the value of certain cell in [`#memArr`](#memarr).
+
 ```mermaid
 flowchart TD
 
@@ -1574,6 +1632,12 @@ End
 ```
 
 ### SetCellVal
+
+* Arguments:
+  * index: The index (integer) of cell to set value.
+  * newVal: The new integer value to set for cell.
+* To set the value of certain cell in [`#memArr`](#memarr).
+
 ```mermaid
 flowchart TD
 
@@ -1660,6 +1724,11 @@ MemCellOnSetCallback
 ```
 
 ### SetAllCellVal
+
+* Arguments:
+  * newVal: The new integer value to set for all cells.
+* To set the value of all cells in [`#memArr`](#memarr).
+
 ```mermaid
 flowchart TD
 
@@ -1675,6 +1744,24 @@ End
 ```
 
 ### SubscribeCallbacks
+
+* Arguments:
+  * inputCallback
+  * outputCallback
+  * cIndexOnChangeCallback
+  * memPtrOnChangeCallback
+  * memPtrUnderflowCallback
+  * memPtrOverflowCallback
+  * codeEndedCallback
+  * cellUnderflowCallback
+  * cellOverflowCallback
+  * memCellOnChangeCallback
+  * memCellOnSetCallback
+  * codeExecuteOperation
+* Return:
+  * Current object.
+* To set or change the [callbacks](#callbacks).
+
 ```mermaid
 flowchart TD
 
@@ -1780,6 +1867,12 @@ SetCodeExecuteOperation
 ```
 
 ### BF_Execute
+
+* Return:
+  * Current object.
+* Execute current code with provided [`CodeExecuteOperation`](#codeexecuteoperation) or default [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation), if [`CIndex`](#cindex-1) is still within [`BFCode`](#bfcode).
+* Will only execute once.
+
 ```mermaid
 flowchart TD
 
@@ -1815,6 +1908,11 @@ End
 ```
 
 ### BF_IncrementCellVal_Operation
+
+* Return:
+  * Current object.
+* Perform `+` operation.
+
 ```mermaid
 flowchart TD
 
@@ -1830,6 +1928,11 @@ End
 ```
 
 ### BF_DecrementCellVal_Operation
+
+* Return:
+  * Current object.
+* Perform `-` operation.
+
 ```mermaid
 flowchart TD
 
@@ -1845,6 +1948,11 @@ End
 ```
 
 ### BF_NextCell_Operation
+
+* Return:
+  * Current object.
+* Perform `>` operation.
+
 ```mermaid
 flowchart TD
 
@@ -1860,6 +1968,11 @@ End
 ```
 
 ### BF_PrevCell_Operation
+
+* Return:
+  * Current object.
+* Perform `<` operation.
+
 ```mermaid
 flowchart TD
 
@@ -1875,6 +1988,11 @@ End
 ```
 
 ### BF_Input_Operation
+
+* Return:
+  * Current object.
+* Perform `.` operation.
+
 ```mermaid
 flowchart TD
 
@@ -1890,6 +2008,11 @@ End
 ```
 
 ### BF_Output_Operation
+
+* Return:
+  * Current object.
+* Perform `,` operation.
+
 ```mermaid
 flowchart TD
 
@@ -1905,6 +2028,22 @@ End
 ```
 
 ### toJSON
+
+* Return:
+  * The JSON representation of current object, with these values:
+    * BFCode: String
+    * CIndex: Integer
+    * MemPtr: Integer
+    * MemSize: Integer
+    * MemArr: Array of integers
+    * CodeEnded: Boolean
+    * CellMinVal: Integer
+    * CellMaxVal: Integer
+    * ConditionVal: Integer
+    * LoopPairs: JavaScript object
+    * LeftOutLoops: Array of integers
+* Return the JSON representation of current object.
+
 ```mermaid
 flowchart TD
 
