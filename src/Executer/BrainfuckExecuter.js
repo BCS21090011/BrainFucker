@@ -82,7 +82,7 @@ class BrainfuckExecuter {
     MemCellOnSetCallback = (index, val, brainfuckExecuterAfter) => { };
     CodeExecuteOperation = undefined;
 
-    constructor (bfCode="", inputCallback=undefined, outputCallback=undefined, memSize=30000, config={}) {
+    constructor (bfCode="", memSize=30000, config={}) {
         /*
         Check for arguments that are necessary to create the object.
         These arguments are handled/checked here rather than in SetConfig()
