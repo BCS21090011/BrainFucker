@@ -121,7 +121,7 @@ class BrainfuckExecuter {
     }
 
     get LeftOutLoops () {
-        return { ...this.#leftOutLoops };
+        return [ ...this.#leftOutLoops ];
     }
 
     get CIndex () {

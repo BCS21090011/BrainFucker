@@ -513,7 +513,7 @@ class BrainfuckExecuter {
     }
 
     get LeftOutLoops () {
-        return { ...this.#leftOutLoops };
+        return [ ...this.#leftOutLoops ];
     }
 
     get CIndex () {
@@ -1000,28 +1000,22 @@ body.appendChild(terminal);
 
 let buffer = [];
 
-function Char_To_ASCII_Int (char) {
-    if (char.length < 1) {
-        throw new Error("char should at least have one character.");
-    }
-    else if (char.length === 1) {
-        return char.charCodeAt(0);
-    }
-    else {
-        const charInts = [];
+function TerminalAddText (text) {
+    terminal.appendChild(document.createTextNode(text));
+    terminal.scrollTop = terminal.scrollHeight;
+}
 
-        for (let index in char) {
-            charInts.push(char.charCodeAt(index));
-        }
-
-        return charInts;
+function Char_To_ASCII_Int(str) {
+    if (typeof str !== "string" || str.length === 0) {
+        throw new Error("Expected non-empty string.");
     }
+    return [...str].map(c => c.charCodeAt(0));
 }
 
 function MyInput (obj) {
     if (buffer.length <= 0) {
         const inp = prompt("Input:");
-        terminal.innerText += inp;
+        TerminalAddText(inp);
         buffer.push(...Char_To_ASCII_Int(inp));
     }
     
@@ -1030,7 +1024,7 @@ function MyInput (obj) {
 
 function MyOutput (output, obj) {
     const outputChar = String.fromCharCode(output);
-    terminal.innerText += outputChar;
+    TerminalAddText(outputChar);
 }
 
 const bf = new BrainfuckExecuter("", 30000, {

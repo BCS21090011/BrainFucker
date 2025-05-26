@@ -1275,6 +1275,7 @@ CheckMemPtr
 * Return:
   * The next `cIndex`, integer.
 * The default execution, basically how brainfuck execution should behave.
+* If loop head and tail is not in [`#LoopPairs`](#looppairs-1), it will be skipped.
 
 ```mermaid
 flowchart TD
