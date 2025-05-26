@@ -989,7 +989,7 @@ class BrainfuckExecuter {
 
 
 const body = document.querySelector("body");
-const terminal = document.createElement("div");
+const terminal = document.createElement("pre");
 terminal.style.width = "80vw";
 terminal.style.height = "80vh";
 terminal.style.border = "1px solid black";
@@ -1001,7 +1001,8 @@ body.appendChild(terminal);
 let buffer = [];
 
 function TerminalAddText (text) {
-    terminal.appendChild(document.createTextNode(text));
+    // terminal.appendChild(document.createTextNode(text));
+    terminal.innerText += text;
     terminal.scrollTop = terminal.scrollHeight;
 }
 
@@ -1014,7 +1015,7 @@ function Char_To_ASCII_Int(str) {
 
 function MyInput (obj) {
     if (buffer.length <= 0) {
-        const inp = prompt("Input:");
+        const inp = prompt("Input:") + "\n";
         TerminalAddText(inp);
         buffer.push(...Char_To_ASCII_Int(inp));
     }
