@@ -1,82 +1,64 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "./App.css";
+import "./App_My.css";
 
 import BrainfuckExecuter from "./Executer/BrainfuckExecuter";
 
 function App() {
-  const [bfCode, set_bfCode] = useState("")
-  const [memArrSize, set_memArrSize] = useState(30000)
-  const [cIndex, set_cIndex] = useState(0)
-  const [memPtr, set_memPtr] = useState(1000)
+  const terminalRef = useRef(null);
+  const promptInputRef = useRef(null);
 
-  function HandleCodeChange (e) {
-    const newCode = e.target.value;
-    set_bfCode(newCode);
+  const [output, setOutput] = useState([]);
+  const [input, setInput] = useState("");
+  const [waitingForInput, setWaitingForInput] = useState(true);
 
-    if (cIndex >= newCode.length) {
-      set_cIndex(Math.max(newCode.length - 1, 0));
-    }
+  
+  function HandleInput (e) {
+    setInput(e.currentTarget.textContent);
   }
 
-  function HandleMemSizeChange (e) {
-    const newSize = parseInt(e.target.value) || 0;
-    set_memArrSize(newSize);
+  function HandleKey (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
 
-    if (memPtr >= newSize) {
-      set_memPtr(Math.max(newSize - 1, 0));
+      const finalInput = input;
+      setInput("");
+      setOutput((prev) => {
+        console.log(prev);
+        const newOutput = [...prev, finalInput];
+        console.log(newOutput);
+        return newOutput;
+      });
+      console.log(output);
+      // setWaitingForInput(false);
     }
   }
 
   return (
     <>
-      <div id="UserInputsDiv">
-        <label id="BF_Code_TA_Lbl">
-          Brainfuck Code:
-          <textarea
-            id="BF_Code_TA"
-            value={bfCode}
-            onChange={HandleCodeChange}
-          />
-        </label>
+      <div
+        ref={terminalRef}
+        className="terminal"
+        onClick={() => promptInputRef.current?.focus()}
+      >
+        {output.map((line, idx) => {
+          <div key={idx}>
+            {line}
+          </div>
+        })}
 
-        <label id="MemoryArraySize_input_Lbl">
-          Memory Array Size:
-          <input
-            id="MemoryArraySize_input"
-            type="number"
-            min={0}
-            max={30000}
-            step={1}
-            value={memArrSize}
-            onChange={HandleMemSizeChange}
-          />
-        </label>
-
-        <label id="CodeIndex_input_Lbl">
-          Code Index (0 ~ {Math.max(bfCode.length - 1, 0)}):
-          <input
-            id="CodeIndex_input"
-            type="number"
-            min={0}
-            max={Math.max(bfCode.length - 1, 0)}
-            step={1}
-            value={cIndex}
-            onChange={e => set_cIndex(Number(e.target.value))}
-          />
-        </label>
-
-        <label id="MemPtr_input_Lbl">
-          Memory Pointer (0 ~ {Math.max(memArrSize - 1, 0)}):
-          <input
-            id="MemPtr_input"
-            type="number"
-            min={0}
-            max={Math.max(memArrSize - 1, 0)}
-            step={1}
-            value={memPtr}
-            onChange={e => set_memPtr(Number(e.target.value))}
-          />
-        </label>
+        {waitingForInput && (
+          <div>
+            <span className="Prompt"></span>
+            <span
+              contentEditable = "true"
+              ref={promptInputRef}
+              onInput={HandleInput}
+              onKeyDown={HandleKey}
+              className="PromptInput"
+            />
+          </div>
+        )}
       </div>
     </>
   )
