@@ -1,6 +1,34 @@
-.terminal {
+#TerminalDiv {
     border: 1px solid white;
     height: 50vh;
-    width: 50vw;
+    width: 80vw;
     padding: 0;
+    background-color: black;
+    overflow-y: auto;
+    text-align: left;
 }
+
+#OutputPromptSpan {
+    margin: 0;
+    max-width: 100%;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+#InputPromptInput {
+    margin: 0;
+    display: inline;
+    max-width: 100%;
+    word-break: break-all;
+    white-space: pre-wrap;
+    background-color: transparent;
+    border: 0;
+}
+
+    #InputPromptInput:focus {
+        outline: none;
+    }
+
+    #InputPromptInput.Hidden {
+        display: none;
+    }
