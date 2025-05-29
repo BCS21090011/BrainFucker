@@ -12,6 +12,12 @@ function App() {
 
   const [outputPromptString, setOutputPromptString] = useState("");
 
+  function ResetBFExecuter (bfExecuter) {
+    bfExecuter.CIndex = 0;
+    bfExecuter.MemPtr = 0;
+    bfExecuter.AllCellVal = 0;
+  }
+
   function OutputToOutputPrompt (text) {
     setOutputPromptString(outputPromptString + text);
   }
@@ -52,9 +58,7 @@ function App() {
       </textarea>
       <button onClick={() => {
         bfObj.BFCode = bfCodeTextareaRef.current.value;
-        bfObj.AllCellVal = 0;
-        bfObj.CIndex = 0;
-        bfObj.MemPtr = 0;
+        ResetBFExecuter(bfObj);
         setOutputPromptString("");
       }}>Apply BF code</button>
       <button onClick={() => {
