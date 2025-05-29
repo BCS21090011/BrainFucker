@@ -27,7 +27,7 @@ function App() {
     }
   }
 
-  const bfObj = new BrainfuckExecuter();
+  let bfObj = new BrainfuckExecuter();
   bfObj.OutputCallback = (output, brainfuckExecuter) => {
     OutputToOutputPrompt(String.fromCharCode(output));
   }
@@ -52,6 +52,10 @@ function App() {
       </textarea>
       <button onClick={() => {
         bfObj.BFCode = bfCodeTextareaRef.current.value;
+        bfObj.AllCellVal = 0;
+        bfObj.CIndex = 0;
+        bfObj.MemPtr = 0;
+        setOutputPromptString("");
       }}>Apply BF code</button>
       <button onClick={() => {
         while (bfObj.CodeEnded == false) {
