@@ -35,7 +35,7 @@ class BrainfuckExecuter {
     +OutputCallback
     +CIndexOnChangeCallback
     +MemPtrOnChangeCallback
-    +MmePtrUnderflowCallback
+    +MemPtrUnderflowCallback
     +MemPtrOverflowCallback
     +CodeEndedCallback
     +CellUnderflowCallback
@@ -103,7 +103,7 @@ class BrainfuckExecuter {
 * This points to the current cell in [`#memArr`](#memarr).
 * Limited by the [`MemSize`](#memsize).
 * Default to 0.
-* When the value changes, [`MemPtrOnChangeCallback`](#memptronchangecallback) will be called, and if it is underflowed (smaller than 0) or overflowed (larger or equal to [`MemSize`](#memsize)), [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
+* When the value changes, [`MemPtrOnChangeCallback`](#memptronchangecallback) will be called, and if it is underflowed (smaller than 0) or overflowed (larger or equal to [`MemSize`](#memsize)), [`MemPtrUnderflowCallback`](#memptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
 * Will be affected by [`BF_NextCell_Operation`](#bf_nextcell_operation) and [`BF_PrevCell_Operation`](#bf_prevcell_operation).
 * When be affected when [`MemArr`](#memarr-1) and [`MemSize`](#memsize) changes.
 * Exposed by [`MemPtr`](#memptr-1) with getter and setter.
@@ -172,7 +172,7 @@ class BrainfuckExecuter {
 * After object constructed, should have length between 1 and [`BFMemoryMaxSize`](#bfmemorymaxsize).
 * Can only change the length, and when changed, will affect [`MemPtr`](#memptr-1).
 * Can be changed by [`MemSize`](#memsize) and [`#AdjustMemSize`](#adjustmemsize), which will trim or extend the array.
-* After changes, if [`MemPtr`](#memptr-1) is underflowed or overflowed, [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
+* After changes, if [`MemPtr`](#memptr-1) is underflowed or overflowed, [`MemPtrUnderflowCallback`](#memptrunderflowcallback) or [`MemPtrOverflowCallback`](#memptroverflowcallback) will be called respectively.
 * Will affect the maximum value of [`MemPtr`](#memptr-1).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`MemArr`](#memarr-1) with getter and setter, which getter will only return the value of each cell.
@@ -946,7 +946,7 @@ class BrainfuckExecuter {
   * brainfuckExecuterAfter: The current object after the changes.
 * Will be called when [`MemPtr`](#memptr-1) changes.
 
-### MmePtrUnderflowCallback
+### MemPtrUnderflowCallback
 
 * Arguments:
   * val: The underflowed value, integer.
@@ -1160,7 +1160,7 @@ End
 * Return:
   * Boolean, `true` if [`MemPtr`](#memptr-1) is within [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1), `false` otherwise.
 * Check if [`MemPtr`](#memptr-1) is within [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1).
-* Will call [`MemPtrUnderflowCallback`](#mmeptrunderflowcallback) if [`MemPtr`](#memptr-1) is smaller than [`CellMinVal`](#cellminval-1), [`MemPtrOverflowCallback`](#memptroverflowcallback) if [`MemPtr`](#memptr-1) is larger than [`CellMaxVal`](#cellmaxval-1).
+* Will call [`MemPtrUnderflowCallback`](#memptrunderflowcallback) if [`MemPtr`](#memptr-1) is smaller than [`CellMinVal`](#cellminval-1), [`MemPtrOverflowCallback`](#memptroverflowcallback) if [`MemPtr`](#memptr-1) is larger than [`CellMaxVal`](#cellmaxval-1).
 
 ```mermaid
 flowchart TD
