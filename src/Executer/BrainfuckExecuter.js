@@ -505,6 +505,34 @@ class BrainfuckExecuter {
         }
     }
 
+    Copy (includeCallbacks=true) {
+        const copiedObj = new BrainfuckExecuter(
+            this.BFCode,
+            this.MemSize,
+            {
+                cIndex: this.CIndex,
+                memPtr: this.MemPtr,
+                mem: this.MemArr,
+                cellMinVal: this.CellMinVal,
+                cellMaxVal: this.CellMaxVal,
+                conditionVal: this.ConditionVal,
+                inputCallback: includeCallbacks ? this.InputCallback : undefined,
+                outputCallback: includeCallbacks ? this.OutputCallback : undefined,
+                cIndexOnChangeCallback: includeCallbacks ? this.CIndexOnChangeCallback : undefined,
+                memPtrOnChangeCallback: includeCallbacks ? this.MemPtrOnChangeCallback : undefined,
+                memPtrUnderflowCallback: includeCallbacks ? this.MemPtrUnderflowCallback : undefined,
+                memPtrOverflowCallback: includeCallbacks ? this.MemPtrOverflowCallback : undefined,
+                codeEndedCallback: includeCallbacks ? this.CodeEndedCallback : undefined,
+                cellUnderflowCallback: includeCallbacks ? this.CellUnderflowCallback : undefined,
+                cellOverflowCallback: includeCallbacks ? this.CellOverflowCallback : undefined,
+                memCellOnChangeCallback: includeCallbacks ? this.MemCellOnChangeCallback : undefined,
+                memCellOnSetCallback: includeCallbacks ? this.MemCellOnSetCallback : undefined,
+                codeExecuteOperation: includeCallbacks ? this.CodeExecuteOperation : undefined
+            }
+        );
+        return copiedObj;
+    }
+
     #BFDefaultCodeExecuteOperation (code) {
         let cIndex = this.CIndex;
 

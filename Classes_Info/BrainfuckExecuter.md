@@ -56,6 +56,7 @@ class BrainfuckExecuter {
     -#AdjustMemSize(memSize, defaultVal)
     +SubscribeCallbacks(all callbacks)
     +toJSON()
+    +Copy(includeCallbacks)
 
     -#BFDefaultCodeExecuteOperation(code)
     +BF_Execute()
@@ -2052,6 +2053,28 @@ Start([toJSON])
 End([Return properties as JSON])
 
 Start
+-->
+End
+```
+
+### Copy
+
+* Arguments:
+  * includeCallbacks: To also copy the [callbacks](#callbacks).
+* Return:
+  * The copied `BrainfuckExecuter` object.
+* Create a copy of current object.
+
+```mermaid
+flowchart TD
+
+Start([Copy])
+CreateCopiedObj[Create another object with properties]
+End([Return the copied object])
+
+Start
+-->
+CreateCopiedObj
 -->
 End
 ```
