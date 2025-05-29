@@ -19,7 +19,7 @@ function App() {
   function InputPrompt_OnKeyDown (e) {
     if (e.key === "Enter") {
       let inputString = e.target.value;
-      inputString += '\n';
+      inputString += "\n";
       console.log(inputString);
 
       OutputToOutputPrompt(inputString);
@@ -30,6 +30,16 @@ function App() {
   const bfObj = new BrainfuckExecuter();
   bfObj.OutputCallback = (output, brainfuckExecuter) => {
     OutputToOutputPrompt(String.fromCharCode(output));
+  }
+  let buffer = [];
+  bfObj.InputCallback = (brainfuckExecuter) => {
+    if (buffer.length <= 0) {
+        const inp = prompt("Input:") + "\n";
+        OutputToOutputPrompt(inp);
+        buffer.push(...[...inp].map(c => c.charCodeAt(0)));
+    }
+    
+    return buffer.shift();
   }
 
   return (
@@ -58,11 +68,13 @@ function App() {
         <span id="OutputPromptSpan" ref={outputPromptRef}>
           {outputPromptString}
         </span>
+        {/*
         <input
           id="InputPromptInput"
           ref={inputPromptRef}
           onKeyDown={InputPrompt_OnKeyDown}
         />
+        */}
       </div>
     </>
   )
