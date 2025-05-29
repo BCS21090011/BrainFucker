@@ -6,31 +6,17 @@ import BrainfuckExecuter from "./Executer/BrainfuckExecuter";
 
 function App() {
   const terminalRef = useRef(null);
-  const promptInputRef = useRef(null);
+  const outputPromptRef = useRef(null);
+  const inputPromptRef = useRef(null);
 
-  const [output, setOutput] = useState([]);
-  const [input, setInput] = useState("");
-  const [waitingForInput, setWaitingForInput] = useState(true);
+  const [outputPromptString, setOutputPromptString] = useState("");
 
-  
-  function HandleInput (e) {
-    setInput(e.currentTarget.textContent);
-  }
-
-  function HandleKey (e) {
+  function InputPrompt_OnKeyDown (e) {
     if (e.key === "Enter") {
-      e.preventDefault();
+      let inputString = e.target.textContent + '\n';
+      e.target.textContent = ""; // Clear the input prompt.
 
-      const finalInput = input;
-      setInput("");
-      setOutput((prev) => {
-        console.log(prev);
-        const newOutput = [...prev, finalInput];
-        console.log(newOutput);
-        return newOutput;
-      });
-      console.log(output);
-      // setWaitingForInput(false);
+      setOutputPromptString(inputString);
     }
   }
 
@@ -39,26 +25,19 @@ function App() {
       <div
         ref={terminalRef}
         className="terminal"
-        onClick={() => promptInputRef.current?.focus()}
+        onClick={() => inputPromptRef.current?.focus()}
       >
-        {output.map((line, idx) => {
-          <div key={idx}>
-            {line}
-          </div>
-        })}
-
-        {waitingForInput && (
-          <div>
-            <span className="Prompt"></span>
-            <span
-              contentEditable = "true"
-              ref={promptInputRef}
-              onInput={HandleInput}
-              onKeyDown={HandleKey}
-              className="PromptInput"
-            />
-          </div>
-        )}
+        <pre
+          ref={outputPromptRef}
+        >
+          {outputPromptString}
+        </pre>
+        <pre
+          ref={inputPromptRef}
+          contentEditable={true}
+          onKeyDown={InputPrompt_OnKeyDown}
+        >
+        </pre>
       </div>
     </>
   )
