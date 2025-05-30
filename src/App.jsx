@@ -1,52 +1,82 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 import "./App_My.css";
 
 import BrainfuckExecuter from "./Executer/BrainfuckExecuter";
 
 function App() {
-  const bfCodeTextareaRef = useRef(null);
-  const terminalRef = useRef(null);
-  const outputPromptRef = useRef(null);
-  const inputPromptRef = useRef(null);
+  // --- DOM refs ---
+  const bfCodeTextareaRef = useRef(null);   // Reference to <textarea> for code input
+  const terminalRef = useRef(null);         // Reference to the terminal container
 
+  // --- Persistent BrainfuckExecuter instance ---
+  const bfRef = useRef(new BrainfuckExecuter()); // Holds 1 instance across renders
+
+  // --- UI state for terminal output display ---
   const [outputPromptString, setOutputPromptString] = useState("");
 
-  function ResetBFExecuter (bfExecuter) {
-    bfExecuter.CIndex = 0;
-    bfExecuter.MemPtr = 0;
-    bfExecuter.AllCellVal = 0;
-  }
+  // --- Internal buffer to store character codes for input handling ---
+  const bufferRef = useRef([]);
 
-  function OutputToOutputPrompt (text) {
-    setOutputPromptString(outputPromptString + text);
-  }
+  // --- Append text to terminal output state ---
+  const OutputToOutputPrompt = (text) => {
+    setOutputPromptString((prev) => prev + text);
+  };
 
-  function InputPrompt_OnKeyDown (e) {
-    if (e.key === "Enter") {
-      let inputString = e.target.value;
-      inputString += "\n";
-      console.log(inputString);
+  // --- Reset core states of BF executer ---
+  const ResetBFExecuter = () => {
+    const bf = bfRef.current;
+    bf.CIndex = 0;
+    bf.MemPtr = 0;
+    bf.AllCellVal = 0;
+    bufferRef.current = [];
+  };
 
-      OutputToOutputPrompt(inputString);
-      e.target.value = ""; // Clear the input prompt.
-    }
-  }
+  // --- Setup Input/Output callbacks once after mount ---
+  useEffect(() => {
+    const bf = bfRef.current;
 
-  let bfObj = new BrainfuckExecuter();
-  bfObj.OutputCallback = (output, brainfuckExecuter) => {
-    OutputToOutputPrompt(String.fromCharCode(output));
-  }
-  let buffer = [];
-  bfObj.InputCallback = (brainfuckExecuter) => {
-    if (buffer.length <= 0) {
+    bf.OutputCallback = (output) => {
+      OutputToOutputPrompt(String.fromCharCode(output));
+    };
+
+    bf.InputCallback = () => {
+      const buffer = bufferRef.current;
+
+      if (buffer.length === 0) {
         const inp = prompt("Input:") + "\n";
         OutputToOutputPrompt(inp);
-        buffer.push(...[...inp].map(c => c.charCodeAt(0)));
+        buffer.push(...inp.split("").map((c) => c.charCodeAt(0)));
+      }
+
+      return buffer.shift();
+    };
+  }, []);
+
+  // --- Handle "Apply Code" click: load textarea content into BF engine ---
+  const handleApplyCode = () => {
+    const bf = bfRef.current;
+    const code = bfCodeTextareaRef.current?.value ?? "";
+    bf.BFCode = code;
+    ResetBFExecuter();
+    setOutputPromptString("");
+  };
+
+  // --- Run execution until completion ---
+  const handleExecuteAll = () => {
+    const bf = bfRef.current;
+    while (!bf.CodeEnded) {
+      bf.BF_Execute();
     }
-    
-    return buffer.shift();
-  }
+  };
+
+  // --- Manually write user text into terminal (debugging/demo button) ---
+  const handleManualOutput = () => {
+    const userInput = prompt("Your output:");
+    if (userInput !== null) {
+      OutputToOutputPrompt(userInput);
+    }
+  };
 
   return (
     <>
@@ -54,38 +84,19 @@ function App() {
         id="BFCodeTextarea"
         ref={bfCodeTextareaRef}
         placeholder="Enter your Brainfuck code here..."
-      >
-      </textarea>
-      <button onClick={() => {
-        bfObj.BFCode = bfCodeTextareaRef.current.value;
-        ResetBFExecuter(bfObj);
-        setOutputPromptString("");
-      }}>Apply BF code</button>
-      <button onClick={() => {
-        while (bfObj.CodeEnded == false) {
-          bfObj.BF_Execute();
-        }
-      }}>
-        Execute until end
-      </button>
-      <button onClick={() => { OutputToOutputPrompt(prompt("Your output:")); }}>Output things</button>
-      <div
-        id="TerminalDiv"
-        ref={terminalRef}
-      >
-        <span id="OutputPromptSpan" ref={outputPromptRef}>
-          {outputPromptString}
-        </span>
-        {/*
-        <input
-          id="InputPromptInput"
-          ref={inputPromptRef}
-          onKeyDown={InputPrompt_OnKeyDown}
-        />
-        */}
+      />
+
+      <button onClick={handleApplyCode}>Apply BF code</button>
+
+      <button onClick={handleExecuteAll}>Execute until end</button>
+
+      <button onClick={handleManualOutput}>Output things</button>
+
+      <div id="TerminalDiv" ref={terminalRef}>
+        <span id="OutputPromptSpan">{outputPromptString}</span>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
