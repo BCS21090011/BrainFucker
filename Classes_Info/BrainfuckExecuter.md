@@ -58,14 +58,14 @@ class BrainfuckExecuter {
     +toJSON()
     +Copy(includeCallbacks)
 
-    -#BFDefaultCodeExecuteOperation(code)
-    +BF_Execute()
+    -async #BFDefaultCodeExecuteOperation(code)
+    +async BF_Execute()
     +BF_IncrementCellVal_Operation()
     +BF_DecrementCellVal_Operation()
     +BF_NextCell_Operation()
     +BF_PrevCell_Operation()
-    +BF_Input_Operation()
-    +BF_Output_Operation()
+    +async BF_Input_Operation()
+    +async BF_Output_Operation()
 }
 ```
 
@@ -919,9 +919,10 @@ class BrainfuckExecuter {
 * Argument:
   * brainfuckExecuter: The current object.
 * Return:
-  * The integer input value, how the input is converted or interpreted to integer is depends on the user.
+  * The integer input value or a `Promise` of that, how the input is converted or interpreted to integer is depends on the user.
 * Default to return [`CellMinVal`](#cellminval-1).
 * Will be called for input in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation) and [`BF_Input_Operation`](#bf_input_operation).
+* Can be `async`.
 
 ### OutputCallback
 
@@ -929,6 +930,7 @@ class BrainfuckExecuter {
   * output: The integer output, how the output is converted or interpreted from integer is depends on the user.
   * brainfuckExecuter: The current object.
 * Will be called for ouptut in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation) and [`BF_Output_Operation`](#bf_output_operation).
+* Can be `async`.
 
 ### CIndexOnChangeCallback
 
@@ -1269,7 +1271,7 @@ IsMemSizeSmaller
 CheckMemPtr
 ```
 
-### #BFDefaultCodeExecuteOperation
+### async #BFDefaultCodeExecuteOperation
 
 * Arguments:
   * code: The code character to execute.
@@ -1277,6 +1279,7 @@ CheckMemPtr
   * The next `cIndex`, integer.
 * The default execution, basically how brainfuck execution should behave.
 * If loop head and tail is not in [`#LoopPairs`](#looppairs-1), it will be skipped.
+* Will `await` for [`BF_Input_Operation`](#async-bf_input_operation) and [`BF_Output_Operation`](#async-bf_output_operation), if performed.
 
 ```mermaid
 flowchart TD
@@ -1868,12 +1871,13 @@ CheckMemCellOnSetCallback
 SetCodeExecuteOperation
 ```
 
-### BF_Execute
+### async BF_Execute
 
 * Return:
   * Current object.
 * Execute current code with provided [`CodeExecuteOperation`](#codeexecuteoperation) or default [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation), if [`CIndex`](#cindex-1) is still within [`BFCode`](#bfcode).
 * Will only execute once.
+* Will `await` for [`#BFDefaultCodeExecuteOperation`](#async-bfdefaultcodeexecuteoperation).
 
 ```mermaid
 flowchart TD
@@ -1989,11 +1993,11 @@ Operation
 End
 ```
 
-### BF_Input_Operation
+### async BF_Input_Operation
 
 * Return:
   * Current object.
-* Perform `.` operation.
+* Perform `.` operation by calling and `await` [`InputCallback`](#inputcallback).
 
 ```mermaid
 flowchart TD
@@ -2009,11 +2013,11 @@ Operation
 End
 ```
 
-### BF_Output_Operation
+### async BF_Output_Operation
 
 * Return:
   * Current object.
-* Perform `,` operation.
+* Perform `,` operation by calling and `await` [`OutputCallback`](#outputcallback).
 
 ```mermaid
 flowchart TD

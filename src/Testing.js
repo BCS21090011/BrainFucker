@@ -897,7 +897,35 @@ class BrainfuckExecuter {
         }
     }
 
-    #BFDefaultCodeExecuteOperation (code) {
+    Copy (includeCallbacks=true) {
+        const copiedObj = new BrainfuckExecuter(
+            this.BFCode,
+            this.MemSize,
+            {
+                cIndex: this.CIndex,
+                memPtr: this.MemPtr,
+                mem: this.MemArr,
+                cellMinVal: this.CellMinVal,
+                cellMaxVal: this.CellMaxVal,
+                conditionVal: this.ConditionVal,
+                inputCallback: includeCallbacks ? this.InputCallback : undefined,
+                outputCallback: includeCallbacks ? this.OutputCallback : undefined,
+                cIndexOnChangeCallback: includeCallbacks ? this.CIndexOnChangeCallback : undefined,
+                memPtrOnChangeCallback: includeCallbacks ? this.MemPtrOnChangeCallback : undefined,
+                memPtrUnderflowCallback: includeCallbacks ? this.MemPtrUnderflowCallback : undefined,
+                memPtrOverflowCallback: includeCallbacks ? this.MemPtrOverflowCallback : undefined,
+                codeEndedCallback: includeCallbacks ? this.CodeEndedCallback : undefined,
+                cellUnderflowCallback: includeCallbacks ? this.CellUnderflowCallback : undefined,
+                cellOverflowCallback: includeCallbacks ? this.CellOverflowCallback : undefined,
+                memCellOnChangeCallback: includeCallbacks ? this.MemCellOnChangeCallback : undefined,
+                memCellOnSetCallback: includeCallbacks ? this.MemCellOnSetCallback : undefined,
+                codeExecuteOperation: includeCallbacks ? this.CodeExecuteOperation : undefined
+            }
+        );
+        return copiedObj;
+    }
+
+    async #BFDefaultCodeExecuteOperation (code) {
         let cIndex = this.CIndex;
 
         if (code === '+') {
@@ -913,10 +941,10 @@ class BrainfuckExecuter {
             this.BF_PrevCell_Operation();
         }
         else if (code === '.') {
-            this.BF_Output_Operation();
+            await this.BF_Output_Operation();
         }
         else if (code === ',') {
-            this.BF_Input_Operation();
+            await this.BF_Input_Operation();
         }
         else if (code === '[') {
             const tail = this.LoopPairs[cIndex];
@@ -940,15 +968,15 @@ class BrainfuckExecuter {
         return cIndex + 1;
     }
 
-    BF_Execute () {
+    async BF_Execute () {
         if (this.CodeEnded === false) {
             const code = this.BFCode[this.CIndex];
 
             if (this.CodeExecuteOperation == undefined) {
-                this.CIndex = this.#BFDefaultCodeExecuteOperation(code);
+                this.CIndex = await this.#BFDefaultCodeExecuteOperation(code);
             }
             else {
-                this.CIndex = this.CodeExecuteOperation(code, this);
+                this.CIndex = await this.CodeExecuteOperation(code, this);
             }
         }
 
@@ -975,13 +1003,13 @@ class BrainfuckExecuter {
         return this;
     }
 
-    BF_Input_Operation () {
-        this.CurrentCellVal = this.InputCallback(this);
+    async BF_Input_Operation () {
+        this.CurrentCellVal = await this.InputCallback(this);
         return this;
     }
 
-    BF_Output_Operation () {
-        this.OutputCallback(this.CurrentCellVal, this);
+    async BF_Output_Operation () {
+        await this.OutputCallback(this.CurrentCellVal, this);
         return this;
     }
 }
@@ -1033,8 +1061,8 @@ const bf = new BrainfuckExecuter("", 30000, {
     "outputCallback": MyOutput
 });
 
-function ExecuteTillEnd (bfObj) {
+async function ExecuteTillEnd (bfObj) {
     while (!bfObj.CodeEnded) {
-        bfObj.BF_Execute();
+        await bfObj.BF_Execute();
     }
 }
