@@ -119,6 +119,7 @@ class BrainfuckExecuter {
 * This property, with [`#cellMaxVal`](#cellmaxval), [`AllCelVal`](#allcellval), and [`SetAllCellVal`](#setallcellval) are the only members that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`CellMinVal`](#cellminval-1) with getter and setter.
+* Please ensure that [`ConditionVal`](#conditionval-1) is the correct intended value, or it might cause infinite loop.
 
 ### #cellMaxVal
 
@@ -131,6 +132,7 @@ class BrainfuckExecuter {
 * This property, with [`#cellMinVal`](#cellminval), [`AllCelVal`](#allcellval), and [`SetAllCellVal`](#setallcellval) are the only members that will affect every cells in [`#memArr`](#memarr).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`CellMaxVal`](#cellmaxval-1) with getter and setter.
+* Please ensure that [`ConditionVal`](#conditionval-1) is the correct intended value, or it might cause infinite loop.
 
 ### #conditionVal
 
