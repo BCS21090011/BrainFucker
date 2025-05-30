@@ -1018,6 +1018,7 @@ class BrainfuckExecuter {
   * The next cIndex, integer.
 * To override the default Brainfuck execution, [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation), in [`BF_Execute`](#bf_execute).
 * If this is `undefined`, then [`BF_Execute`](#bf_execute) will use the default [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
+* Can be `async`.
 
 ## Static Methods
 
