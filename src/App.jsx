@@ -107,7 +107,7 @@ function App() {
       <div id="TerminalDiv" ref={terminalRef}>
         <span id="OutputPromptSpan">{outputPromptString}</span>
         <input
-          id="InputPrompt"
+          id="InputPromptInput"
           ref={inputPromptRef}
           onKeyDown={handleInputPromptKeyDown}
         />
