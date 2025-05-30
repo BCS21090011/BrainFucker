@@ -8,6 +8,7 @@ function App() {
   // --- DOM refs ---
   const bfCodeTextareaRef = useRef(null);   // Reference to <textarea> for code input
   const terminalRef = useRef(null);         // Reference to the terminal container
+  const inputPromptRef = useRef(null);  // Reference to the input prompt
 
   // --- Persistent BrainfuckExecuter instance ---
   const bfRef = useRef(new BrainfuckExecuter()); // Holds 1 instance across renders
@@ -78,6 +79,17 @@ function App() {
     }
   };
 
+  const handleInputPromptKeyDown = (event) => {
+    if (event.key == "Enter") {
+      let input = event.target.value;
+      if (input) {
+        input += "\n";
+        OutputToOutputPrompt(input);
+        event.target.value = ""; // Clear input after submission
+      }
+    }
+  }
+
   return (
     <>
       <textarea
@@ -94,6 +106,11 @@ function App() {
 
       <div id="TerminalDiv" ref={terminalRef}>
         <span id="OutputPromptSpan">{outputPromptString}</span>
+        <input
+          id="InputPrompt"
+          ref={inputPromptRef}
+          onKeyDown={handleInputPromptKeyDown}
+        />
       </div>
     </>
   );
