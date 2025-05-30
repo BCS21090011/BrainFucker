@@ -65,6 +65,19 @@ function IsInRange(val, min=undefined, max=undefined) {
     return true;
 }
 
+function EnsurePromise (val, msg=undefined) {
+    msg = msg ?? `${val} is not a Promise.`;
+
+    if (!IsPromise(val)) {
+        throw new CustomTypeError(msg);
+    }
+}
+
+function IsPromise (val) {
+    // Check if val is a Promise.
+    return val instanceof Promise || (val != null && typeof val === "object" && typeof val.then === "function");
+}
+
 class WatchedVal {
     #val = undefined;
 
@@ -120,4 +133,4 @@ class WatchedVal {
     }
 }
 
-export { EnsureString, EnsureInt, EnsureMinMax, EnsureInRange, IsInRange, WatchedVal }
+export { EnsureString, EnsureInt, EnsureMinMax, EnsureInRange, IsInRange, WatchedVal, EnsurePromise, IsPromise };
