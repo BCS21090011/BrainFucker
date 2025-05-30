@@ -202,7 +202,6 @@ class BrainfuckExecuter {
 
     set ConditionVal (newVal) {
         EnsureInt(newVal);
-        EnsureInRange(newVal, this.CellMinVal, this.CellMaxVal);
         this.#conditionVal = newVal;
     }
 
@@ -405,13 +404,7 @@ class BrainfuckExecuter {
         }
 
         if (conditionVal != undefined) {
-            EnsureInRange(conditionVal, this.CellMinVal, this.CellMaxVal);
             this.ConditionVal = conditionVal;
-        }
-        else {
-            if (IsInRange(this.ConditionVal, this.CellMinVal, this.CellMaxVal) === false) {
-                this.ConditionVal = this.CellMinVal;
-            }
         }
 
         if (mem != undefined) {

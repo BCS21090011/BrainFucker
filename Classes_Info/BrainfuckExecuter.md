@@ -137,11 +137,13 @@ class BrainfuckExecuter {
 * Private integer.
 * This is the condition value, used in loop checking in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
 * Default to 0.
-* In [`SetConfig`](#setconfig), if conditionVal is not within [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1), and new conditionVal is not provided, it will set to [`CellMinVal`](#cellminval-1).
+* The value is not limited, as long as it is an integer.
 * The changing of this property will not affect anything, except how loop will behave in [`#BFDefaultCodeExecuteOperation`](#bfdefaultcodeexecuteoperation).
 * Brainfuck execution operations will not affect this property.
 * Exposed by [`ConditionVal`](#conditionval-1) with getter and setter.
 * The reason I didn't throw error for out-of-range conditionVal is because it will increase the complexity when setting [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1).
+* In other word, this is a feature to allow never ending loop.
+* User will need to ensure this value is correct to prevent infinity loop, so be aware when setting [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1).
 
 ### #loopPairs
 
@@ -612,15 +614,12 @@ class BrainfuckExecuter {
 
     Start([Set ConditionVal])
     EnsureInt
-    EnsureInRange[Ensure CellMinVal <= newVal <= CellMaxVal]
     SetConditionVal[#conditionVal = newVal]
     End([End])
 
     Start
     -->
     EnsureInt
-    -->
-    EnsureInRange
     -->
     SetConditionVal
     -->
@@ -1526,10 +1525,7 @@ SetCellMinVal[CellMinVal = new cellMinVal]
 CheckCellMaxVal{Is cellMaxVal provided?}
 SetCellMaxVal[CellMaxVal = new cellMaxVal]
 CheckConditionVal{Is conditionVal provided?}
-EnsureInRange[Ensure CellMinVal <= new conditionVal <= CellMaxVal]
 SetConditionVal[ConditionVal = new conditionVal]
-CheckConditionValNotInRange{Check if not CellMinVal <= new conditionVal <= CellMaxVal}
-SetConditionVal2[ConditionVal = CellMinVal]
 CheckMem{Is mem provided?}
 SetMem[Mem = new mem]
 CheckMemSize{Is memSize provided?}
@@ -1564,8 +1560,6 @@ SetCellMaxVal
 -->
 CheckConditionVal
 --true-->
-EnsureInRange
--->
 SetConditionVal
 -->
 CheckMem
@@ -1594,10 +1588,6 @@ CheckCellMaxVal
 --false-->
 CheckConditionVal
 --false-->
-CheckConditionValNotInRange
---true-->
-SetConditionVal2
--->
 CheckMem
 --false-->
 CheckMemSize
@@ -1607,10 +1597,6 @@ End
 CheckCodeEnded
 --false-->
 CheckMemPtr
-
-CheckConditionValNotInRange
---false-->
-CheckMem
 ```
 
 ### GetCellVal
