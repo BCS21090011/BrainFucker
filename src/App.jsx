@@ -19,6 +19,9 @@ function App() {
   // --- Internal buffer to store character codes for input handling ---
   const bufferRef = useRef([]);
 
+  // --- Resolver for input ---
+  const inputResolverRef = useRef(null);
+
   // --- Append text to terminal output state ---
   const OutputToOutputPrompt = (text) => {
     setOutputPromptString((prev) => prev + text);
@@ -41,16 +44,14 @@ function App() {
       OutputToOutputPrompt(String.fromCharCode(output));
     };
 
-    bf.InputCallback = () => {
-      const buffer = bufferRef.current;
+    bf.InputCallback = async () => {
+      const inputPrompt = inputPromptRef.current;
+      inputPrompt.classList.remove("Hidden");
+      inputPrompt.focus();
 
-      if (buffer.length === 0) {
-        const inp = prompt("Input:") + "\n";
-        OutputToOutputPrompt(inp);
-        buffer.push(...inp.split("").map((c) => c.charCodeAt(0)));
-      }
-
-      return buffer.shift();
+      return new Promise((resolve) => {
+        inputResolverRef.current = resolve;
+      });
     };
   }, []);
 
@@ -64,11 +65,9 @@ function App() {
   };
 
   // --- Run execution until completion ---
-  const handleExecuteAll = () => {
+  const handleExecuteAll = async () => {
     const bf = bfRef.current;
-    while (!bf.CodeEnded) {
-      bf.BF_Execute();
-    }
+    await bf.BF_Execute_Until_End();
   };
 
   // --- Manually write user text into terminal (debugging/demo button) ---
@@ -81,11 +80,18 @@ function App() {
 
   const handleInputPromptKeyDown = (event) => {
     if (event.key == "Enter") {
-      let input = event.target.value;
-      if (input) {
-        input += "\n";
-        OutputToOutputPrompt(input);
-        event.target.value = ""; // Clear input after submission
+      const input = event.target.value + "\n";
+      event.target.value = "";
+      event.target.classList.add("Hidden");
+      OutputToOutputPrompt(input);
+
+      const codes = input.split("").map(c => c.charCodeAt(0));
+      bufferRef.current.push(...codes);
+
+      if (inputResolverRef.current) {
+        const charCode = bufferRef.current.shift();
+        inputResolverRef.current(charCode);
+        inputResolverRef.current = null;
       }
     }
   }
