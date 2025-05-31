@@ -1,6 +1,6 @@
 #TerminalDiv {
     border: 1px solid white;
-    height: 50vh;
+    height: 40vh;
     width: 80vw;
     padding: 0;
     background-color: black;
@@ -32,3 +32,9 @@
     #InputPromptInput.Hidden {
         display: none;
     }
+
+#MemoryContainerDiv {
+    border: 1px solid white;
+    height: 40vh;
+    width: 80vw;
+}

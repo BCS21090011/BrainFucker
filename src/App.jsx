@@ -118,6 +118,11 @@ function App() {
           onKeyDown={handleInputPromptKeyDown}
         />
       </div>
+
+      <div
+        id="MemoryContainerDiv"
+      >
+      </div>
     </>
   );
 }
