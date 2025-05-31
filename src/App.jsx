@@ -70,14 +70,6 @@ function App() {
     await bf.BF_Execute_Until_End();
   };
 
-  // --- Manually write user text into terminal (debugging/demo button) ---
-  const handleManualOutput = () => {
-    const userInput = prompt("Your output:");
-    if (userInput !== null) {
-      OutputToOutputPrompt(userInput);
-    }
-  };
-
   const handleInputPromptKeyDown = (event) => {
     if (event.key == "Enter") {
       const input = event.target.value + "\n";
@@ -96,6 +88,12 @@ function App() {
     }
   }
 
+  const handleTerminalClick = () => {
+    if (inputResolverRef.current) { // If input is pending, there should be a resolver:
+      inputPromptRef.current.focus();
+    }
+  }
+
   return (
     <>
       <textarea
@@ -108,12 +106,15 @@ function App() {
 
       <button onClick={handleExecuteAll}>Execute until end</button>
 
-      <button onClick={handleManualOutput}>Output things</button>
-
-      <div id="TerminalDiv" ref={terminalRef}>
+      <div
+        id="TerminalDiv"
+        ref={terminalRef}
+        onClick={handleTerminalClick}
+      >
         <span id="OutputPromptSpan">{outputPromptString}</span>
         <input
           id="InputPromptInput"
+          className="Hidden"
           ref={inputPromptRef}
           onKeyDown={handleInputPromptKeyDown}
         />
