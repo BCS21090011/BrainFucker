@@ -60,6 +60,8 @@ class BrainfuckExecuter {
 
     -async #BFDefaultCodeExecuteOperation(code)
     +async BF_Execute()
+    +async BF_Execute_Until_End(maxSteps=undefined)
+    +async *BF_Execute_Generator()
     +BF_IncrementCellVal_Operation()
     +BF_DecrementCellVal_Operation()
     +BF_NextCell_Operation()
@@ -1898,6 +1900,87 @@ CodeExecuteOperation
 End
 
 IsCodeNotEnded
+--false-->
+End
+```
+
+### async BF_Execute_Until_End
+
+* Arguments:
+  * maxSteps: The maximum step or iteration to run [`BF_Execute`](#async-bf_execute).
+* Return:
+  * Current object.
+* Run [`BF_Execute`](#async-bf_execute) until end (until [`CodeEnded`](#codeended) is `true`) or until `maxSteps`.
+
+```mermaid
+flowchart TD
+
+Start([BF_Execute_Until_End])
+InitializeStepCount[stepCount = 0]
+CheckMaxStepProvided{maxStep provided?}
+EnsureInt[Ensure maxStep is int]
+EnsureInRange[Ensure maxStep is at least 0]
+WhileCheck{while CodeEnded not true}
+BreakCond{Is stepCount larger or equal to maxStep, if provided?}
+Break
+Execute[await BF_Execute]
+IncrementStepCount[stepCount += 1]
+End([Return this])
+
+Start
+-->
+InitializeStepCount
+-->
+CheckMaxStepProvided
+--true-->
+EnsureInt
+-->
+EnsureInRange
+-->
+WhileCheck
+--true-->
+BreakCond
+--false-->
+Execute
+-->
+IncrementStepCount
+-->
+WhileCheck
+--false-->
+End
+
+CheckMaxStepProvided
+--false-->
+WhileCheck
+
+BreakCond
+--true-->
+Break
+-->
+End
+```
+
+### async *BF_Execute_Generator
+
+* Return:
+  * Current object.
+* Create a generator to run [`BF_Execute`](#async-bf_execute) until end (until [`CodeEnded`](#codeended) is `true`).
+
+```mermaid
+flowchart TD
+
+Start([*BF_Execute_Generator])
+WhileCheck{while CodeEnded not true}
+Action[yield await BF_Execute]
+End([Return this])
+
+Start
+-->
+WhileCheck
+--true-->
+Action
+-->
+WhileCheck
 --false-->
 End
 ```

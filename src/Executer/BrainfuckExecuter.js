@@ -584,6 +584,33 @@ class BrainfuckExecuter {
         return this;    // For chaining.
     }
 
+    async BF_Execute_Until_End (maxSteps=undefined) {
+        let stepCount = 0;
+
+        if (maxSteps != undefined) {
+            EnsureInt(maxSteps);
+            EnsureInRange(maxSteps, 0);
+        }
+
+        while (!this.CodeEnded) {
+            if (maxSteps != undefined && stepCount >= maxSteps) {
+                break;
+            }
+
+            await this.BF_Execute();
+
+            stepCount += 1;
+        }
+
+        return this;
+    }
+
+    async *BF_Execute_Generator () {
+        while (!this.CodeEnded) {
+            yield await this.BF_Execute();
+        }
+    }
+
     BF_IncrementCellVal_Operation () {
         this.CurrentCellVal += 1;
         return this;
