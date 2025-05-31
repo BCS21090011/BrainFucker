@@ -18,7 +18,7 @@
 #InputPromptInput {
     margin: 0;
     display: inline;
-    max-width: 100%;
+    max-width: 90%;
     word-break: break-all;
     white-space: pre-wrap;
     background-color: transparent;
@@ -37,4 +37,15 @@
     border: 1px solid white;
     height: 40vh;
     width: 80vw;
+}
+
+#PageInput {
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.DimensionInput {
+    width: 10vw;
+    text-align: center;
 }

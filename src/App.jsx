@@ -124,6 +124,26 @@ function App() {
         id="MemoryContainerDiv"
       >
       </div>
+      <input
+        id="PageInput"
+        type="number"
+        min={1}
+        value={1}
+      />
+      <input
+        id="RowDimensionInput"
+        className="DimensionInput"
+        type="number"
+        min={1}
+        value={10}
+      />
+      <input
+        id="ColDimensionInput"
+        className="DimensionInput"
+        type="number"
+        min={1}
+        value={30}
+      />
     </>
   );
 }
