@@ -35,9 +35,25 @@
 
 #MemoryContainerDiv {
     border: 1px solid white;
-    height: 40vh;
-    width: 80vw;
+    min-width: 80vw;
+    min-height: 40vh;
 }
+
+table.MemTable {
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+td.MemCell {
+    width: 15px;
+    height: 20px;
+    text-align: center;
+}
+
+    td.MemCell.ActiveCell {
+        border: 1px solid white;
+    }
 
 #PageInput {
     display: block;
@@ -45,7 +61,7 @@
     text-align: center;
 }
 
-.DimensionInput {
+input.DimensionInput {
     width: 10vw;
     text-align: center;
 }

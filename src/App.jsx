@@ -9,12 +9,20 @@ function App() {
   const bfCodeTextareaRef = useRef(null);   // Reference to <textarea> for code input
   const terminalRef = useRef(null);         // Reference to the terminal container
   const inputPromptRef = useRef(null);  // Reference to the input prompt
+  const pageInputRef = useRef(null); // Reference to the page input
+  const rowDimensionInputRef = useRef(null); // Reference to the row dimension input
+  const colDimensionInputRef = useRef(null); // Reference to the column dimension input
 
   // --- Persistent BrainfuckExecuter instance ---
   const bfRef = useRef(new BrainfuckExecuter()); // Holds 1 instance across renders
 
   // --- UI state for terminal output display ---
   const [outputPromptString, setOutputPromptString] = useState("");
+  const [page, setPage] = useState(1);  // Current page number for memory display
+  const [rowDimension, setRowDimension] = useState(10); // Rows in memory display
+  const [colDimension, setColDimension] = useState(30); // Columns in memory display
+
+  const [chunkedMem, setChunkedMem] = useState([]); // Memory cells chunked for display
 
   // --- Internal buffer to store character codes for input handling ---
   const bufferRef = useRef([]);
@@ -35,6 +43,27 @@ function App() {
     bf.AllCellVal = 0;
     bufferRef.current = [];
   };
+
+  const ChunkMemory = () => {
+    const bf = bfRef.current;
+    const mem = bf.MemArr;
+
+    const cellsPerPage = rowDimension * colDimension;
+    const start = (page - 1) * cellsPerPage;
+    const pageCells = mem.slice(start, start + cellsPerPage);
+
+    // Chunk into 2D array with row and col dimension:
+    const chunk = [];
+
+    for (let r = 0; r < rowDimension; r++) {
+      const row = pageCells.slice(r * colDimension, (r + 1) * colDimension);
+      chunk.push(row);
+    }
+
+    setChunkedMem(chunk);
+  }
+
+  useEffect(ChunkMemory, [page, rowDimension, colDimension, outputPromptString]);
 
   // --- Setup Input/Output callbacks once after mount ---
   useEffect(() => {
@@ -68,6 +97,7 @@ function App() {
   const handleExecuteAll = async () => {
     const bf = bfRef.current;
     await bf.BF_Execute_Until_End();
+    ChunkMemory();
   };
 
   const handleInputPromptKeyDown = (event) => {
@@ -123,27 +153,83 @@ function App() {
       <div
         id="MemoryContainerDiv"
       >
+        <table className="MemTable">
+          <tbody className="MemTableBody">
+            {chunkedMem.map((row, rIndex) => {
+              return (
+                <tr key={rIndex} className="MemTableRow">
+                  {row.map((val, colIndex) => {
+                    const dimension = rowDimension * colDimension;
+                    const currentPageStart = (page - 1) * dimension;
+                    const currentRowStart = rIndex * colDimension;
+                    const index = currentPageStart + currentRowStart + colIndex;
+
+                    const bf = bfRef.current;
+
+                    return (
+                      <td key={colIndex} className={`MemCell${index === bf.MemPtr ? " ActiveCell" : ""}`}>
+                        {val}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
       <input
         id="PageInput"
         type="number"
+        ref={pageInputRef}
         min={1}
-        value={1}
+        value={page}
+        onChange={(e) => setPage(Number(e.target.value))}
       />
       <input
         id="RowDimensionInput"
         className="DimensionInput"
         type="number"
+        ref={rowDimensionInputRef}
         min={1}
-        value={10}
+        value={rowDimension}
+        onChange={(e) => setRowDimension(Number(e.target.value))}
       />
       <input
         id="ColDimensionInput"
         className="DimensionInput"
         type="number"
+        ref={colDimensionInputRef}
         min={1}
-        value={30}
+        value={colDimension}
+        onChange={(e) => setColDimension(Number(e.target.value))}
       />
+      <div>
+        <button onClick={() => {
+          bfRef.current.BF_IncrementCellVal_Operation();
+          ChunkMemory();
+        }}>Increment</button>
+        <button onClick={() => {
+          bfRef.current.BF_DecrementCellVal_Operation();
+          ChunkMemory();
+        }}>Decrement</button>
+        <button onClick={() => {
+          bfRef.current.BF_NextCell_Operation();
+          ChunkMemory();
+        }}>Next cell</button>
+        <button onClick={() => {
+          bfRef.current.BF_PrevCell_Operation();
+          ChunkMemory();
+        }}>Previous cell</button>
+        <button onClick={() => {
+          bfRef.current.BF_Input_Operation();
+          ChunkMemory();
+        }}>Input</button>
+        <button onClick={() => {
+          bfRef.current.BF_Output_Operation();
+          ChunkMemory();
+        }}>Output</button>
+      </div>
     </>
   );
 }
