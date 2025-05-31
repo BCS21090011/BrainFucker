@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import "./App.css";
 import "./App_My.css";
 
@@ -18,6 +18,7 @@ function App() {
 
   // --- UI state for terminal output display ---
   const [outputPromptString, setOutputPromptString] = useState("");
+  const [memSize, setMemSize] = useState(30000); // Size of memory cells
   const [page, setPage] = useState(1);  // Current page number for memory display
   const [rowDimension, setRowDimension] = useState(10); // Rows in memory display
   const [colDimension, setColDimension] = useState(30); // Columns in memory display
@@ -82,7 +83,27 @@ function App() {
         inputResolverRef.current = resolve;
       });
     };
+
+    bf.MemPtrUnderflowCallback = () => {
+      alert("Memory pointer underflow! Resetting to 0.");
+      bf.MemPtr = 0;  // Reset memory pointer to 0
+    }
+
+    bf.MemPtrOverflowCallback = () => {
+      alert("Memory pointer overflow! Resetting to 0.");
+      bf.MemPtr = 0;  // Reset memory pointer to 0
+    }
   }, []);
+
+  const HandleMemPtrChange = useCallback((oldVal, newVal) => {
+    const dimension = rowDimension * colDimension;
+    const page = Math.floor(newVal / dimension) + 1;
+    setPage(page);
+  }, [rowDimension, colDimension]);
+
+  useEffect(() => {
+    bfRef.current.MemPtrOnChangeCallback = HandleMemPtrChange;
+  }, [HandleMemPtrChange]);
 
   // --- Handle "Apply Code" click: load textarea content into BF engine ---
   const handleApplyCode = () => {
@@ -92,6 +113,14 @@ function App() {
     ResetBFExecuter();
     setOutputPromptString("");
   };
+
+  const handleMemSizeChange = (e) => {
+    const newSize = Number(e.target.value);
+    const bf = bfRef.current;
+    setMemSize(newSize);
+    bf.MemSize = newSize;
+    ChunkMemory();
+  }
 
   // --- Run execution until completion ---
   const handleExecuteAll = async () => {
@@ -131,11 +160,15 @@ function App() {
         ref={bfCodeTextareaRef}
         placeholder="Enter your Brainfuck code here..."
       />
-
+      <input
+        type="number"
+        min={1}
+        max={30000}
+        value={memSize}
+        onChange={handleMemSizeChange}
+      />
       <button onClick={handleApplyCode}>Apply BF code</button>
-
       <button onClick={handleExecuteAll}>Execute until end</button>
-
       <div
         id="TerminalDiv"
         ref={terminalRef}
