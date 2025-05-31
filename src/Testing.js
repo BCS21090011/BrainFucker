@@ -594,7 +594,6 @@ class BrainfuckExecuter {
 
     set ConditionVal (newVal) {
         EnsureInt(newVal);
-        EnsureInRange(newVal, this.CellMinVal, this.CellMaxVal);
         this.#conditionVal = newVal;
     }
 
@@ -797,13 +796,7 @@ class BrainfuckExecuter {
         }
 
         if (conditionVal != undefined) {
-            EnsureInRange(conditionVal, this.CellMinVal, this.CellMaxVal);
             this.ConditionVal = conditionVal;
-        }
-        else {
-            if (IsInRange(this.ConditionVal, this.CellMinVal, this.CellMaxVal) === false) {
-                this.ConditionVal = this.CellMinVal;
-            }
         }
 
         if (mem != undefined) {
@@ -983,6 +976,33 @@ class BrainfuckExecuter {
         return this;    // For chaining.
     }
 
+    async BF_Execute_Until_End (maxSteps=undefined) {
+        let stepCount = 0;
+
+        if (maxSteps != undefined) {
+            EnsureInt(maxSteps);
+            EnsureInRange(maxSteps, 0);
+        }
+
+        while (!this.CodeEnded) {
+            if (maxSteps != undefined && stepCount >= maxSteps) {
+                break;
+            }
+
+            await this.BF_Execute();
+
+            stepCount += 1;
+        }
+
+        return this;
+    }
+
+    async *BF_Execute_Generator () {
+        while (!this.CodeEnded) {
+            yield await this.BF_Execute();
+        }
+    }
+
     BF_IncrementCellVal_Operation () {
         this.CurrentCellVal += 1;
         return this;
@@ -1060,9 +1080,3 @@ const bf = new BrainfuckExecuter("", 30000, {
     "inputCallback": MyInput,
     "outputCallback": MyOutput
 });
-
-async function ExecuteTillEnd (bfObj) {
-    while (!bfObj.CodeEnded) {
-        await bfObj.BF_Execute();
-    }
-}
