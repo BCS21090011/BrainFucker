@@ -1,7 +1,7 @@
 #TerminalDiv {
     border: 1px solid white;
     height: 40vh;
-    width: 80vw;
+    width: 90vw;
     padding: 0;
     background-color: black;
     overflow-y: auto;
@@ -35,8 +35,7 @@
 
 #MemoryContainerDiv {
     border: 1px solid white;
-    min-width: 80vw;
-    min-height: 40vh;
+    min-width: 90vw;
 }
 
 table.MemTable {

@@ -22,6 +22,8 @@ function App() {
   const [page, setPage] = useState(1);  // Current page number for memory display
   const [rowDimension, setRowDimension] = useState(10); // Rows in memory display
   const [colDimension, setColDimension] = useState(30); // Columns in memory display
+  const [memPtr, setMemPtr] = useState(0);  // Current code index in BF code execution
+  const [currentCellVal, setCurrentCellVal] = useState(0);  // Current value of the memory cell at MemPtr
 
   const [chunkedMem, setChunkedMem] = useState([]); // Memory cells chunked for display
 
@@ -43,6 +45,7 @@ function App() {
     bf.MemPtr = 0;
     bf.AllCellVal = 0;
     bufferRef.current = [];
+    ChunkMemory();
   };
 
   const ChunkMemory = () => {
@@ -84,14 +87,17 @@ function App() {
       });
     };
 
-    bf.MemPtrUnderflowCallback = () => {
-      alert("Memory pointer underflow! Resetting to 0.");
+    bf.MemPtrUnderflowCallback = (val) => {
+      alert(`Memory pointer (${val}) underflow! Resetting to 0.`);
       bf.MemPtr = 0;  // Reset memory pointer to 0
+      setMemPtr(0);
     }
 
-    bf.MemPtrOverflowCallback = () => {
-      alert("Memory pointer overflow! Resetting to 0.");
-      bf.MemPtr = 0;  // Reset memory pointer to 0
+    bf.MemPtrOverflowCallback = (val) => {
+      const maxMemPtr = bf.MemSize - 1;
+      alert(`Memory pointer (${val}) overflow! Resetting to ${maxMemPtr}.`);
+      bf.MemPtr = maxMemPtr;  // Reset memory pointer to maxMemPtr
+      setMemPtr(maxMemPtr);
     }
   }, []);
 
@@ -99,6 +105,8 @@ function App() {
     const dimension = rowDimension * colDimension;
     const page = Math.floor(newVal / dimension) + 1;
     setPage(page);
+    setCurrentCellVal(bfRef.current.CurrentCellVal);
+    setMemPtr(bfRef.current.MemPtr);
   }, [rowDimension, colDimension]);
 
   useEffect(() => {
@@ -117,9 +125,17 @@ function App() {
   const handleMemSizeChange = (e) => {
     const newSize = Number(e.target.value);
     const bf = bfRef.current;
-    setMemSize(newSize);
-    bf.MemSize = newSize;
-    ChunkMemory();
+
+    if (isNaN(newSize)) return;
+
+    if (newSize <= 0 || newSize > 30000) {
+      alert(`Memory size (${newSize}) must be between 1 and 30000!`);
+    }
+    else {
+      setMemSize(newSize);
+      bf.MemSize = newSize;
+      ChunkMemory();
+    }
   }
 
   // --- Run execution until completion ---
@@ -128,6 +144,12 @@ function App() {
     await bf.BF_Execute_Until_End();
     ChunkMemory();
   };
+
+  const handleExecuteOnce = async () => {
+    const bf = bfRef.current;
+    await bf.BF_Execute();
+    ChunkMemory();
+  }
 
   const handleInputPromptKeyDown = (event) => {
     if (event.key == "Enter") {
@@ -153,6 +175,33 @@ function App() {
     }
   }
 
+  const handleMemPtrInputChange = (e) => {
+    const newMemPtr = Number(e.target.value);
+    const bf = bfRef.current;
+
+    if (isNaN(newMemPtr)) return; // Ignore empty or non-numeric input
+
+    if (newMemPtr < 0 || newMemPtr > bf.MemSize - 1) {
+      alert(`Memory pointer (${newMemPtr}) out of bounds!`);
+    }
+    else {
+      bf.MemPtr = newMemPtr;
+      ChunkMemory();
+    }
+  }
+
+  const handleCurrentCellValInputChange = (e) => {
+    let newVal = Number(e.target.value);
+    const bf = bfRef.current;
+
+    if (isNaN(newVal)) return;
+
+    bf.CurrentCellVal = newVal;
+    newVal = bf.CurrentCellVal;
+    setCurrentCellVal(newVal);
+    ChunkMemory();
+  }
+
   return (
     <>
       <textarea
@@ -168,6 +217,7 @@ function App() {
         onChange={handleMemSizeChange}
       />
       <button onClick={handleApplyCode}>Apply BF code</button>
+      <button onClick={handleExecuteOnce}>Execute once</button>
       <button onClick={handleExecuteAll}>Execute until end</button>
       <div
         id="TerminalDiv"
@@ -254,14 +304,28 @@ function App() {
           bfRef.current.BF_PrevCell_Operation();
           ChunkMemory();
         }}>Previous cell</button>
-        <button onClick={() => {
-          bfRef.current.BF_Input_Operation();
+        <button onClick={async () => {
+          await bfRef.current.BF_Input_Operation();
           ChunkMemory();
         }}>Input</button>
-        <button onClick={() => {
-          bfRef.current.BF_Output_Operation();
+        <button onClick={async () => {
+          await bfRef.current.BF_Output_Operation();
           ChunkMemory();
         }}>Output</button>
+      </div>
+      <div>
+        <input
+          type="number"
+          min={0}
+          max={memSize - 1}
+          value={memPtr}
+          onChange={handleMemPtrInputChange}
+        />
+        <input
+          type="number"
+          value={currentCellVal}
+          onChange={handleCurrentCellValInputChange}
+        />
       </div>
     </>
   );
