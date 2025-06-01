@@ -24,6 +24,7 @@ function App() {
   const [colDimension, setColDimension] = useState(30); // Columns in memory display
   const [memPtr, setMemPtr] = useState(0);  // Current code index in BF code execution
   const [currentCellVal, setCurrentCellVal] = useState(0);  // Current value of the memory cell at MemPtr
+  const [maxPage, setMaxPage] = useState(0);  // Max page number for memory display
 
   const [chunkedMem, setChunkedMem] = useState([]); // Memory cells chunked for display
 
@@ -103,17 +104,26 @@ function App() {
 
   const HandleMemPtrChange = useCallback((oldVal, newVal) => {
     if (newVal >= 0 && newVal < memSize) {
-      const dimension = rowDimension * colDimension;
-      const page = Math.floor(newVal / dimension) + 1;
-      setPage(page);
       setCurrentCellVal(bfRef.current.CurrentCellVal);
       setMemPtr(bfRef.current.MemPtr);
     }
-  }, [rowDimension, colDimension]);
+  }, [rowDimension, colDimension, memSize]);
 
   useEffect(() => {
     bfRef.current.MemPtrOnChangeCallback = HandleMemPtrChange;
   }, [HandleMemPtrChange]);
+  
+  useEffect(() => {
+      const bf = bfRef.current;
+
+      const dimension = rowDimension * colDimension;
+
+      const inputMaxPage = Math.floor((memSize - 1) / dimension) + 1;
+      setMaxPage(inputMaxPage);
+      
+      const page = Math.floor(bf.MemPtr / dimension) + 1;
+      setPage(page);
+  }, [rowDimension, colDimension, memSize]);
 
   // --- Handle "Apply Code" click: load textarea content into BF engine ---
   const handleApplyCode = () => {
@@ -138,7 +148,7 @@ function App() {
       bf.MemSize = newSize;
       ChunkMemory();
     }
-  }
+  };
 
   // --- Run execution until completion ---
   const handleExecuteAll = async () => {
@@ -151,7 +161,7 @@ function App() {
     const bf = bfRef.current;
     await bf.BF_Execute();
     ChunkMemory();
-  }
+  };
 
   const handleInputPromptKeyDown = (event) => {
     if (event.key == "Enter") {
@@ -169,13 +179,13 @@ function App() {
         inputResolverRef.current = null;
       }
     }
-  }
+  };
 
   const handleTerminalClick = () => {
     if (inputResolverRef.current) { // If input is pending, there should be a resolver:
       inputPromptRef.current.focus();
     }
-  }
+  };
 
   const handleMemPtrInputChange = (e) => {
     const newMemPtr = Number(e.target.value);
@@ -190,7 +200,7 @@ function App() {
       bf.MemPtr = newMemPtr;
       ChunkMemory();
     }
-  }
+  };
 
   const handleCurrentCellValInputChange = (e) => {
     let newVal = Number(e.target.value);
@@ -202,7 +212,7 @@ function App() {
     newVal = bf.CurrentCellVal;
     setCurrentCellVal(newVal);
     ChunkMemory();
-  }
+  };
 
   return (
     <>
@@ -268,6 +278,7 @@ function App() {
         type="number"
         ref={pageInputRef}
         min={1}
+        max={maxPage}
         value={page}
         onChange={(e) => setPage(Number(e.target.value))}
       />
