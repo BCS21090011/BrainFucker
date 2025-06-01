@@ -102,11 +102,13 @@ function App() {
   }, []);
 
   const HandleMemPtrChange = useCallback((oldVal, newVal) => {
-    const dimension = rowDimension * colDimension;
-    const page = Math.floor(newVal / dimension) + 1;
-    setPage(page);
-    setCurrentCellVal(bfRef.current.CurrentCellVal);
-    setMemPtr(bfRef.current.MemPtr);
+    if (newVal >= 0 && newVal < memSize) {
+      const dimension = rowDimension * colDimension;
+      const page = Math.floor(newVal / dimension) + 1;
+      setPage(page);
+      setCurrentCellVal(bfRef.current.CurrentCellVal);
+      setMemPtr(bfRef.current.MemPtr);
+    }
   }, [rowDimension, colDimension]);
 
   useEffect(() => {

@@ -38,8 +38,8 @@ class BrainfuckExecuter {
     #memPtr = new WatchedVal(
         0,
         (valBefore, valAfter) => {
-            this.MemPtrOnChangeCallback(valBefore, valAfter, this);
             this.#CheckMemPtr();
+            this.MemPtrOnChangeCallback(valBefore, valAfter, this);
         }
     );
     #memArr = [];

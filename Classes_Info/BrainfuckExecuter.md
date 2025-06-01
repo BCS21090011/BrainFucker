@@ -358,9 +358,9 @@ class BrainfuckExecuter {
     -->
     WatchedValCheckSameVal
     --false-->
-    MemPtrOnChangeCallback
-    -->
     CheckMemPtr
+    -->
+    MemPtrOnChangeCallback
     -->
     End
     
