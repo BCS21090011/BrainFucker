@@ -303,10 +303,12 @@ function App() {
       <div>
         <button onClick={() => {
           bfRef.current.BF_IncrementCellVal_Operation();
+          setCurrentCellVal(bfRef.current.CurrentCellVal);
           ChunkMemory();
         }}>Increment</button>
         <button onClick={() => {
           bfRef.current.BF_DecrementCellVal_Operation();
+          setCurrentCellVal(bfRef.current.CurrentCellVal);
           ChunkMemory();
         }}>Decrement</button>
         <button onClick={() => {
