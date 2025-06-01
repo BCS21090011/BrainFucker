@@ -118,11 +118,11 @@ function App() {
 
       const dimension = rowDimension * colDimension;
 
-      const inputMaxPage = Math.floor((memSize - 1) / dimension) + 1;
-      setMaxPage(inputMaxPage);
-      
       const page = Math.floor(bf.MemPtr / dimension) + 1;
+      const inputMaxPage = Math.floor((memSize - 1) / dimension) + 1;
+
       setPage(page);
+      setMaxPage(inputMaxPage);
   }, [rowDimension, colDimension, memSize]);
 
   // --- Handle "Apply Code" click: load textarea content into BF engine ---
