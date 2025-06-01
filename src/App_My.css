@@ -64,3 +64,15 @@ input.DimensionInput {
     width: 10vw;
     text-align: center;
 }
+
+#ContainerDiv {
+    display: grid;
+}
+
+#ActionDiv {
+    display: grid;
+}
+
+#ConfigDiv {
+    display: grid;
+}

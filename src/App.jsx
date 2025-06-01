@@ -216,62 +216,70 @@ function App() {
 
   return (
     <>
-      <textarea
-        id="BFCodeTextarea"
-        ref={bfCodeTextareaRef}
-        placeholder="Enter your Brainfuck code here..."
-      />
-      <input
-        type="number"
-        min={1}
-        max={30000}
-        value={memSize}
-        onChange={handleMemSizeChange}
-      />
-      <button onClick={handleApplyCode}>Apply BF code</button>
-      <button onClick={handleExecuteOnce}>Execute once</button>
-      <button onClick={handleExecuteAll}>Execute until end</button>
-      <div
-        id="TerminalDiv"
-        ref={terminalRef}
-        onClick={handleTerminalClick}
-      >
-        <span id="OutputPromptSpan">{outputPromptString}</span>
-        <input
-          id="InputPromptInput"
-          className="Hidden"
-          ref={inputPromptRef}
-          onKeyDown={handleInputPromptKeyDown}
-        />
-      </div>
+      <div id="ContainerDiv">
+        <div id="ActionDiv">
+          <div id="ConfigDiv">
+            <div id="ConfigActionDiv">
+              <input
+                type="number"
+                min={1}
+                max={30000}
+                value={memSize}
+                onChange={handleMemSizeChange}
+              />
+              <button onClick={handleApplyCode}>Apply BF code</button>
+              <button onClick={handleExecuteOnce}>Execute once</button>
+              <button onClick={handleExecuteAll}>Execute until end</button>
+            </div>
+            <textarea
+              id="BFCodeTextarea"
+              ref={bfCodeTextareaRef}
+              placeholder="Enter your Brainfuck code here..."
+            />
+          </div>
+          <div
+            id="TerminalDiv"
+            ref={terminalRef}
+            onClick={handleTerminalClick}
+          >
+            <span id="OutputPromptSpan">{outputPromptString}</span>
+            <input
+              id="InputPromptInput"
+              className="Hidden"
+              ref={inputPromptRef}
+              onKeyDown={handleInputPromptKeyDown}
+            />
+          </div>
+        </div>
 
-      <div
-        id="MemoryContainerDiv"
-      >
-        <table className="MemTable">
-          <tbody className="MemTableBody">
-            {chunkedMem.map((row, rIndex) => {
-              return (
-                <tr key={rIndex} className="MemTableRow">
-                  {row.map((val, colIndex) => {
-                    const dimension = rowDimension * colDimension;
-                    const currentPageStart = (page - 1) * dimension;
-                    const currentRowStart = rIndex * colDimension;
-                    const index = currentPageStart + currentRowStart + colIndex;
+        <div
+          id="MemoryContainerDiv"
+        >
+          <table className="MemTable">
+            <tbody className="MemTableBody">
+              {chunkedMem.map((row, rIndex) => {
+                return (
+                  <tr key={rIndex} className="MemTableRow">
+                    {row.map((val, colIndex) => {
+                      const dimension = rowDimension * colDimension;
+                      const currentPageStart = (page - 1) * dimension;
+                      const currentRowStart = rIndex * colDimension;
+                      const index = currentPageStart + currentRowStart + colIndex;
 
-                    const bf = bfRef.current;
+                      const bf = bfRef.current;
 
-                    return (
-                      <td key={colIndex} className={`MemCell${index === bf.MemPtr ? " ActiveCell" : ""}`}>
-                        {val}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                      return (
+                        <td key={colIndex} className={`MemCell${index === bf.MemPtr ? " ActiveCell" : ""}`}>
+                          {val}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
       <input
         id="PageInput"
