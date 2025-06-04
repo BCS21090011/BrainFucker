@@ -153,7 +153,29 @@ function App() {
   // --- Run execution until completion ---
   const handleExecuteAll = async () => {
     const bf = bfRef.current;
-    await bf.BF_Execute_Until_End();
+
+    /*
+    // Helper function to create delay:
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    while (!bf.CodeEnded) {
+      await bf.BF_Execute();
+      await delay(50);
+      ChunkMemory();
+    }
+    */
+
+    const executionID = setInterval(async () => {
+      if (bf.CodeEnded) {
+        clearInterval(executionID);
+        alert("Code execution ended.");
+      }
+      else {
+        await bf.BF_Execute();
+        ChunkMemory();
+      }
+    }, 1);
+
     ChunkMemory();
   };
 
