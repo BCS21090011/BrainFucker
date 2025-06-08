@@ -17,6 +17,7 @@ function App() {
   const bfRef = useRef(new BrainfuckExecuter()); // Holds 1 instance across renders
 
   // --- UI state for terminal output display ---
+  const [codeExecutionInterval, setCodeExecutionInterval] = useState(1);
   const [outputPromptString, setOutputPromptString] = useState("");
   const [memSize, setMemSize] = useState(30000); // Size of memory cells
   const [page, setPage] = useState(1);  // Current page number for memory display
@@ -80,12 +81,18 @@ function App() {
 
     bf.InputCallback = async () => {
       const inputPrompt = inputPromptRef.current;
-      inputPrompt.classList.remove("Hidden");
-      inputPrompt.focus();
 
-      return new Promise((resolve) => {
-        inputResolverRef.current = resolve;
-      });
+      if (bufferRef.current.length == 0) {
+        inputPrompt.classList.remove("Hidden");
+        inputPrompt.focus();
+
+        return new Promise((resolve) => {
+          inputResolverRef.current = resolve;
+        });
+      }
+      else {
+        return bufferRef.current.shift();
+      }
     };
 
     bf.MemPtrUnderflowCallback = (val) => {
@@ -174,7 +181,7 @@ function App() {
         await bf.BF_Execute();
         ChunkMemory();
       }
-    }, 1);
+    }, codeExecutionInterval);
 
     ChunkMemory();
   };
@@ -252,6 +259,13 @@ function App() {
               <button onClick={handleApplyCode}>Apply BF code</button>
               <button onClick={handleExecuteOnce}>Execute once</button>
               <button onClick={handleExecuteAll}>Execute until end</button>
+              <input
+                type="number"
+                min={1}
+                max={10000}
+                value={codeExecutionInterval}
+                onChange={(e) => setCodeExecutionInterval(e.target.value)}
+              />
             </div>
             <textarea
               id="BFCodeTextarea"
