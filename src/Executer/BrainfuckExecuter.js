@@ -60,6 +60,7 @@ class BrainfuckExecuter {
         }
     );
     #conditionVal = 0;
+    #codeStoped = false;
 
     #loopPairs = {};
     #leftOutLoops = [];
@@ -106,6 +107,7 @@ class BrainfuckExecuter {
     set BFCode (newVal) {
         EnsureString(newVal);
         this.#bfCode.Val = newVal;
+        this.CodeEnded = false;
     }
 
     get MemSize () {
@@ -206,7 +208,15 @@ class BrainfuckExecuter {
     }
 
     get CodeEnded () {
+        if (this.#codeStoped === true) {
+            return true;
+        }
+
         return this.CIndex >= this.BFCode.length;
+    }
+
+    set CodeEnded (newVal) {
+        this.#codeStoped = newVal;
     }
     
     GetCellVal (index) {

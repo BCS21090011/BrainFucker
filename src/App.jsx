@@ -96,16 +96,26 @@ function App() {
     };
 
     bf.MemPtrUnderflowCallback = (val) => {
+      bf.CodeEnded = true;
+      OutputToOutputPrompt("Out of bounds: Memory pointer underflow!\n");
+
+      /*
       alert(`Memory pointer (${val}) underflow! Resetting to 0.`);
       bf.MemPtr = 0;  // Reset memory pointer to 0
       setMemPtr(0);
+      */
     }
 
     bf.MemPtrOverflowCallback = (val) => {
+      bf.CodeEnded = true;
+      OutputToOutputPrompt("Out of bounds: Memory pointer overflow!\n");
+
+      /*
       const maxMemPtr = bf.MemSize - 1;
       alert(`Memory pointer (${val}) overflow! Resetting to ${maxMemPtr}.`);
       bf.MemPtr = maxMemPtr;  // Reset memory pointer to maxMemPtr
       setMemPtr(maxMemPtr);
+      */
     }
   }, []);
 

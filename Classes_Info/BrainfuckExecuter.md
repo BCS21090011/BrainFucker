@@ -18,6 +18,7 @@ class BrainfuckExecuter {
     +int CellMaxVal
 
     -int #conditionVal
+    -bool #codeStoped
     +int ConditionVal
     -obj #loopPairs
     +obj LoopPairs
@@ -149,6 +150,13 @@ class BrainfuckExecuter {
 * In other word, this is a feature to allow never ending loop.
 * User will need to ensure this value is correct to prevent infinity loop, so be aware when setting [`CellMinVal`](#cellminval-1) and [`CellMaxVal`](#cellmaxval-1).
 
+### #codeStoped
+
+* Private boolean.
+* This is the flag indicating if the code stoped or not, reset to false after [`BFCode`](#bfcode-1) is setted.
+* Default to false.
+* The changing of this property will not affect anything, except the code flow ([`CodeEnded`](#codeended), [`BF_Execute_Generator`](#async-bf_execute_generator) and [`BF_Execute_Until_End`](#async-bf_execute_until_end)).
+
 ### #loopPairs
 
 * Private JavaScript object.
@@ -222,6 +230,7 @@ class BrainfuckExecuter {
         MapLoopPairs[mapResult = MapLoopPairs]
         SetLoopPairs[#loopPairs = mapResult.LoopPairs]
         SetLeftOutLoops[#leftOutLoops = mapResult.LeftOutLoops]
+        SetCodeEnded[CodeEnded = false]
         End([End])
     end
 
@@ -239,11 +248,13 @@ class BrainfuckExecuter {
     -->
     SetLeftOutLoops
     -->
+    SetCodeEnded
+    -->
     End
 
     WatchedValCheckSameVal
     --true-->
-    End
+    SetCodeEnded
     ```
 
 ### CIndex
@@ -771,14 +782,35 @@ class BrainfuckExecuter {
 ### CodeEnded
 
 * Public boolean.
-* The getter that shows if the code execution is ended, i.e., no more character in [`BFCode`](#bfcode-1) pointed by [`CIndex`](#cindex-1) to execute.
+* The getter that shows if the code execution is ended, i.e., no more character in [`BFCode`](#bfcode-1) pointed by [`CIndex`](#cindex-1) to execute or [`#codeStoped`](#codestoped) is true.
+* The setter to stop the code execution.
 
 * Get CodeEnded
     ```mermaid
     flowchart TD
 
     Start([Get CodeEnded])
-    End([Return CIndex larger or equal to BFCode.length])
+    CheckStoped{#codeStoped is true?}
+    End1([return true])
+    End2([Return CIndex larger or equal to BFCode.length])
+
+    Start
+    -->
+    CheckStoped
+    --true-->
+    End1
+
+    CheckStoped
+    --false-->
+    End2
+    ```
+
+* Set CodeEnded
+    ```mermaid
+    flowchart TD
+
+    Start([Set CodeEnded])
+    End([#codeEnded = newVal])
 
     Start
     -->
@@ -972,6 +1004,7 @@ class BrainfuckExecuter {
 * Arguments:
   * brainfuckExecuter: The current object.
 * Will be called when the code is ended, i.e., [`CIndex`](#cindex-1) is larger or equal to the length of [`BFCode`](#bfcode-1).
+* Will not be called when code is stoped, i.e., [`#codeStoped`](#codestoped) is true.
 
 ### CellUnderflowCallback
 
