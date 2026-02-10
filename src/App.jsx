@@ -123,6 +123,11 @@ function App() {
     if (newVal >= 0 && newVal < memSize) {
       setCurrentCellVal(bfRef.current.CurrentCellVal);
       setMemPtr(bfRef.current.MemPtr);
+      
+      // Set the page:
+      const dimension = colDimension * rowDimension;
+      const newPage = Math.floor(newVal / dimension)
+      setPage(newPage);
     }
   }, [rowDimension, colDimension, memSize]);
 

@@ -1,0 +1,4 @@
+npm create vite@latest projectname react
+cd projectname
+npm i
+npm run dev
