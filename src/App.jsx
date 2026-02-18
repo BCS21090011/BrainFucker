@@ -1,407 +1,447 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import "./App.css";
-import "./App_My.css";
 
-import BrainfuckExecuter from "./Executer/BrainfuckExecuter";
+import { MemPtrOutOfRangeError, BrainfuckExecuter, BFMemoryMaxSize } from "./Executer/BrainfuckExecuter";
+import { CustomError } from "./utils/CustomErrors";
+import { formatBFOutput } from "./utils/bfOutputFormatter";
+import useInterval from "./hooks/useInterval";
+
+import CodeEditor from "./components/CodeEditor";
+import ExecutionControls from "./components/ExecutionControls";
+import CodeViewer from "./components/CodeViewer";
+import MemoryViewer from "./components/MemoryViewer";
+import LogViewer from "./components/LogViewer";
+import TerminalPanel from "./components/TerminalPanel";
+
+/* ─── Helpers ────────────────────────────────────────────── */
+
+function createLogTextObj(textColor, type, text) {
+  return { textColor, type, text, timestamp: new Date() };
+}
+
+/* ─── App ────────────────────────────────────────────────── */
 
 function App() {
-  // --- DOM refs ---
-  const bfCodeTextareaRef = useRef(null);   // Reference to <textarea> for code input
-  const terminalRef = useRef(null);         // Reference to the terminal container
-  const inputPromptRef = useRef(null);  // Reference to the input prompt
-  const pageInputRef = useRef(null); // Reference to the page input
-  const rowDimensionInputRef = useRef(null); // Reference to the row dimension input
-  const colDimensionInputRef = useRef(null); // Reference to the column dimension input
+  /* ── Executor refs ────────────────────────────────────── */
+  const bfExecuter = useRef(null);
+  const bfGenerator = useRef(null);
+  const inputResolver = useRef(null);
+  const terminalPanelRef = useRef(null);
+  const getcharLineBuffer = useRef("");
 
-  // --- Persistent BrainfuckExecuter instance ---
-  const bfRef = useRef(new BrainfuckExecuter()); // Holds 1 instance across renders
+  /* ── State ────────────────────────────────────────────── */
+  const [bfCode, setBFCode] = useState("");
+  const [strippedBFCode, setStrippedBFCode] = useState("");
+  const [bfMemorySize, setBFMemorySize] = useState(3000);
+  const [codeExecIntervalMS, setCodeExecIntervalMS] = useState(10);
 
-  // --- UI state for terminal output display ---
-  const [codeExecutionInterval, setCodeExecutionInterval] = useState(1);
-  const [outputPromptString, setOutputPromptString] = useState("");
-  const [memSize, setMemSize] = useState(30000); // Size of memory cells
-  const [page, setPage] = useState(1);  // Current page number for memory display
-  const [rowDimension, setRowDimension] = useState(10); // Rows in memory display
-  const [colDimension, setColDimension] = useState(30); // Columns in memory display
-  const [memPtr, setMemPtr] = useState(0);  // Current code index in BF code execution
-  const [currentCellVal, setCurrentCellVal] = useState(0);  // Current value of the memory cell at MemPtr
-  const [maxPage, setMaxPage] = useState(0);  // Max page number for memory display
+  const [isBFRunning, setIsBFRunning] = useState(false);
+  const [isBFPaused, setIsBFPaused] = useState(false);
 
-  const [chunkedMem, setChunkedMem] = useState([]); // Memory cells chunked for display
+  const [bfMemoryChunkSize, setBFMemoryChunkSize] = useState(100);
+  const [bfMemoryChunk, setBFMemoryChunk] = useState([]);
+  const [memPage, setMemPage] = useState(0);
+  const [cIndex, setCIndex] = useState(0);
+  const [latestCellChange, setLatestCellChange] = useState({ index: null, fromVal: null, toVal: null });
 
-  // --- Internal buffer to store character codes for input handling ---
-  const bufferRef = useRef([]);
+  const [logTexts, setLogTexts] = useState([]);
+  const [logShowLog, setLogShowLog] = useState(true);
+  const [logShowWarning, setLogShowWarning] = useState(true);
+  const [logShowError, setLogShowError] = useState(true);
 
-  // --- Resolver for input ---
-  const inputResolverRef = useRef(null);
+  const [executionCount, setExecutionCount] = useState(0);
 
-  // --- Append text to terminal output state ---
-  const OutputToOutputPrompt = (text) => {
-    setOutputPromptString((prev) => prev + text);
-  };
+  const [inputMode, setInputMode] = useState("keypress");
+  const [displayMode, setDisplayMode] = useState("corrupted");
+  const [inputBuffer, setInputBuffer] = useState("");
 
-  // --- Reset core states of BF executer ---
-  const ResetBFExecuter = () => {
-    const bf = bfRef.current;
-    bf.CIndex = 0;
-    bf.MemPtr = 0;
-    bf.AllCellVal = 0;
-    bufferRef.current = [];
-    ChunkMemory();
-  };
+  /* ── Refs that mirror state for stale-closure safety ─── */
+  const displayModeRef = useRef(displayMode);
+  useEffect(() => { displayModeRef.current = displayMode; }, [displayMode]);
 
-  const ChunkMemory = () => {
-    const bf = bfRef.current;
-    const mem = bf.MemArr;
+  const inputModeRef = useRef(inputMode);
+  useEffect(() => { inputModeRef.current = inputMode; }, [inputMode]);
 
-    const cellsPerPage = rowDimension * colDimension;
-    const start = (page - 1) * cellsPerPage;
-    const pageCells = mem.slice(start, start + cellsPerPage);
+  const inputBufferRef = useRef(inputBuffer);
+  useEffect(() => { inputBufferRef.current = inputBuffer; }, [inputBuffer]);
 
-    // Chunk into 2D array with row and col dimension:
-    const chunk = [];
-
-    for (let r = 0; r < rowDimension; r++) {
-      const row = pageCells.slice(r * colDimension, (r + 1) * colDimension);
-      chunk.push(row);
-    }
-
-    setChunkedMem(chunk);
+  /* ── Logging helpers ──────────────────────────────────── */
+  function LogText(text) {
+    setLogTexts((prev) => [...prev, createLogTextObj("white", "Log", text)]);
+  }
+  function LogWarning(text) {
+    setLogTexts((prev) => [...prev, createLogTextObj("yellow", "Warning", text)]);
+  }
+  function LogError(text) {
+    setLogTexts((prev) => [...prev, createLogTextObj("red", "Error", text)]);
   }
 
-  useEffect(ChunkMemory, [page, rowDimension, colDimension, outputPromptString]);
-
-  // --- Setup Input/Output callbacks once after mount ---
+  // Refs so init-useEffect callbacks can call the latest versions
+  const logTextFn = useRef(LogText);
+  const logWarningFn = useRef(LogWarning);
+  const logErrorFn = useRef(LogError);
   useEffect(() => {
-    const bf = bfRef.current;
+    logTextFn.current = LogText;
+    logWarningFn.current = LogWarning;
+    logErrorFn.current = LogError;
+  });
 
-    bf.OutputCallback = (output) => {
-      OutputToOutputPrompt(String.fromCharCode(output));
-    };
+  /* ── Terminal print helpers (via ref) ──────────────────── */
+  function termPrint(text) { terminalPanelRef.current?.write(text); }
+  function termPrintInput(text) { terminalPanelRef.current?.write(`\x1b[36m${text}\x1b[0m`); }
+  function termPrintWarning(text) { terminalPanelRef.current?.write(`\x1b[33m${text}\x1b[0m`); }
+  function termPrintError(text) { terminalPanelRef.current?.write(`\x1b[30;41m${text}\x1b[0m`); }
 
-    bf.InputCallback = async () => {
-      const inputPrompt = inputPromptRef.current;
+  /* ── Core execution logic ─────────────────────────────── */
+  function LogOperation() {
+    const bfExec = bfExecuter.current;
+    const ci = bfExec.CIndex;
+    const char = bfExec.BFCode[ci];
 
-      if (bufferRef.current.length == 0) {
-        inputPrompt.classList.remove("Hidden");
-        inputPrompt.focus();
+    if (char === ".") LogText(`[${ci}] . -> Outputing`);
+    else if (char === ",") LogText(`[${ci}] , -> Waiting for input`);
+    else if (char === "+") LogText(`[${ci}] + -> Incrementing`);
+    else if (char === "-") LogText(`[${ci}] - -> Decrementing`);
+    else if (char === ">") LogText(`[${ci}] > -> Moving Right`);
+    else if (char === "<") LogText(`[${ci}] < -> Moving Left`);
+    else if (char === "[") {
+      const tail = bfExec.LoopPairs[ci];
+      const noTail = tail === undefined;
+      const skip = bfExec.CurrentCellVal === bfExec.ConditionVal;
+      LogText(`[${ci}] [${noTail ? " -> Has no tail (skipped)" : ` -> Tail at ${tail} (val=${bfExec.CurrentCellVal} ${skip ? "skipped to tail" : "enter loop"})`}`);
+    } else if (char === "]") {
+      const head = bfExec.LoopPairs[ci];
+      const noHead = head === undefined;
+      const skip = bfExec.CurrentCellVal === bfExec.ConditionVal;
+      LogText(`[${ci}] ]${noHead ? " -> Has no head (skipped)" : ` -> Head at ${head} (val=${bfExec.CurrentCellVal} ${skip ? "exit loop" : "back to head"})`}`);
+    }
+  }
 
-        return new Promise((resolve) => {
-          inputResolverRef.current = resolve;
-        });
-      }
-      else {
-        return bufferRef.current.shift();
-      }
-    };
+  function StopAndCleanup() {
+    bfGenerator.current = null;
+    setIsBFRunning(false);
+    LogText("Brainfuck execution stopped");
+    LogText(`CIndex: ${bfExecuter.current.CIndex}`);
+    LogText(`MemPtr: ${bfExecuter.current.MemPtr}`);
+  }
 
-    bf.MemPtrUnderflowCallback = (val) => {
-      bf.CodeEnded = true;
-      OutputToOutputPrompt("Out of bounds: Memory pointer underflow!\n");
-
-      /*
-      alert(`Memory pointer (${val}) underflow! Resetting to 0.`);
-      bf.MemPtr = 0;  // Reset memory pointer to 0
-      setMemPtr(0);
-      */
+  async function ExecuteBFCodeOnce() {
+    if (!bfGenerator.current) {
+      bfGenerator.current = bfExecuter.current.BF_Execute_Generator();
     }
 
-    bf.MemPtrOverflowCallback = (val) => {
-      bf.CodeEnded = true;
-      OutputToOutputPrompt("Out of bounds: Memory pointer overflow!\n");
-
-      /*
-      const maxMemPtr = bf.MemSize - 1;
-      alert(`Memory pointer (${val}) overflow! Resetting to ${maxMemPtr}.`);
-      bf.MemPtr = maxMemPtr;  // Reset memory pointer to maxMemPtr
-      setMemPtr(maxMemPtr);
-      */
+    if (inputResolver.current) {
+      setCIndex(bfExecuter.current.CIndex);
+      return;
     }
+
+    try {
+      LogOperation();
+      const { done } = await bfGenerator.current.next();
+      setExecutionCount((prev) => prev + 1);
+      if (done) StopAndCleanup();
+    } catch (error) {
+      setCIndex(bfExecuter.current.CIndex);
+
+      if (error instanceof MemPtrOutOfRangeError) {
+        const id = error.Identifier;
+        if (id === "MemPtrUnderflow") {
+          termPrintError("[MEMPTR_UNDERFLOW]");
+          LogError(`MemPtr Underflow (${error.Val})`);
+        } else if (id === "MemPtrOverflow") {
+          termPrintError("[MEMPTR_OVERFLOW]");
+          LogError(`MemPtr Overflow (${error.Val})`);
+        } else {
+          termPrintError(`[${id}]`);
+          LogError(`[${id}]`);
+        }
+      } else if (error instanceof CustomError) {
+        termPrintError(`[${error.Identifier}]`);
+        LogError(`[${error.Identifier}]`);
+      } else {
+        termPrintError(error.message);
+        LogError(error.message);
+      }
+      StopAndCleanup();
+    }
+  }
+
+  /* ── Reset / Run (imperative, no useEffect cascade) ──── */
+  function ResetBF() {
+    bfExecuter.current.Reset();
+    terminalPanelRef.current?.reset();
+    inputResolver.current = null;
+    getcharLineBuffer.current = "";
+    setLogTexts([]);
+    setCIndex(bfExecuter.current.CIndex);
+    setLatestCellChange({ index: null, fromVal: null, toVal: null });
+    bfGenerator.current = null;
+    setExecutionCount(0);
+  }
+
+  function RunBF() {
+    const stripped = BrainfuckExecuter.StripBFCode(bfCode);
+    bfExecuter.current.BFCode = stripped;
+    setCIndex(bfExecuter.current.CIndex);
+
+    LogText("Starting Brainfuck execution");
+    LogText(`Code: ${bfExecuter.current.BFCode}`);
+    LogText(`CIndex: ${bfExecuter.current.CIndex}`);
+    LogText(`Cell Size: ${bfExecuter.current.CellMaxVal - bfExecuter.current.CellMinVal + 1} (${bfExecuter.current.CellMinVal} - ${bfExecuter.current.CellMaxVal})`);
+    LogText(`ConditionVal: ${bfExecuter.current.ConditionVal}`);
+    LogText(`MemSize: ${bfExecuter.current.MemSize}`);
+    LogText(`MemPtr: ${bfExecuter.current.MemPtr}`);
+
+    if (!bfGenerator.current) {
+      bfGenerator.current = bfExecuter.current.BF_Execute_Generator();
+    }
+  }
+
+  /* ── Event handlers (imperative, no useEffect on isBFRunning) */
+  function handleRun() {
+    ResetBF();
+    RunBF();
+    setIsBFRunning(true);
+    setIsBFPaused(false);
+  }
+
+  function handleStop() {
+    const confirmStop = window.confirm("Are you sure you want to stop the Brainfuck execution?");
+    if (!confirmStop) return;
+    setIsBFRunning(false);
+    setIsBFPaused(true);
+    bfGenerator.current = null;
+  }
+
+  function handleRunStop() {
+    if (isBFRunning) handleStop();
+    else handleRun();
+  }
+
+  function handleContinuePause() {
+    setIsBFPaused((prev) => !prev);
+  }
+
+  async function handleStepOnce() {
+    if (!bfGenerator.current) {
+      ResetBF();
+      RunBF();
+      setIsBFRunning(true);
+      setIsBFPaused(true);
+    } else {
+      await ExecuteBFCodeOnce();
+      setIsBFPaused(true);
+    }
+  }
+
+  function handleReset() {
+    ResetBF();
+    setIsBFRunning(false);
+  }
+
+  /* ── Terminal data handler ────────────────────────────── */
+  function HandleData(data) {
+    if (!inputResolver.current) return;
+
+    if (inputModeRef.current === "keypress") {
+      termPrintInput(data);
+      const intData = data.charCodeAt(0);
+      LogText(`Read input: ${intData} (${data})`);
+      inputResolver.current(intData);
+      terminalPanelRef.current?.setCursorBlink(false);
+      inputResolver.current = null;
+    } else {
+      // getchar mode
+      if (data === "\r" || data === "\n") {
+        const buf = getcharLineBuffer.current;
+        if (buf.length === 0) return;
+
+        terminalPanelRef.current?.write("\r\n");
+        const firstChar = buf.charCodeAt(0);
+        const rest = buf.slice(1);
+        LogText(`Read input: ${firstChar} (${buf[0]})`);
+
+        if (rest.length > 0) {
+          const newBuf = inputBufferRef.current + rest;
+          inputBufferRef.current = newBuf;
+          setInputBuffer(newBuf);
+        }
+
+        getcharLineBuffer.current = "";
+        inputResolver.current(firstChar);
+        terminalPanelRef.current?.setCursorBlink(false);
+        inputResolver.current = null;
+      } else if (data === "\x7f") {
+        // Backspace
+        if (getcharLineBuffer.current.length > 0) {
+          getcharLineBuffer.current = getcharLineBuffer.current.slice(0, -1);
+          terminalPanelRef.current?.write("\b \b");
+        }
+      } else {
+        getcharLineBuffer.current += data;
+        termPrintInput(data);
+      }
+    }
+  }
+
+  /* ── Memory chunking ──────────────────────────────────── */
+  function ChunkMemory(mem, offset, chunkSize) {
+    setBFMemoryChunk(mem.slice(offset, offset + chunkSize));
+  }
+
+  /* ── Effects ──────────────────────────────────────────── */
+  // Sync memory size to executor
+  useEffect(() => {
+    if (bfExecuter.current) bfExecuter.current.MemSize = bfMemorySize;
+  }, [bfMemorySize]);
+
+  // Sync BF code to executor
+  useEffect(() => {
+    if (bfExecuter.current) {
+      const stripped = BrainfuckExecuter.StripBFCode(bfCode);
+      bfExecuter.current.BFCode = stripped;
+      setStrippedBFCode(stripped);
+    }
+  }, [bfCode]);
+
+  // Update memory chunk display
+  useEffect(() => {
+    if (bfExecuter.current) {
+      ChunkMemory(bfExecuter.current.MemArr, memPage * bfMemoryChunkSize, bfMemoryChunkSize);
+    }
+  }, [bfMemoryChunkSize, isBFRunning, memPage, latestCellChange, bfMemorySize]);
+
+  // Execution interval
+  useInterval(async () => {
+    if (!bfGenerator.current) return;
+    await ExecuteBFCodeOnce();
+  }, isBFRunning && !isBFPaused ? codeExecIntervalMS : null);
+
+  // Init executor (once)
+  useEffect(() => {
+    const bfExec = new BrainfuckExecuter(bfCode, bfMemorySize);
+    bfExecuter.current = bfExec;
+
+    bfExec.InputCallback = () => {
+      // Check input buffer first
+      if (inputBufferRef.current.length > 0) {
+        const charCode = inputBufferRef.current.charCodeAt(0);
+        const remaining = inputBufferRef.current.slice(1);
+        inputBufferRef.current = remaining;
+        setInputBuffer(remaining);
+        logTextFn.current(`Read input from buffer: ${charCode} (${String.fromCharCode(charCode)})`);
+        return charCode;
+      }
+
+      terminalPanelRef.current?.focus();
+      terminalPanelRef.current?.setCursorBlink(true);
+      return new Promise((resolve) => {
+        inputResolver.current = resolve;
+      });
+    };
+
+    bfExec.OutputCallback = (outputInt) => {
+      const { output, isInvalid } = formatBFOutput(outputInt, displayModeRef.current);
+      if (isInvalid) {
+        logWarningFn.current(`Invalid output: ${outputInt} (${output})`);
+      }
+      logTextFn.current(`\tOutput: ${outputInt} (${output})`);
+      terminalPanelRef.current?.write(output);
+    };
+
+    bfExec.CIndexOnChangeCallback = (oldVal) => {
+      setCIndex(oldVal);
+    };
+
+    bfExec.MemPtrOnChangeCallback = (oldVal, newVal, exec) => {
+      const char = exec.BFCode[exec.CIndex];
+      const cellVal = exec.CurrentCellVal;
+
+      if (char === "<") logTextFn.current(`\tMemPtr moving left: ${oldVal} -> ${newVal}`);
+      else if (char === ">") logTextFn.current(`\tMemPtr moving right: ${oldVal} -> ${newVal}`);
+      else logTextFn.current(`\tMemPtr changed: ${oldVal} -> ${newVal}`);
+
+      setLatestCellChange({ index: newVal, fromVal: cellVal, toVal: cellVal });
+    };
+
+    bfExec.MemCellOnChangeCallback = (index, oldVal, newVal, exec) => {
+      const char = exec.BFCode[exec.CIndex];
+
+      if (char === "+") logTextFn.current(`\tCell[${index}] incremented: ${oldVal} -> ${newVal}`);
+      else if (char === "-") logTextFn.current(`\tCell[${index}] decremented: ${oldVal} -> ${newVal}`);
+      else logTextFn.current(`\tCell[${index}] changed: ${oldVal} -> ${newVal}`);
+
+      setLatestCellChange({ index, fromVal: oldVal, toVal: newVal });
+    };
   }, []);
 
-  const HandleMemPtrChange = useCallback((oldVal, newVal) => {
-    if (newVal >= 0 && newVal < memSize) {
-      setCurrentCellVal(bfRef.current.CurrentCellVal);
-      setMemPtr(bfRef.current.MemPtr);
-      
-      // Set the page:
-      const dimension = colDimension * rowDimension;
-      const newPage = Math.floor(newVal / dimension)
-      setPage(newPage);
-    }
-  }, [rowDimension, colDimension, memSize]);
+  /* ── Derived values ───────────────────────────────────── */
+  const memPtr = bfExecuter.current?.MemPtr ?? 0;
+  const memSize = bfExecuter.current?.MemSize ?? bfMemorySize;
 
-  useEffect(() => {
-    bfRef.current.MemPtrOnChangeCallback = HandleMemPtrChange;
-  }, [HandleMemPtrChange]);
-  
-  useEffect(() => {
-      const bf = bfRef.current;
-
-      const dimension = rowDimension * colDimension;
-
-      const page = Math.floor(bf.MemPtr / dimension) + 1;
-      const inputMaxPage = Math.floor((memSize - 1) / dimension) + 1;
-
-      setPage(page);
-      setMaxPage(inputMaxPage);
-  }, [rowDimension, colDimension, memSize]);
-
-  // --- Handle "Apply Code" click: load textarea content into BF engine ---
-  const handleApplyCode = () => {
-    const bf = bfRef.current;
-    const code = bfCodeTextareaRef.current?.value ?? "";
-    bf.BFCode = code;
-    ResetBFExecuter();
-    setOutputPromptString("");
-  };
-
-  const handleMemSizeChange = (e) => {
-    const newSize = Number(e.target.value);
-    const bf = bfRef.current;
-
-    if (isNaN(newSize)) return;
-
-    if (newSize <= 0 || newSize > 30000) {
-      alert(`Memory size (${newSize}) must be between 1 and 30000!`);
-    }
-    else {
-      setMemSize(newSize);
-      bf.MemSize = newSize;
-      ChunkMemory();
-    }
-  };
-
-  // --- Run execution until completion ---
-  const handleExecuteAll = async () => {
-    const bf = bfRef.current;
-
-    /*
-    // Helper function to create delay:
-    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-    while (!bf.CodeEnded) {
-      await bf.BF_Execute();
-      await delay(50);
-      ChunkMemory();
-    }
-    */
-
-    const executionID = setInterval(async () => {
-      if (bf.CodeEnded) {
-        clearInterval(executionID);
-        alert("Code execution ended.");
-      }
-      else {
-        await bf.BF_Execute();
-        ChunkMemory();
-      }
-    }, codeExecutionInterval);
-
-    ChunkMemory();
-  };
-
-  const handleExecuteOnce = async () => {
-    const bf = bfRef.current;
-    await bf.BF_Execute();
-    ChunkMemory();
-  };
-
-  const handleInputPromptKeyDown = (event) => {
-    if (event.key == "Enter") {
-      const input = event.target.value + "\n";
-      event.target.value = "";
-      event.target.classList.add("Hidden");
-      OutputToOutputPrompt(input);
-
-      const codes = input.split("").map(c => c.charCodeAt(0));
-      bufferRef.current.push(...codes);
-
-      if (inputResolverRef.current) {
-        const charCode = bufferRef.current.shift();
-        inputResolverRef.current(charCode);
-        inputResolverRef.current = null;
-      }
-    }
-  };
-
-  const handleTerminalClick = () => {
-    if (inputResolverRef.current) { // If input is pending, there should be a resolver:
-      inputPromptRef.current.focus();
-    }
-  };
-
-  const handleMemPtrInputChange = (e) => {
-    const newMemPtr = Number(e.target.value);
-    const bf = bfRef.current;
-
-    if (isNaN(newMemPtr)) return; // Ignore empty or non-numeric input
-
-    if (newMemPtr < 0 || newMemPtr > bf.MemSize - 1) {
-      alert(`Memory pointer (${newMemPtr}) out of bounds!`);
-    }
-    else {
-      bf.MemPtr = newMemPtr;
-      ChunkMemory();
-    }
-  };
-
-  const handleCurrentCellValInputChange = (e) => {
-    let newVal = Number(e.target.value);
-    const bf = bfRef.current;
-
-    if (isNaN(newVal)) return;
-
-    bf.CurrentCellVal = newVal;
-    newVal = bf.CurrentCellVal;
-    setCurrentCellVal(newVal);
-    ChunkMemory();
-  };
-
+  /* ── Render ───────────────────────────────────────────── */
   return (
-    <>
-      <div id="ContainerDiv">
-        <div id="ActionDiv">
-          <div id="ConfigDiv">
-            <div id="ConfigActionDiv">
-              <input
-                type="number"
-                min={1}
-                max={30000}
-                value={memSize}
-                onChange={handleMemSizeChange}
-              />
-              <button onClick={handleApplyCode}>Apply BF code</button>
-              <button onClick={handleExecuteOnce}>Execute once</button>
-              <button onClick={handleExecuteAll}>Execute until end</button>
-              <input
-                type="number"
-                min={1}
-                max={10000}
-                value={codeExecutionInterval}
-                onChange={(e) => setCodeExecutionInterval(e.target.value)}
-              />
-            </div>
-            <textarea
-              id="BFCodeTextarea"
-              ref={bfCodeTextareaRef}
-              placeholder="Enter your Brainfuck code here..."
-            />
-          </div>
-          <div
-            id="TerminalDiv"
-            ref={terminalRef}
-            onClick={handleTerminalClick}
-          >
-            <span id="OutputPromptSpan">{outputPromptString}</span>
-            <input
-              id="InputPromptInput"
-              className="Hidden"
-              ref={inputPromptRef}
-              onKeyDown={handleInputPromptKeyDown}
-            />
-          </div>
-        </div>
-
-        <div
-          id="MemoryContainerDiv"
-        >
-          <table className="MemTable">
-            <tbody className="MemTableBody">
-              {chunkedMem.map((row, rIndex) => {
-                return (
-                  <tr key={rIndex} className="MemTableRow">
-                    {row.map((val, colIndex) => {
-                      const dimension = rowDimension * colDimension;
-                      const currentPageStart = (page - 1) * dimension;
-                      const currentRowStart = rIndex * colDimension;
-                      const index = currentPageStart + currentRowStart + colIndex;
-
-                      const bf = bfRef.current;
-
-                      return (
-                        <td key={colIndex} className={`MemCell${index === bf.MemPtr ? " ActiveCell" : ""}`}>
-                          {val}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <input
-        id="PageInput"
-        type="number"
-        ref={pageInputRef}
-        min={1}
-        max={maxPage}
-        value={page}
-        onChange={(e) => setPage(Number(e.target.value))}
+    <div className="app-layout">
+      <ExecutionControls
+        isBFRunning={isBFRunning}
+        isBFPaused={isBFPaused}
+        onRunStop={handleRunStop}
+        onContinuePause={handleContinuePause}
+        onStepOnce={handleStepOnce}
+        onReset={handleReset}
+        codeExecIntervalMS={codeExecIntervalMS}
+        setCodeExecIntervalMS={setCodeExecIntervalMS}
+        bfMemorySize={bfMemorySize}
+        setBFMemorySize={setBFMemorySize}
+        maxMemorySize={BFMemoryMaxSize}
+        inputMode={inputMode}
+        setInputMode={setInputMode}
+        displayMode={displayMode}
+        setDisplayMode={setDisplayMode}
+        executionCount={executionCount}
       />
-      <input
-        id="RowDimensionInput"
-        className="DimensionInput"
-        type="number"
-        ref={rowDimensionInputRef}
-        min={1}
-        value={rowDimension}
-        onChange={(e) => setRowDimension(Number(e.target.value))}
+
+      <CodeEditor
+        bfCode={bfCode}
+        onCodeChange={setBFCode}
+        disabled={isBFRunning}
       />
-      <input
-        id="ColDimensionInput"
-        className="DimensionInput"
-        type="number"
-        ref={colDimensionInputRef}
-        min={1}
-        value={colDimension}
-        onChange={(e) => setColDimension(Number(e.target.value))}
+
+      <CodeViewer
+        bfExecuter={bfExecuter.current}
+        cIndex={cIndex}
+        strippedBFCode={strippedBFCode}
       />
-      <div>
-        <button onClick={() => {
-          bfRef.current.BF_IncrementCellVal_Operation();
-          setCurrentCellVal(bfRef.current.CurrentCellVal);
-          ChunkMemory();
-        }}>Increment</button>
-        <button onClick={() => {
-          bfRef.current.BF_DecrementCellVal_Operation();
-          setCurrentCellVal(bfRef.current.CurrentCellVal);
-          ChunkMemory();
-        }}>Decrement</button>
-        <button onClick={() => {
-          bfRef.current.BF_NextCell_Operation();
-          ChunkMemory();
-        }}>Next cell</button>
-        <button onClick={() => {
-          bfRef.current.BF_PrevCell_Operation();
-          ChunkMemory();
-        }}>Previous cell</button>
-        <button onClick={async () => {
-          await bfRef.current.BF_Input_Operation();
-          ChunkMemory();
-        }}>Input</button>
-        <button onClick={async () => {
-          await bfRef.current.BF_Output_Operation();
-          ChunkMemory();
-        }}>Output</button>
-      </div>
-      <div>
-        <input
-          type="number"
-          min={0}
-          max={memSize - 1}
-          value={memPtr}
-          onChange={handleMemPtrInputChange}
-        />
-        <input
-          type="number"
-          value={currentCellVal}
-          onChange={handleCurrentCellValInputChange}
-        />
-      </div>
-    </>
+
+      <MemoryViewer
+        bfMemoryChunk={bfMemoryChunk}
+        memPage={memPage}
+        setMemPage={setMemPage}
+        bfMemoryChunkSize={bfMemoryChunkSize}
+        setBFMemoryChunkSize={setBFMemoryChunkSize}
+        memPtr={memPtr}
+        memSize={memSize}
+        isBFRunning={isBFRunning}
+      />
+
+      <TerminalPanel
+        ref={terminalPanelRef}
+        onData={HandleData}
+        inputBuffer={inputBuffer}
+        onInputBufferChange={setInputBuffer}
+        showInputBuffer={true}
+      />
+
+      <LogViewer
+        logTexts={logTexts}
+        logShowLog={logShowLog}
+        setLogShowLog={setLogShowLog}
+        logShowWarning={logShowWarning}
+        setLogShowWarning={setLogShowWarning}
+        logShowError={logShowError}
+        setLogShowError={setLogShowError}
+      />
+    </div>
   );
 }
 

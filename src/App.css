@@ -1,42 +1,449 @@
+/* ─── Full-viewport IDE layout ────────────────────────── */
+.app-layout {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-areas:
+    "controls controls controls"
+    "editor   codeview memory"
+    "terminal terminal logs";
+  grid-template-rows: auto 1fr 1fr;
+  grid-template-columns: 260px 1fr 420px;
+  gap: 4px;
+  padding: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #1a1a2e;
+}
+
+/* ─── Panel base ──────────────────────────────────────── */
+.panel {
+  background: #16213e;
+  border: 1px solid #0f3460;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
+
+.panel-header {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a0aec0;
+  padding: 4px 10px;
+  background: #0f3460;
+  border-bottom: 1px solid #1a4a8a;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Execution Controls ──────────────────────────────── */
+.execution-controls {
+  grid-area: controls;
+}
+
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+}
+
+.controls-buttons {
+  border-bottom: 1px solid #0f3460;
+}
+
+/* Buttons */
+.controls-buttons button,
+.controls-settings button {
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+  color: #fff;
+}
+
+.controls-buttons button:hover {
+  filter: brightness(1.2);
+}
+
+.controls-buttons button:active {
+  transform: scale(0.97);
+}
+
+.controls-buttons button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+}
+
+.btn-primary {
+  background: #007acc;
+}
+
+.btn-danger {
+  background: #e53e3e;
+}
+
+.btn-success {
+  background: #38a169;
+}
+
+.btn-warning {
+  background: #d69e2e;
+  color: #1a1a2e;
+}
+
+.btn-secondary {
+  background: #4a5568;
+}
+
+.btn-sm {
+  border: none;
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  background: #4a5568;
+  color: #fff;
+  transition: background 0.15s;
+}
+
+.btn-sm:hover {
+  background: #718096;
+}
+
+.btn-sm:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.exec-counter {
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: #a0aec0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Control group (label + input) */
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+}
+
+.control-label {
+  color: #a0aec0;
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+
+.control-input {
+  width: 72px;
+  padding: 2px 6px;
+  border: 1px solid #4a5568;
+  border-radius: 3px;
+  background: #1a1a2e;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  outline: none;
+}
+
+.control-input:focus {
+  border-color: #007acc;
+}
+
+.control-input-sm {
+  width: 52px;
+}
+
+.control-select {
+  padding: 2px 4px;
+  border: 1px solid #4a5568;
+  border-radius: 3px;
+  background: #1a1a2e;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.control-select:focus {
+  border-color: #007acc;
+}
+
+.control-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Code Editor ─────────────────────────────────────── */
+.code-editor {
+  grid-area: editor;
+}
+
+.code-textarea {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  box-sizing: border-box;
+  background: #0d1b2a;
+  color: #e2e8f0;
+  border: none;
+  padding: 8px;
+  font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+  font-size: 0.85rem;
+  outline: none;
+  line-height: 1.5;
+}
+
+.code-textarea:disabled {
+  opacity: 0.6;
+}
+
+/* ─── Code Viewer ─────────────────────────────────────── */
+.code-viewer {
+  grid-area: codeview;
+}
+
+.code-viewer-content {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+  font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.code-char {
+  display: inline;
+  padding: 1px 1px;
+  border-radius: 2px;
+  transition: background-color 0.1s;
+}
+
+/* ─── Memory Viewer ───────────────────────────────────── */
+.memory-viewer {
+  grid-area: memory;
+}
+
+.memory-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-bottom: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.memory-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-info {
+  font-size: 0.72rem;
+  color: #a0aec0;
+}
+
+.memory-grid {
+  flex: 1;
+  overflow: auto;
+  padding: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: space-evenly;
+  gap: 2px;
+}
+
+.memory-cell {
+  width: 38px;
+  height: 28px;
+  border: 1px solid #2d3748;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: #a0aec0;
+  background: #1a1a2e;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.memory-cell.active {
+  background: #007acc;
+  color: #fff;
+  border-color: #3ba0e6;
+  font-weight: 700;
+}
+
+/* ─── Terminal Panel ──────────────────────────────────── */
+.terminal-panel {
+  grid-area: terminal;
+}
+
+.terminal-wrapper {
+  flex: 1;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.input-buffer-container {
+  padding: 4px 8px 6px;
+  border-top: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.input-buffer-textarea {
+  width: 100%;
+  resize: none;
+  box-sizing: border-box;
+  background: #0d1b2a;
+  color: #e2e8f0;
+  border: 1px solid #4a5568;
+  border-radius: 3px;
+  padding: 4px 6px;
+  font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+  font-size: 0.78rem;
+  outline: none;
+}
+
+.input-buffer-textarea:focus {
+  border-color: #007acc;
+}
+
+/* ─── Log Viewer ──────────────────────────────────────── */
+.log-viewer {
+  grid-area: logs;
+}
+
+.log-count {
+  font-weight: 400;
+  color: #718096;
+  font-size: 0.68rem;
+}
+
+.log-filters {
+  display: flex;
+  gap: 10px;
+  padding: 4px 10px;
+  border-bottom: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.log-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.log-filter-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.log-list-container {
+  flex: 1;
+  overflow: hidden;
+}
+
+.log-row {
+  display: grid;
+  grid-template-columns: 72px 48px 1fr;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 0.7rem;
+  font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  box-sizing: border-box;
+}
+
+.log-timestamp {
+  color: #718096;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log-type {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+}
+
+.log-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+/* ─── Scrollbar styling ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
+
+/* ─── Override index.css body centering ────────────────── */
+body {
+  place-items: stretch;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  max-width: unset;
+  display: block;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* ─── Responsive: phone / narrow screens ──────────────── */
+@media (max-width: 768px) {
+  .app-layout {
+    grid-template-areas:
+      "controls"
+      "editor"
+      "codeview"
+      "memory"
+      "terminal"
+      "logs";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 200px 150px 200px 250px 250px;
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
   }
-  to {
-    transform: rotate(360deg);
+
+  .memory-grid {
+    padding-left: 35px;
+    padding-right: 35px;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

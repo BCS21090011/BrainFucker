@@ -52,10 +52,12 @@ class BrainfuckExecuter {
     +SetCellVal(index, newVal)
     +ValidateMemArg(mem)$
     +MapLoopPairs(bfCode)$
+    +StripBFCode(bfCode)$
     -#CreateCell(index, cellVal)
     -#CheckMemPtr()
     -#AdjustMemSize(memSize, defaultVal)
     +SubscribeCallbacks(all callbacks)
+    +Reset(cIndex, memPtr, allCellVal)
     +toJSON()
     +Copy(includeCallbacks)
 
@@ -1172,6 +1174,24 @@ PushStackToLeftOut
 End
 ```
 
+### StripBFCode
+
+* Arguments:
+  * bfCode: The Brainfuck code to strip.
+* Return:
+  * The stripped Brainfuck code.
+* Strip the Brainfuck code, remove all non Brainfuck characters.
+
+```mermaid
+flowchart TD
+
+Start([StripBFCode])
+-->
+RegexStripBFCode[Filter out Brainfuck characters using regex]
+-->
+End([Return stripped bfCode])
+```
+
 ## Private Methods
 
 ### #CreateCell
@@ -1893,6 +1913,47 @@ CheckMemCellOnChangeCallback
 CheckMemCellOnSetCallback
 --false-->
 SetCodeExecuteOperation
+```
+
+### Reset
+
+* Return:
+  * Current object.
+* Reset the `BrainfuckExecuter` to the initial state.
+* If `cIndex`, `memPtr`, or `allCellVal` is not provided, it will be set to 0, 0, and [`CellMinVal`](#cellminval-1) respectively.
+
+```mermaid
+flowchart TD
+
+Start([Reset])
+-->
+CheckCIndex{cIndex == undefined}
+--true-->
+SetCIndex[cIndex = 0]
+-->
+CheckMemPtr{memPtr == undefined}
+--true-->
+SetMemPtr[memPtr = 0]
+-->
+CheckAllCellVal{allCellVal == undefined}
+--true-->
+SetAllCellVal[allCellVal = CellMinVal]
+-->
+SetNewCIndex{CIndex = new cIndex}
+-->
+SetNewMemPtr{MemPtr = new memPtr}
+-->
+SetNewAllCellVal{AllCellVal = new allCellVal}
+-->
+End([Return this])
+
+CheckCIndex
+--false-->
+CheckMemPtr
+--false-->
+CheckAllCellVal
+--false-->
+SetNewCIndex
 ```
 
 ### async BF_Execute

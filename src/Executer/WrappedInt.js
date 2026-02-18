@@ -36,14 +36,14 @@ class WrappedInt {
     #max = 0;
     #value = 0;
 
-    constructor (
-        val=0,
-        min=0,
-        max=0,
-        underflowCallback=undefined,
-        overflowCallback=undefined,
-        valOnChangeCallback=undefined,
-        valOnSetCallback=undefined
+    constructor(
+        val = 0,
+        min = 0,
+        max = 0,
+        underflowCallback = undefined,
+        overflowCallback = undefined,
+        valOnChangeCallback = undefined,
+        valOnSetCallback = undefined
     ) {
 
         EnsureInt(val);
@@ -62,11 +62,11 @@ class WrappedInt {
         this.#value = WrappedInt.Wrap(val, this.#min, this.#max);
     }
 
-    get Min () {
+    get Min() {
         return this.#min;
     }
 
-    set Min (newVal) {
+    set Min(newVal) {
         EnsureInt(newVal);
         EnsureMinMax(newVal, this.#max);
 
@@ -83,11 +83,11 @@ class WrappedInt {
         }
     }
 
-    get Max () {
+    get Max() {
         return this.#max;
     }
 
-    set Max (newVal) {
+    set Max(newVal) {
         EnsureInt(newVal);
         EnsureMinMax(this.#min, newVal);
 
@@ -104,11 +104,11 @@ class WrappedInt {
         }
     }
 
-    get Val () {
+    get Val() {
         return this.#value;
     }
 
-    set Val (newVal) {
+    set Val(newVal) {
         EnsureInt(newVal);
 
         const originalVal = this.#value;
@@ -119,11 +119,11 @@ class WrappedInt {
         if (originalVal !== this.#value) {
             this.ValOnChangeCallback(originalVal, this.#value, this);
         }
-        
+
         this.ValOnSetCallback(this.#value, this);
     }
 
-    static Wrap (val, min, max) {
+    static Wrap(val, min, max) {
         EnsureInt(val);
         EnsureInt(min);
         EnsureInt(max);
@@ -142,7 +142,7 @@ class WrappedInt {
         return ((val - min) % diff + diff) % diff + min;
     }
 
-    #Wrap () {
+    #Wrap() {
         let underflowed = false;
         let overflowed = false;
 
@@ -167,7 +167,7 @@ class WrappedInt {
         }
     }
 
-    Copy (includeCallbacks=true) {
+    Copy(includeCallbacks = true) {
         return new WrappedInt(
             this.#value,
             this.#min,
@@ -179,15 +179,15 @@ class WrappedInt {
         );
     }
 
-    toString () {
+    toString() {
         return `WrappedInt(${this.#value} [${this.#min}~${this.#max}])`;
     }
 
-    valueOf () {
+    valueOf() {
         return this.#value;
     }
 
-    toJSON () {
+    toJSON() {
         return {
             "Val": this.#value,
             "Min": this.#min,

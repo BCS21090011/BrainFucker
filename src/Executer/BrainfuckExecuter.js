@@ -3,7 +3,7 @@ import { EnsureInRange, EnsureInt, EnsureMinMax, EnsureString, IsInRange, Watche
 import { CustomValueError, CustomMissingArgumentError } from "../utils/CustomErrors";
 
 class MemPtrOutOfRangeError extends CustomValueError {
-    constructor (msg=undefined, memPtr=undefined, memSize=undefined, carryValue=undefined, identifier=undefined) {
+    constructor(msg = undefined, memPtr = undefined, memSize = undefined, carryValue = undefined, identifier = undefined) {
         if (memPtr != undefined) {
             msg = msg ?? `Memory pointer, ${memPtr}, is out of range.`;
         }
@@ -71,10 +71,10 @@ class BrainfuckExecuter {
     CIndexOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { };
     MemPtrOnChangeCallback = (oldVal, newVal, brainfuckExecuterAfter) => { };
     MemPtrUnderflowCallback = (val, brainfuckExecuter) => {
-        throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
+        throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize, undefined, "MemPtrUnderflow");
     };
     MemPtrOverflowCallback = (val, brainfuckExecuter) => {
-        throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize);
+        throw new MemPtrOutOfRangeError(undefined, val, brainfuckExecuter.MemSize, undefined, "MemPtrOverflow");
     };
     CodeEndedCallback = (brainfuckExecuter) => { };
     CellUnderflowCallback = (index, valBefore, valAfter, brainfuckExecuterAfter) => { };
@@ -83,7 +83,7 @@ class BrainfuckExecuter {
     MemCellOnSetCallback = (index, val, brainfuckExecuterAfter) => { };
     CodeExecuteOperation = undefined;
 
-    constructor (bfCode="", memSize=30000, config={}) {
+    constructor(bfCode = "", memSize = 30000, config = {}) {
         /*
         Check for arguments that are necessary to create the object.
         These arguments are handled/checked here rather than in SetConfig()
@@ -96,56 +96,56 @@ class BrainfuckExecuter {
         }
 
         // Other arguments for properties and callbacks won't be checked because they already have default value.
-        
+
         this.SetConfig(bfCode, memSize, config);
     }
 
-    get BFCode () {
+    get BFCode() {
         return this.#bfCode.Val;
     }
 
-    set BFCode (newVal) {
+    set BFCode(newVal) {
         EnsureString(newVal);
         this.#bfCode.Val = newVal;
         this.CodeEnded = false;
     }
 
-    get MemSize () {
+    get MemSize() {
         return this.#memArr.length;
     }
 
-    set MemSize (newVal) {
+    set MemSize(newVal) {
         this.#AdjustMemSize(newVal);
     }
-    
-    get LoopPairs () {
+
+    get LoopPairs() {
         return { ...this.#loopPairs };
     }
 
-    get LeftOutLoops () {
-        return [ ...this.#leftOutLoops ];
+    get LeftOutLoops() {
+        return [...this.#leftOutLoops];
     }
 
-    get CIndex () {
+    get CIndex() {
         return this.#cIndex.Val;
     }
 
-    set CIndex (newVal) {
+    set CIndex(newVal) {
         EnsureInt(newVal);
         this.#cIndex.Val = newVal;
     }
 
-    get MemPtr () {
+    get MemPtr() {
         return this.#memPtr.Val;
     }
 
-    set MemPtr (newVal) {
+    set MemPtr(newVal) {
         EnsureInt(newVal);
         // Underflow and overflow will be handled by callbacks.
         this.#memPtr.Val = newVal;
     }
 
-    get MemArr () {
+    get MemArr() {
         // Copy the whole this.#memArr and return it.
         const copiedMem = [];
 
@@ -156,7 +156,7 @@ class BrainfuckExecuter {
         return copiedMem;
     }
 
-    set MemArr (newMem) {
+    set MemArr(newMem) {
         BrainfuckExecuter.ValidateMemArg(newMem);
         EnsureInRange(newMem.length, 1, BFMemoryMaxSize);
 
@@ -169,11 +169,11 @@ class BrainfuckExecuter {
         this.#CheckMemPtr();
     }
 
-    get CellMinVal () {
+    get CellMinVal() {
         return this.#cellMinVal.Val;
     }
-    
-    set CellMinVal (newVal) {
+
+    set CellMinVal(newVal) {
         /*
         Cell val will be process by WrappedInt automatically.
         If changing min and max affect val,
@@ -188,26 +188,26 @@ class BrainfuckExecuter {
         this.#cellMinVal.Val = newVal;
     }
 
-    get CellMaxVal () {
+    get CellMaxVal() {
         return this.#cellMaxVal.Val;
     }
 
-    set CellMaxVal (newVal) {
+    set CellMaxVal(newVal) {
         EnsureInt(newVal);
         EnsureMinMax(this.CellMinVal, newVal);
         this.#cellMaxVal.Val = newVal;
     }
 
-    get ConditionVal () {
+    get ConditionVal() {
         return this.#conditionVal;
     }
 
-    set ConditionVal (newVal) {
+    set ConditionVal(newVal) {
         EnsureInt(newVal);
         this.#conditionVal = newVal;
     }
 
-    get CodeEnded () {
+    get CodeEnded() {
         if (this.#codeStoped === true) {
             return true;
         }
@@ -215,29 +215,29 @@ class BrainfuckExecuter {
         return this.CIndex >= this.BFCode.length;
     }
 
-    set CodeEnded (newVal) {
+    set CodeEnded(newVal) {
         this.#codeStoped = newVal;
     }
-    
-    GetCellVal (index) {
+
+    GetCellVal(index) {
         return this.#memArr[index].Val;
     }
 
-    SetCellVal (index, newVal) {
+    SetCellVal(index, newVal) {
         EnsureInt(newVal);
         // Didn't check if in range so that it can be wrapped.
         this.#memArr[index].Val = newVal;
     }
 
-    get CurrentCellVal () {
+    get CurrentCellVal() {
         return this.GetCellVal(this.MemPtr);
     }
 
-    set CurrentCellVal (newVal) {
+    set CurrentCellVal(newVal) {
         this.SetCellVal(this.MemPtr, newVal);
     }
 
-    set AllCellVal (newVal) {
+    set AllCellVal(newVal) {
         EnsureInt(newVal);
 
         this.#memArr.forEach((cell) => {
@@ -245,19 +245,19 @@ class BrainfuckExecuter {
         });
     }
 
-    SetAllCellVal (newVal) {
+    SetAllCellVal(newVal) {
         this.AllCellVal = newVal;
         return this;
     }
 
-    static ValidateMemArg (mem) {
+    static ValidateMemArg(mem) {
         for (let i = 0; i < mem.length; i++) {
             const val = mem[i];
             EnsureInt(val);
         }
     }
 
-    static MapLoopPairs (bfCode) {
+    static MapLoopPairs(bfCode) {
         const loopHeadStack = [];
         const loopPairs = {};
         const leftOutLoops = [];
@@ -288,7 +288,11 @@ class BrainfuckExecuter {
         }
     }
 
-    #CreateCell (index, cellVal) {
+    static StripBFCode(bfCode) {
+        return bfCode.replace(/[^\[\]\+\-\>\<\.\,]/g, '');
+    }
+
+    #CreateCell(index, cellVal) {
         return new WrappedInt(
             cellVal,
             this.CellMinVal,
@@ -308,7 +312,7 @@ class BrainfuckExecuter {
         );
     }
 
-    #CheckMemPtr () {
+    #CheckMemPtr() {
         let passed = true;
 
         if (this.MemPtr < 0) {
@@ -324,7 +328,7 @@ class BrainfuckExecuter {
         return passed;
     }
 
-    #AdjustMemSize (memSize, defaultVal=undefined) {
+    #AdjustMemSize(memSize, defaultVal = undefined) {
         // Memory will be trimmed if memSize is smaller.
 
         EnsureInt(memSize);
@@ -337,7 +341,7 @@ class BrainfuckExecuter {
 
         const currentMemSize = this.MemSize;
         const diff = currentMemSize - memSize;
-        
+
         if (diff < 0) { // memSize is larger:
             for (let i = currentMemSize; i < memSize; i++) {
                 this.#memArr.push(this.#CreateCell(i, defaultVal));
@@ -350,7 +354,7 @@ class BrainfuckExecuter {
         this.#CheckMemPtr();
     }
 
-    SetConfig (bfCode=undefined, memSize=undefined, config={}) {
+    SetConfig(bfCode = undefined, memSize = undefined, config = {}) {
         const {
             cIndex = undefined,
             memPtr = undefined,
@@ -372,7 +376,7 @@ class BrainfuckExecuter {
             memCellOnSetCallback = undefined,
             codeExecuteOperation = undefined
         } = config;
-        
+
         this.SubscribeCallbacks(
             inputCallback,
             outputCallback,
@@ -428,19 +432,19 @@ class BrainfuckExecuter {
         return this;
     }
 
-    SubscribeCallbacks (
-        inputCallback=undefined,
-        outputCallback=undefined,
-        cIndexOnChangeCallback=undefined,
-        memPtrOnChangeCallback=undefined,
-        memPtrUnderflowCallback=undefined,
-        memPtrOverflowCallback=undefined,
-        codeEndedCallback=undefined,
-        cellUnderflowCallback=undefined,
-        cellOverflowCallback=undefined,
-        memCellOnChangeCallback=undefined,
-        memCellOnSetCallback=undefined,
-        codeExecuteOperation=undefined
+    SubscribeCallbacks(
+        inputCallback = undefined,
+        outputCallback = undefined,
+        cIndexOnChangeCallback = undefined,
+        memPtrOnChangeCallback = undefined,
+        memPtrUnderflowCallback = undefined,
+        memPtrOverflowCallback = undefined,
+        codeEndedCallback = undefined,
+        cellUnderflowCallback = undefined,
+        cellOverflowCallback = undefined,
+        memCellOnChangeCallback = undefined,
+        memCellOnSetCallback = undefined,
+        codeExecuteOperation = undefined
     ) {
         if (inputCallback != undefined) {
             this.InputCallback = inputCallback;
@@ -492,7 +496,27 @@ class BrainfuckExecuter {
         return this;
     }
 
-    toJSON () {
+    Reset(cIndex = undefined, memPtr = undefined, allCellVal = undefined) {
+        if (cIndex == undefined) {
+            cIndex = 0;
+        }
+
+        if (memPtr == undefined) {
+            memPtr = 0;
+        }
+
+        if (allCellVal == undefined) {
+            allCellVal = this.CellMinVal;
+        }
+
+        this.CIndex = cIndex;
+        this.MemPtr = memPtr;
+        this.AllCellVal = allCellVal;
+
+        return this;
+    }
+
+    toJSON() {
         return {
             "BFCode": this.BFCode,
             "CIndex": this.CIndex,
@@ -508,7 +532,7 @@ class BrainfuckExecuter {
         }
     }
 
-    Copy (includeCallbacks=true) {
+    Copy(includeCallbacks = true) {
         const copiedObj = new BrainfuckExecuter(
             this.BFCode,
             this.MemSize,
@@ -536,7 +560,7 @@ class BrainfuckExecuter {
         return copiedObj;
     }
 
-    async #BFDefaultCodeExecuteOperation (code) {
+    async #BFDefaultCodeExecuteOperation(code) {
         let cIndex = this.CIndex;
 
         if (code === '+') {
@@ -579,7 +603,7 @@ class BrainfuckExecuter {
         return cIndex + 1;
     }
 
-    async BF_Execute () {
+    async BF_Execute() {
         if (this.CodeEnded === false) {
             const code = this.BFCode[this.CIndex];
 
@@ -594,7 +618,7 @@ class BrainfuckExecuter {
         return this;    // For chaining.
     }
 
-    async BF_Execute_Until_End (maxSteps=undefined) {
+    async BF_Execute_Until_End(maxSteps = undefined) {
         let stepCount = 0;
 
         if (maxSteps != undefined) {
@@ -615,42 +639,44 @@ class BrainfuckExecuter {
         return this;
     }
 
-    async *BF_Execute_Generator () {
+    async *BF_Execute_Generator() {
         while (!this.CodeEnded) {
             yield await this.BF_Execute();
         }
+
+        return;
     }
 
-    BF_IncrementCellVal_Operation () {
+    BF_IncrementCellVal_Operation() {
         this.CurrentCellVal += 1;
         return this;
     }
 
-    BF_DecrementCellVal_Operation () {
+    BF_DecrementCellVal_Operation() {
         this.CurrentCellVal -= 1;
         return this;
     }
 
-    BF_NextCell_Operation () {
+    BF_NextCell_Operation() {
         this.MemPtr += 1;
         return this;
     }
 
-    BF_PrevCell_Operation () {
+    BF_PrevCell_Operation() {
         this.MemPtr -= 1;
         return this;
     }
 
-    async BF_Input_Operation () {
+    async BF_Input_Operation() {
         this.CurrentCellVal = await this.InputCallback(this);
         return this;
     }
 
-    async BF_Output_Operation () {
+    async BF_Output_Operation() {
         await this.OutputCallback(this.CurrentCellVal, this);
         return this;
     }
 }
 
 export default BrainfuckExecuter;
-export { BFMemoryMaxSize, BrainfuckExecuter };
+export { MemPtrOutOfRangeError, BFMemoryMaxSize, BrainfuckExecuter };
