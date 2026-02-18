@@ -292,7 +292,12 @@ function App() {
   /* ── Effects ──────────────────────────────────────────── */
   // Sync memory size to executor
   useEffect(() => {
-    if (bfExecuter.current) bfExecuter.current.MemSize = bfMemorySize;
+    try {
+      if (bfExecuter.current) bfExecuter.current.MemSize = Number.parseInt(bfMemorySize);
+    } catch (error) {
+      alert(error.message);
+      setBFMemorySize(bfExecuter.current.MemSize);
+    }
   }, [bfMemorySize]);
 
   // Sync BF code to executor
