@@ -51,7 +51,7 @@ function formatInvalidChar(codePoint, mode) {
  */
 export function formatBFOutput(outputInt, mode = "corrupted") {
     // Allow common control characters
-    if (outputInt === 10) return { output: "\n", isInvalid: false };
+    if (outputInt === 10) return { output: "\r\n", isInvalid: false };
     if (outputInt === 13) return { output: "\r", isInvalid: false };
     if (outputInt === 9) return { output: "\t", isInvalid: false };
     if (outputInt === 8) return { output: "\b", isInvalid: false };

@@ -138,8 +138,8 @@ function App() {
     try {
       LogOperation();
       const { done } = await bfGenerator.current.next();
-      setExecutionCount((prev) => prev + 1);
       if (done) StopAndCleanup();
+      else setExecutionCount((prev) => prev + 1);
     } catch (error) {
       setCIndex(bfExecuter.current.CIndex);
 
